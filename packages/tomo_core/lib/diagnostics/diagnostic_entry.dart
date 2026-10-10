@@ -7,6 +7,9 @@ enum DiagnosticCode {
   /// The database could not be opened or brought to this version (spec §6.2).
   storageStartFailed,
 
+  /// A focus-cycle write failed and was rolled back (spec §4.5).
+  focusWriteFailed,
+
   /// An error no other code names: something Tomo did not see coming.
   unanticipated,
 }
