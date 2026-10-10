@@ -1,1 +1,5 @@
 #include "Generated.xcconfig"
+
+// A debug build installs beside the real app as "Tomo Dev" (spec §15.6).
+APP_DISPLAY_NAME = Tomo Dev
+APP_BUNDLE_ID_SUFFIX = .dev

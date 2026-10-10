@@ -2,13 +2,25 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Promise 30, the packages half: nothing is resolved into Tomo that is not on
-/// the written allowlist (ADR-0029, spec §15.2 and §16).
+/// Promise 30: no internet permission, and nothing resolved into Tomo that is
+/// not on the written allowlist (ADR-0029, spec §15.2 and §16).
 ///
 /// A test over files in the repo. `flutter test` runs it from the repo root.
 void main() {
   final locked = _lockedPackages(File('pubspec.lock').readAsStringSync());
   final allowed = _allowlist(File('docs/package-allowlist').readAsLinesSync());
+
+  test("the release manifest doesn't ask for the internet", () {
+    // The debug and profile manifests keep INTERNET for the Flutter tools. A
+    // plugin can still merge it in at build time, so docs/manual-checks.md
+    // also reads the release APK's final permission list.
+    final manifest = File('android/app/src/main/AndroidManifest.xml')
+        .readAsStringSync();
+
+    expect(manifest, contains('<uses-permission'));
+    expect(manifest, isNot(contains('android.permission.INTERNET')));
+    expect(manifest, isNot(contains('ACCESS_NETWORK_STATE')));
+  });
 
   test('pubspec.lock was read', () {
     expect(locked, containsAll(['flutter', 'drift', 'flutter_riverpod']));
@@ -136,9 +148,8 @@ Set<String> _directDependencies(String pubspec) {
   var inDependencies = false;
   for (final line in pubspec.split('\n')) {
     if (!line.startsWith(' ') && line.trim().isNotEmpty) {
-      inDependencies = RegExp(
-        r'^(dev_)?dependencies:\s*$',
-      ).hasMatch(line.trimRight());
+      inDependencies = RegExp(r'^(dev_)?dependencies:\s*$')
+          .hasMatch(line.trimRight());
       continue;
     }
     final match = RegExp(r'^  ([a-z0-9_]+):').firstMatch(line);

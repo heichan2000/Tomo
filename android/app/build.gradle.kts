@@ -17,11 +17,13 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // A placeholder: the real id is store preparation (spec §17, C14).
         applicationId = "io.github.heichan2000.tomo"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Android 8: notification channels and adaptive icons both start here
+        // (spec §15.1).
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
@@ -32,6 +34,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Installs beside the real app as "Tomo Dev" (spec §15.5); the name
+            // is in src/debug/res/values/strings.xml.
+            applicationIdSuffix = ".dev"
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.

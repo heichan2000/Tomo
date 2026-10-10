@@ -459,7 +459,8 @@ lives in the device-only file instead, so a restored phone asks again.
 
 - **Android:** `allowBackup="true"`; `dataExtractionRules` (and pre-12
   `fullBackupContent`) **include exactly** the database and the shared-prefs
-  file, for both `cloud-backup` and `device-transfer`.
+  file, for both `cloud-backup` and `device-transfer`. "The database" is
+  `tomo.sqlite` with its `-wal` and `-journal` side files (C16).
 - **iOS:** default backup on; the device-only file and the diagnostic log are
   marked excluded from backup.
 - No restore logic: a restored running cycle goes through §4.4 (at most one
@@ -1439,6 +1440,8 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C13 | `http` (through `timezone` and `package_info_plus`) and `sqlite3_flutter_libs` (through `drift_flutter`) are resolved whatever Tomo asks for | Both are on the allowlist as brought-in packages. The never-online test fails if any pubspec asks for a deliberately absent package or Tomo's own code imports one. |
 | C14 | The project needs an application id before store prep picks the real one | Placeholder `io.github.heichan2000.tomo`. Changing it later makes a fresh install, so settle it before dogfooding a real pet. |
 | C15 | A Windows checkout turned line endings into CRLF, which broke `tool/art` | `.gitattributes` keeps LF everywhere (`.cmd`/`.bat` excepted). |
+| C16 | "The database" in the Android backup rules: SQLite can leave recent writes in a side file | The rules name `tomo.sqlite`, `tomo.sqlite-wal` and `tomo.sqlite-journal`, plus `FlutterSharedPreferences.xml`. So the database file must be called `tomo.sqlite`, and the six settings must go through the plugin's shared-preferences backend, not its DataStore one. |
+| C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---
 
