@@ -9,6 +9,7 @@ analysis_server_plugin
 analyzer
 analyzer_testing
 build_runner
+characters
 crypto
 drift
 drift_dev
@@ -41,7 +42,6 @@ build_config
 build_daemon
 built_collection
 built_value
-characters
 charcode
 checked_yaml
 cli_config

@@ -4,34 +4,16 @@ import '../data/tomo_database.dart';
 import '../diagnostics/diagnostic_entry.dart';
 import '../diagnostics/log.dart';
 import '../result.dart';
-import '../rewards/rewards.dart';
 import '../tasks/task_status.dart';
 import 'block_lengths.dart';
+import '../data/instants.dart';
 import 'commands.dart';
+import 'cycle_ledger.dart';
 import 'estimate_prompt.dart';
 import 'live_cycle.dart';
 import 'projection.dart';
 
-/// The phone's UTC offset at [instant], for the local day a block ended in.
-typedef UtcOffsetAt = Duration Function(DateTime instant);
-
-/// Where the focus cycle stands after a command or a look.
-final class CycleStanding {
-  const CycleStanding({
-    required this.state,
-    this.cycle,
-    this.clockNotice = false,
-  });
-
-  final FocusState state;
-
-  /// The live cycle. Null when [state] is idle.
-  final LiveCycle? cycle;
-
-  /// The clock had moved back past the block's start, so the block was
-  /// discarded at zero. Show the clock notice (spec §4.4).
-  final bool clockNotice;
-}
+export 'cycle_ledger.dart' show CycleStanding, UtcOffsetAt;
 
 /// The focus cycle against the database: the five commands and the settle
 /// (spec §4.3 to §4.9).
@@ -42,14 +24,11 @@ final class CycleStanding {
 /// [StorageFailed], with a diagnostic entry written.
 final class FocusCycleService {
   FocusCycleService(this._db, {required this._log, UtcOffsetAt? utcOffsetAt})
-    : _utcOffsetAt = utcOffsetAt ?? _phoneUtcOffsetAt;
+    : _ledger = CycleLedger(_db, utcOffsetAt: utcOffsetAt);
 
   final TomoDatabase _db;
   final Log _log;
-  final UtcOffsetAt _utcOffsetAt;
-
-  static Duration _phoneUtcOffsetAt(DateTime instant) =>
-      instant.toLocal().timeZoneOffset;
+  final CycleLedger _ledger;
 
   /// Brings the stored cycle up to now and says where it stands.
   ///
@@ -58,7 +37,7 @@ final class FocusCycleService {
   /// Call it on every start, every resume, and whenever the screen re-reads
   /// the cycle.
   Future<Result<CycleStanding>> reconcile() =>
-      _write((now) async => Success(await _reconcile(now)));
+      _write((now) async => Success(await _ledger.reconcile(now)));
 
   /// Starts a focus block on [taskId], replacing any finished cycle.
   ///
@@ -74,7 +53,7 @@ final class FocusCycleService {
     if (refusal != null) return Future.value(Failure(refusal));
 
     return _write((now) async {
-      final standing = await _reconcile(now);
+      final standing = await _ledger.reconcile(now);
       if (stateAfter(standing.state, FocusCommand.startBlock) == null) {
         return Success(standing);
       }
@@ -108,8 +87,8 @@ final class FocusCycleService {
           .insert(
             FocusCycleCompanion.insert(
               taskId: cycle.taskId,
-              startAt: _ms(cycle.startAt),
-              endAt: _ms(cycle.endAt),
+              startAt: epochMs(cycle.startAt),
+              endAt: epochMs(cycle.endAt),
               focusMinutes: cycle.focusMinutes,
               breakMinutes: cycle.breakMinutes,
               autoStart: cycle.autoStart,
@@ -131,7 +110,7 @@ final class FocusCycleService {
   /// If the end passed while the confirmation was open, the block
   /// **completed**: it is credited, and this returns that standing instead.
   Future<Result<CycleStanding>> stopEarly() => _write((now) async {
-    final standing = await _reconcile(now);
+    final standing = await _ledger.reconcile(now);
     if (standing.state != FocusState.focusRunning) {
       // Idle is a caller's mistake; a complete state is the block finishing
       // under the open confirmation, which is nobody's.
@@ -147,19 +126,19 @@ final class FocusCycleService {
   /// Starts the break after a finished block.
   Future<Result<CycleStanding>> takeBreak() => _command(
     FocusCommand.takeBreak,
-    (now) => FocusCycleCompanion(breakStartAt: Value(_ms(now))),
+    (now) => FocusCycleCompanion(breakStartAt: Value(epochMs(now))),
   );
 
   /// Ends a running break now. Never penalised.
   Future<Result<CycleStanding>> skipBreak() => _command(
     FocusCommand.skipBreak,
-    (now) => FocusCycleCompanion(breakSkippedAt: Value(_ms(now))),
+    (now) => FocusCycleCompanion(breakSkippedAt: Value(epochMs(now))),
   );
 
   /// *Done for now*: ends the cycle. An unseen beat run goes with it; the EXP
   /// stays.
   Future<Result<CycleStanding>> leave() => _write((now) async {
-    final standing = await _reconcile(now);
+    final standing = await _ledger.reconcile(now);
     if (stateAfter(standing.state, FocusCommand.leave) == null) {
       return Success(standing);
     }
@@ -170,15 +149,15 @@ final class FocusCycleService {
   /// Records that the beat run was had: it finished, was skipped, or was
   /// walked away from (spec §7.4). After this it never plays again.
   Future<Result<CycleStanding>> markBeatRunSeen() => _write((now) async {
-    final standing = await _reconcile(now);
+    final standing = await _ledger.reconcile(now);
     final cycle = standing.cycle;
     if (cycle == null || !cycle.isCredited || cycle.seenAt != null) {
       return Success(standing);
     }
     await _db
         .update(_db.focusCycle)
-        .write(FocusCycleCompanion(seenAt: Value(_ms(now))));
-    return Success(await _reconcile(now));
+        .write(FocusCycleCompanion(seenAt: Value(epochMs(now))));
+    return Success(await _ledger.reconcile(now));
   });
 
   /// Whether to show the estimate prompt now for the cycle's task (spec §4.9).
@@ -186,10 +165,10 @@ final class FocusCycleService {
   /// It answers true **once per task, ever**: answering true is what marks the
   /// task as prompted.
   Future<Result<bool>> takeEstimatePrompt() => _write((now) async {
-    final cycle = (await _reconcile(now)).cycle;
+    final cycle = (await _ledger.reconcile(now)).cycle;
     if (cycle == null || !cycle.isCredited) return const Success(false);
 
-    final task = await _task(cycle.taskId);
+    final task = await _ledger.taskRow(cycle.taskId);
     final promptedAt = task.estimatePromptedAt;
     final due = estimatePromptDue(
       estimate: task.estimatedPomodoros,
@@ -201,7 +180,7 @@ final class FocusCycleService {
     if (!due) return const Success(false);
 
     await (_db.update(_db.tasks)..where((t) => t.id.equals(task.id))).write(
-      TasksCompanion(estimatePromptedAt: Value(_ms(now))),
+      TasksCompanion(estimatePromptedAt: Value(epochMs(now))),
     );
     return const Success(true);
   });
@@ -211,92 +190,11 @@ final class FocusCycleService {
     FocusCommand command,
     FocusCycleCompanion Function(DateTime now) change,
   ) => _write((now) async {
-    final standing = await _reconcile(now);
+    final standing = await _ledger.reconcile(now);
     if (stateAfter(standing.state, command) == null) return Success(standing);
     await _db.update(_db.focusCycle).write(change(now));
-    return Success(await _reconcile(now));
+    return Success(await _ledger.reconcile(now));
   });
-
-  Future<CycleStanding> _reconcile(DateTime now) async {
-    final row = await _db.select(_db.focusCycle).getSingleOrNull();
-    var cycle = row == null ? null : _live(row);
-    var projection = project(cycle, now);
-
-    if (projection.effects.contains(FocusEffect.clockNotice)) {
-      await _db.delete(_db.focusCycle).go();
-      return const CycleStanding(state: FocusState.idle, clockNotice: true);
-    }
-    if (projection.effects.contains(FocusEffect.settle)) {
-      cycle = await _settle(cycle!, now);
-      projection = project(cycle, now);
-    }
-    return CycleStanding(state: projection.state, cycle: cycle);
-  }
-
-  /// Records a finished block: its reward to the pet and its counts to the
-  /// task, all at once and at most once, ever (spec §4.5).
-  ///
-  /// The caller's transaction makes it whole: cut off anywhere, nothing is
-  /// kept and the block is still owed; once the cycle carries the record's id,
-  /// nothing is owed again.
-  Future<LiveCycle> _settle(LiveCycle cycle, DateTime now) async {
-    final pet = await _db.select(_db.pets).getSingle();
-    final task = await _task(cycle.taskId);
-    final minutes = cycle.focusMinutes;
-    final exp = expForBlock(minutes: minutes);
-    final expAfter = addExp(pet.exp, exp);
-    final offset = _utcOffsetAt(cycle.endAt);
-
-    final recordId = await _db
-        .into(_db.blockRecords)
-        .insert(
-          BlockRecordsCompanion.insert(
-            petId: pet.id,
-            taskId: Value(task.id),
-            projectId: Value(task.projectId),
-            startedAt: _ms(cycle.startAt),
-            endedAt: _ms(cycle.endAt),
-            minutes: minutes,
-            localDate: _localDate(cycle.endAt, offset),
-            utcOffsetMinutes: offset.inMinutes,
-            expGranted: exp,
-            petExpAfter: expAfter,
-            settledAt: _ms(now),
-          ),
-        );
-    await (_db.update(_db.pets)..where((p) => p.id.equals(pet.id))).write(
-      PetsCompanion(
-        exp: Value(expAfter),
-        hatchedAt: pet.hatchedAt == null
-            ? Value(_ms(now))
-            : const Value.absent(),
-      ),
-    );
-    await (_db.update(_db.tasks)..where((t) => t.id.equals(task.id))).write(
-      TasksCompanion(
-        actualPomodoros: Value(task.actualPomodoros + 1),
-        cumulativeFocusMinutes: Value(task.cumulativeFocusMinutes + minutes),
-        lastFocusedAt: Value(_ms(now)),
-      ),
-    );
-
-    final settled = cycle.afterSettle(blockRecordId: recordId);
-    final breakStartAt = settled.breakStartAt;
-    await _db
-        .update(_db.focusCycle)
-        .write(
-          FocusCycleCompanion(
-            blockRecordId: Value(recordId),
-            breakStartAt: Value(
-              breakStartAt == null ? null : _ms(breakStartAt),
-            ),
-          ),
-        );
-    return settled;
-  }
-
-  Future<TaskRow> _task(int id) =>
-      (_db.select(_db.tasks)..where((t) => t.id.equals(id))).getSingle();
 
   /// Runs [body] in one transaction at one reading of the clock.
   Future<Result<T>> _write<T>(
@@ -333,28 +231,3 @@ Invalid? _checkLengths(BlockLengths lengths) {
   }
   return null;
 }
-
-int _ms(DateTime instant) => instant.millisecondsSinceEpoch;
-
-DateTime _utc(int ms) => DateTime.fromMillisecondsSinceEpoch(ms, isUtc: true);
-
-/// The calendar day, `YYYY-MM-DD`, that [instant] falls on at [offset].
-String _localDate(DateTime instant, Duration offset) {
-  final local = instant.toUtc().add(offset);
-  String two(int n) => n.toString().padLeft(2, '0');
-  return '${local.year.toString().padLeft(4, '0')}-'
-      '${two(local.month)}-${two(local.day)}';
-}
-
-LiveCycle _live(FocusCycleRow row) => LiveCycle(
-  taskId: row.taskId,
-  startAt: _utc(row.startAt),
-  endAt: _utc(row.endAt),
-  focusMinutes: row.focusMinutes,
-  breakMinutes: row.breakMinutes,
-  autoStart: row.autoStart,
-  breakStartAt: row.breakStartAt == null ? null : _utc(row.breakStartAt!),
-  breakSkippedAt: row.breakSkippedAt == null ? null : _utc(row.breakSkippedAt!),
-  blockRecordId: row.blockRecordId,
-  seenAt: row.seenAt == null ? null : _utc(row.seenAt!),
-);

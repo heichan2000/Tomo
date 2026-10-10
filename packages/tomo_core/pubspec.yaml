@@ -11,6 +11,8 @@ resolution: workspace
 # No Flutter here, on purpose: a Flutter import in this package must fail to
 # compile (ADR-0027).
 dependencies:
+  # Counts a title the way a reader does, in grapheme clusters (spec §5.3).
+  characters: ^1.4.0
   drift: ^2.35.2
 
 dev_dependencies:
