@@ -18,4 +18,6 @@ dev_dependencies:
   crypto: ^3.0.7
   drift_dev: ^2.35.1
   mocktail: ^1.0.5
+  # The migration test reads a database file directly, to see it untouched.
+  sqlite3: ^3.5.2
   test: any

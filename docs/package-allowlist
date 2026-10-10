@@ -25,6 +25,7 @@ package_info_plus
 path_provider
 share_plus
 shared_preferences
+sqlite3
 test
 test_reflective_loader
 timezone
@@ -122,7 +123,6 @@ source_map_stack_trace
 source_maps
 source_span
 sqlcipher_flutter_libs  # through drift_flutter. Unused
-sqlite3
 sqlite3_flutter_libs  # through drift_flutter. An empty end-of-life stub; sqlite3 bundles SQLite itself
 sqlparser
 stack_trace

@@ -4,6 +4,9 @@ enum DiagnosticCode {
   /// The app started. Console only.
   appStarted,
 
+  /// The database could not be opened or brought to this version (spec §6.2).
+  storageStartFailed,
+
   /// An error no other code names: something Tomo did not see coming.
   unanticipated,
 }

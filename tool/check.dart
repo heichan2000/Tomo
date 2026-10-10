@@ -26,12 +26,8 @@ Future<void> main() async {
   await _step('Packages are resolved', () => _run('flutter', ['pub', 'get']));
   await _step(
     'build_runner',
-    () => _run('dart', [
-      'run',
-      'build_runner',
-      'build',
-      '--delete-conflicting-outputs',
-    ], workingDirectory: _core),
+    () =>
+        _run('dart', ['run', 'build_runner', 'build'], workingDirectory: _core),
   );
   await _step('gen_l10n', () => _run('flutter', ['gen-l10n']));
   await _step('Generated files are up to date', () async {
