@@ -1452,6 +1452,8 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C26 | Does a task bonus that reaches a new level or stage celebrate it? | **Built as a default, awaiting the user in [#81](https://github.com/heichan2000/Tomo/issues/81):** yes, on Focus: *Task done*, then the level-up, then the evolution. |
 | C27 | A block that crosses two levels at once | One level-up beat, to the level reached. |
 | C28 | The egg between a block's end and its settle | It holds its last crack picture. |
+| C29 | Under auto-start, with Tomo closed, nothing settles the block, so the row has no `break_start_at` when *Break complete* should fire | The schedule treats the break as beginning at `end_at` ahead of time, and announces its end at `end_at + break_minutes`. |
+| C30 | A pet that hatched but was never named (killed on the naming screen) | Its notifications go by its species' name. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---
