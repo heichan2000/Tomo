@@ -1445,6 +1445,9 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C19 | How "a failed migration never wipes" reaches the screen | `TomoDatabase.start()` opens the file at start-up and returns `ready` or `failed`. On `failed` the file is untouched (every migration step runs in one transaction; a file from a newer Tomo is refused outright), a `storageStartFailed` diagnostic entry is written, and the caller shows the error block. |
 | C20 | *Stop early* arriving after the block has ended (§4.6 says it completed) versus "illegal pairs assert" (§4.3) | `stopEarly` on a finished cycle is not an error: it credits the block if still owed and returns where the cycle stands. Only `stopEarly` with no cycle at all asserts. |
 | C21 | Which UTC offset a block record stores | The phone's offset **at the instant the block ended**, as the phone knows it at settle. `local_date` is that instant's calendar day at that offset, so the pair always agrees. |
+| C22 | A task with no focus marked done pays a bonus of zero: is its one bonus then used up? | Yes. "Once per task, ever, on the first change into done": the flag is set even when the amount is zero, so reopening it, focusing and finishing again pays no bonus. |
+| C23 | "Recent first" inside a project's status groups was not defined | The latest of a task's creation, last focus and completion. The picker orders by last focus, then creation. |
+| C24 | How long the onboarding line may be, given it names the project and is the first task | The project-name limit, 60. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---

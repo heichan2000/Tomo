@@ -10,6 +10,12 @@ enum DiagnosticCode {
   /// A focus-cycle write failed and was rolled back (spec §4.5).
   focusWriteFailed,
 
+  /// A task or project write failed and was rolled back (spec §5.2).
+  taskWriteFailed,
+
+  /// Finishing onboarding failed and was rolled back (spec §8.2).
+  onboardingWriteFailed,
+
   /// An error no other code names: something Tomo did not see coming.
   unanticipated,
 }
