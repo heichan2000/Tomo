@@ -1448,6 +1448,10 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C22 | A task with no focus marked done pays a bonus of zero: is its one bonus then used up? | Yes. "Once per task, ever, on the first change into done": the flag is set even when the amount is zero, so reopening it, focusing and finishing again pays no bonus. |
 | C23 | "Recent first" inside a project's status groups was not defined | The latest of a task's creation, last focus and completion. The picker orders by last focus, then creation. |
 | C24 | How long the onboarding line may be, given it names the project and is the first task | The project-name limit, 60. |
+| C25 | Does a level-up play beside the hatch when the first block was 60 minutes or more? | **Built as a default, awaiting the user in [#81](https://github.com/heichan2000/Tomo/issues/81):** no. That block's run is the block beat, then the hatch. |
+| C26 | Does a task bonus that reaches a new level or stage celebrate it? | **Built as a default, awaiting the user in [#81](https://github.com/heichan2000/Tomo/issues/81):** yes, on Focus: *Task done*, then the level-up, then the evolution. |
+| C27 | A block that crosses two levels at once | One level-up beat, to the level reached. |
+| C28 | The egg between a block's end and its settle | It holds its last crack picture. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---
