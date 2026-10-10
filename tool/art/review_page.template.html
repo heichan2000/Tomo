@@ -1,0 +1,436 @@
+<title>Tomo Pet Art Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: a sticky row of labelled switches, then one section per thing to approve, pets always on both real grounds. */
+  :root {
+    --bg: #ecebe6; --panel: #f7f6f2; --ink: #1f1d1a; --muted: #5e5952; --hair: #d4cfc6;
+    --sel: #1f1d1a; --sel-ink: #f7f6f2;
+    --draft: #9a5b12; --ok: #2f7a4a; --bad: #b0352a; --gap: #ff2bd6;
+    --light-ground: #F5F1EA; --dark-ground: #000000; --light-ink: #24211D; --dark-ink: #EDE7DC;
+    --display: "Pixelify Sans", "Courier New", monospace;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e0d0c; --panel: #171614; --ink: #e9e4da; --muted: #9c958a; --hair: #2b2825;
+      --sel: #e9e4da; --sel-ink: #0e0d0c; --draft: #e0a65a; --ok: #8fd6a4; --bad: #ff8a7a; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e0d0c; --panel: #171614; --ink: #e9e4da; --muted: #9c958a; --hair: #2b2825;
+    --sel: #e9e4da; --sel-ink: #0e0d0c; --draft: #e0a65a; --ok: #8fd6a4; --bad: #ff8a7a; color-scheme: dark;
+  }
+  html, body { background: var(--bg); color: var(--ink); }
+  body { font: 15px/1.55 var(--sans); padding-inline: 18px; padding-block: 32px 72px; }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 44px; }
+  header { display: grid; gap: 10px; max-width: 72ch; }
+  .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  h1 { font: 600 clamp(30px, 5vw, 46px)/1.04 var(--display); margin: 0; text-wrap: balance; }
+  h2 { font: 600 23px/1.15 var(--display); margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  .lede, .section-head p { color: var(--muted); }
+  .lede strong, .section-head strong { color: var(--ink); font-weight: 600; }
+  code { font: 13px var(--mono); }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-start; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--hair); }
+  .ctl { display: grid; gap: 5px; min-width: 0; }
+  .ctl > span { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--hair); padding: 3px; gap: 3px; background: var(--panel); }
+  .seg button { font: 500 13px/1 var(--mono); color: var(--muted); background: transparent; border: 0; padding: 8px 10px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--sel); color: var(--sel-ink); }
+  .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #ctl-pet button { font: 600 15px/1 var(--display); padding: 8px 14px; }
+  @media (max-width: 760px) { .controls { position: static; } }
+
+  .section { display: grid; gap: 16px; }
+  .section-head { display: grid; gap: 6px; max-width: 74ch; }
+  .now { font: 500 13px/1.4 var(--mono); color: var(--muted); }
+  .now b { color: var(--ink); font-weight: 500; }
+
+  .chip { font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 5px 7px; border: 1px solid currentColor; white-space: nowrap; }
+  .chip.draft { color: var(--draft); } .chip.approved { color: var(--ok); } .chip.changed { color: var(--bad); }
+
+  .ground { display: flex; flex-wrap: wrap; gap: 8px 4px; padding: 14px 10px 10px; align-items: flex-end; justify-content: space-around; }
+  .ground.light { background: var(--light-ground); color: var(--light-ink); }
+  .ground.dark { background: var(--dark-ground); color: var(--dark-ink); }
+  .ground figure { margin: 0; display: grid; gap: 6px; justify-items: center; }
+  .ground figcaption { font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; opacity: .75; text-align: center; }
+  canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; }
+
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; }
+  .pair .ground { justify-content: center; }
+  @media (max-width: 700px) { .pair { grid-template-columns: 1fr; } }
+
+  .parts { display: flex; flex-wrap: wrap; gap: 10px; }
+  .parts figure { margin: 0; display: grid; gap: 4px; justify-items: center; background: var(--panel); border: 1px solid var(--hair); padding: 8px; }
+  .parts figcaption { font: 12px/1.2 var(--mono); color: var(--muted); }
+
+  .sheet-wrap { overflow-x: auto; }
+  .sheet { display: grid; grid-template-columns: auto repeat(7, max-content); gap: 8px 10px; padding: 14px; align-items: center; min-width: max-content; }
+  .sheet.light { background: var(--light-ground); color: var(--light-ink); }
+  .sheet.dark { background: var(--dark-ground); color: var(--dark-ink); }
+  .sheet .h { font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; opacity: .75; text-align: center; }
+  .sheet .n { font: 600 14px/1 var(--display); opacity: .85; padding-right: 6px; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--hair); background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; font: 13px/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--hair); white-space: nowrap; vertical-align: top; }
+  thead th { font-weight: 500; color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  tbody th { font-weight: 500; color: var(--muted); }
+  tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+  td.wrap-cell { white-space: normal; min-width: 22ch; }
+
+  .checks { display: grid; gap: 6px; font: 13px/1.5 var(--mono); }
+  .checks .ok { color: var(--ok); } .checks .bad { color: var(--bad); }
+  .legend { display: inline-block; width: 10px; height: 10px; background: var(--gap); vertical-align: -1px; margin-right: 4px; }
+  footer { font: 12px/1.6 var(--mono); color: var(--muted); border-top: 1px solid var(--hair); padding-top: 14px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Review page · generated from the code</span>
+    <h1 id="title">Every drawing</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <section class="controls" aria-label="Switches">
+    <div class="ctl"><span>Pet</span><div class="seg" role="group" aria-label="Pet" id="ctl-pet"></div></div>
+    <div class="ctl"><span>Movement</span><div class="seg" role="group" aria-label="Movement" id="ctl-move"></div></div>
+    <div class="ctl"><span>Phone: Reduce motion</span><div class="seg" role="group" aria-label="Reduce motion" id="ctl-reduce"></div></div>
+    <div class="ctl"><span>Close-up stage</span><div class="seg" role="group" aria-label="Close-up stage" id="ctl-stage"></div></div>
+    <div class="ctl"><span>Marks</span><div class="seg" role="group" aria-label="Marks" id="ctl-marks"></div></div>
+    <div class="ctl"><span>Motion</span><div class="seg" role="group" aria-label="Motion" id="ctl-play"></div></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-marks">
+    <div class="section-head">
+      <h2 id="h-marks">Drawings and marks</h2>
+      <p>A drawing is approved only while its fingerprint matches the one recorded when you said yes. Any change to a pixel or a colour makes it a draft again.</p>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Drawing</th><th>Mark</th><th>Fingerprint</th><th>Approved in</th></tr></thead>
+      <tbody id="marks"></tbody>
+    </table></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-stages">
+    <div class="section-head">
+      <h2 id="h-stages">The four stages</h2>
+      <p class="now">Moving: <b id="now-move"></b></p>
+      <p>At Home size: one pixel is 4 points, so the 48×48 grid is the 192-point Home spot. Every stage stands on the same bottom row. A <span class="legend"></span>pink pixel is a gap a movement opens between two parts.</p>
+    </div>
+    <div class="ground light" id="stages-light"></div>
+    <div class="ground dark" id="stages-dark"></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-close">
+    <div class="section-head">
+      <h2 id="h-close">Close up</h2>
+      <p id="close-note"></p>
+    </div>
+    <div class="pair"><div class="ground light" id="close-light"></div><div class="ground dark" id="close-dark"></div></div>
+    <div class="parts" id="parts"></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-faces">
+    <div class="section-head">
+      <h2 id="h-faces">The eye sheet</h2>
+      <p>One set of eyes for all four stages. Each column is one face, held still. Celebrating uses Pleased; Thinking is the plain eyes one pixel toward the lean; Still is the plain eyes without blinking.</p>
+    </div>
+    <div class="sheet-wrap"><div class="sheet light" id="sheet-light"></div></div>
+    <div class="sheet-wrap"><div class="sheet dark" id="sheet-dark"></div></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-egg">
+    <div class="section-head">
+      <h2 id="h-egg">The egg</h2>
+      <p>Whole, then each crack step, at Home size; a running block shows them in equal shares. The last picture is the shell cut into the seven pieces it breaks into at the hatch, pulled apart so each piece can be checked.</p>
+    </div>
+    <div class="ctl"><span>Egg</span><div class="seg" role="group" aria-label="Egg" id="ctl-egg"></div></div>
+    <div class="ground light" id="egg-light"></div>
+    <div class="ground dark" id="egg-dark"></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-evo">
+    <div class="section-head">
+      <h2 id="h-evo">Evolution</h2>
+      <p>The flicker: five swaps at 0, 500, 950, 1350 and 1700 ms, ending on the new stage. With Reduce motion on, a 0.6 s cross-fade.</p>
+    </div>
+    <div class="ground light" id="evo-light"></div>
+    <div class="ground dark" id="evo-dark"></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-how">
+    <div class="section-head">
+      <h2 id="h-how">How it moves</h2>
+      <p>Every movement is the same code for every pet. These are the few settings that say which parts take part, kept as each pet was approved.</p>
+    </div>
+    <div class="table-wrap"><table><tbody id="how"></tbody></table></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-checks">
+    <div class="section-head">
+      <h2 id="h-checks">Checks</h2>
+      <p>Every movement is played on every stage and checked for gaps between parts and for holes through the pet. The eyes need one pixel of room to glance left, right and up, landing only on the head.</p>
+    </div>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const DATA = /*{{DATA}}*/null;
+/*{{POSE}}*/
+const reduceOS = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOVES = [
+  ['resting', 'Resting'], ['pleased', 'Pleased'], ['drowsy', 'Drowsy'], ['celebrating', 'Celebrating'],
+  ['thinking', 'Thinking'], ['puzzled', 'Puzzled'], ['still', 'Still'], ['hop', 'Hop'],
+  ['glance', 'Glance'], ['lookup', 'Look up'], ['blink2', 'Double blink'], ['twitch', 'Twitch'], ['wiggle', 'Wiggle']
+];
+const state = { pet: DATA.species[0].id, move: 'resting', reduce: 'off', stage: 4, marks: 'off', play: reduceOS ? 'pause' : 'play', egg: 'block' };
+function pref(k, v) { try { if (v === undefined) return localStorage.getItem('tomo-art-review-' + k); localStorage.setItem('tomo-art-review-' + k, v); } catch (e) { return null; } }
+for (const k of ['pet', 'move', 'stage', 'marks', 'egg']) { const v = pref(k); if (v) state[k] = k === 'stage' ? +v : v; }
+if (!DATA.species.some(s => s.id === state.pet)) state.pet = DATA.species[0].id;
+let SP = DATA.species.find(s => s.id === state.pet);
+const $ = id => document.getElementById(id);
+
+// ---------- movement over time (ADR-0018, #31 timings) ----------
+const JUMP = [1, 2, 3, 3, 2, 1];
+const at = (seq, ms, u) => seq[Math.floor(u / ms)] ?? 0;
+function motion(move, t, i) {
+  const red = state.reduce === 'on';
+  const br = Math.floor(t / (red ? 1600 : 800)) % 2;
+  const blink = (t + i * 1300) % 4300 < 150;
+  const u = t % 2600;
+  switch (move) {
+    case 'resting': return { drop: br, face: blink ? 'blink' : 'resting' };
+    case 'pleased': { const v = t % 3000, lift = red ? (v < 210 ? 1 : 0) : at([1, 2, 1], 70, v); return { lift, drop: lift ? 0 : br, face: 'pleased' }; }
+    case 'drowsy': return { drop: 1 + Math.floor(t / 1600) % 2, face: 'drowsy' };
+    case 'celebrating': {
+      const v = t % 900;
+      if (red) return { lift: v < 280 ? 1 : 0, face: 'pleased' };
+      const k = Math.floor(v / 70);
+      if (k < JUMP.length) return { lift: JUMP[k], extra: JUMP[k] >= 2 ? 1 : 0, face: 'pleased' };
+      return { drop: k < JUMP.length + 2 ? 1 : 0, face: 'pleased' };   // the head lands a beat late
+    }
+    case 'thinking': case 'puzzled': {
+      const v = t % 4000, dir = move === 'thinking' ? -1 : 1;
+      let amt = v < 300 ? 0 : v < 410 ? 1 : v < 3300 ? 2 : v < 3410 ? 1 : 0;
+      if (red && amt) amt = 1;
+      return { lean: dir * amt, edx: amt && move === 'thinking' ? dir : 0, face: amt ? (move === 'puzzled' ? 'puzzled' : 'resting') : (blink ? 'blink' : 'resting'), drop: br };
+    }
+    case 'still': return {};
+    case 'hop': { const lift = red ? (u < 210 ? 1 : 0) : at([1, 2, 1], 70, u); return { lift, face: u < 600 ? 'pleased' : 'resting', drop: u > 600 ? br : 0 }; }
+    case 'glance': return { edx: u >= 150 && u < 850 ? -1 : u >= 1000 && u < 1700 ? 1 : 0, drop: br };
+    case 'lookup': return { edy: u >= 100 && u < 1100 ? -1 : 0, drop: br };
+    case 'blink2': return { face: u < 150 || (u >= 300 && u < 450) ? 'blink' : 'resting', drop: br };
+    case 'twitch': return { twitch: red ? (u < 200 ? 1 : 0) : at([1, 0, 1, 0], 120, u), drop: br };
+    case 'wiggle': return { wiggle: red ? (u < 300 ? -1 : 0) : at([-1, 0, 1, 0, -1, 0, 1, 0], 100, u) };
+  }
+  return {};
+}
+
+// ---------- painting ----------
+function makeCanvas(w, h, scale, label) {
+  const c = document.createElement('canvas');
+  c.width = w * scale; c.height = h * scale; c.style.width = w * scale + 'px';
+  if (label) c.setAttribute('aria-label', label);
+  return c;
+}
+function paint(c, g, marks, alpha) {
+  const ctx = c.getContext('2d'), k = c.width / g[0].length;
+  if (alpha === undefined) ctx.clearRect(0, 0, c.width, c.height);
+  ctx.globalAlpha = alpha ?? 1;
+  g.forEach((r, y) => [...r].forEach((ch, x) => { if (ch !== '.') { ctx.fillStyle = SP.colours[ch] || '#f0f'; ctx.fillRect(x * k, y * k, k, k); } }));
+  ctx.globalAlpha = 1;
+  if (marks) for (const [x, y, kind] of marks) {
+    ctx.fillStyle = kind === 'hidden' ? 'rgba(255,43,214,.55)' : '#ff2bd6';
+    const inset = kind === 'hidden' ? k * .3 : 0;
+    ctx.fillRect(x * k + inset, y * k + inset, k - inset * 2, k - inset * 2);
+  }
+}
+function fig(parent, canvas, caption) {
+  const f = document.createElement('figure'); f.appendChild(canvas);
+  if (caption) { const fc = document.createElement('figcaption'); fc.textContent = caption; f.appendChild(fc); }
+  parent.appendChild(f); return f;
+}
+const still = m => !Object.entries(m).some(([k, v]) => k !== 'face' && v);
+const label = id => DATA.species.find(s => s.id === id).name;
+
+// ---------- sections ----------
+let live = [], evo = [], eggLive = [];
+function buildStages() {
+  live = live.filter(l => l.close);
+  for (const ground of ['light', 'dark']) {
+    const host = $('stages-' + ground); host.innerHTML = '';
+    SP.stages.forEach((_, si) => { const c = makeCanvas(N, N, 4, `${SP.name}, stage ${si + 1}`); fig(host, c, `Stage ${si + 1}`); live.push({ c, si }); });
+  }
+}
+function buildClose() {
+  live = live.filter(l => !l.close);
+  for (const ground of ['light', 'dark']) {
+    const host = $('close-' + ground); host.innerHTML = '';
+    const c = makeCanvas(N, N, 7, `${SP.name}, stage ${state.stage}, close up`); fig(host, c, ground === 'light' ? 'Light ground' : 'True black');
+    live.push({ c, si: state.stage - 1, close: true });
+  }
+  const parts = $('parts'); parts.innerHTML = '';
+  for (const p of SP.paintOrder) {
+    const c = makeCanvas(N, N, 3, p); paint(c, SP.stages[state.stage - 1].parts[p]); fig(parts, c, p);
+  }
+  $('close-note').innerHTML = `Stage ${state.stage} at 7× and its six parts on their own, back to front as they are painted. ` +
+    (state.marks === 'on' ? 'Pink squares mark pixels painted in behind a moving part: nobody sees them until that part slides. They show while the pet is still (Movement: Still).' : 'Switch <strong>Marks</strong> on to see the pixels painted in behind each moving part.');
+}
+function buildSheet() {
+  const FACES = [['Resting', {}], ['Blink', { face: 'blink' }], ['Pleased', { face: 'pleased' }], ['Drowsy', { face: 'drowsy' }],
+    ['Thinking', { lean: -2, edx: -1 }], ['Puzzled', { lean: 2, face: 'puzzled' }], ['Still', {}]];
+  for (const ground of ['light', 'dark']) {
+    const host = $('sheet-' + ground); host.innerHTML = '';
+    host.appendChild(Object.assign(document.createElement('span'), { className: 'n', textContent: '' }));
+    for (const [name] of FACES) host.appendChild(Object.assign(document.createElement('span'), { className: 'h', textContent: name }));
+    SP.stages.forEach((st, si) => {
+      host.appendChild(Object.assign(document.createElement('span'), { className: 'n', textContent: 'Stage ' + (si + 1) }));
+      const xs = st.eyes.map(e => e[0]), ys = st.eyes.map(e => e[1]);
+      const x0 = Math.min(...xs) - 4, y0 = Math.min(...ys) - 4, W = Math.max(...xs) - x0 + 7, H = 10;
+      for (const [name, pose] of FACES) {
+        const g = compose(SP, si, pose).g.slice(y0, y0 + H).map(r => r.slice(x0, x0 + W));
+        const c = makeCanvas(W, H, 9, `Stage ${si + 1}, ${name}`);
+        paint(c, g); host.appendChild(c);
+      }
+    });
+  }
+}
+function buildEgg() {
+  eggLive = [];
+  const { pieces, stays } = eggPieces(SP);
+  const apart = blank();
+  for (const p of pieces) {
+    const ox = Math.round(Math.cos(p.a) * 4), oy = Math.round(Math.sin(p.a) * 4);
+    for (const [x, y, c] of p.px) { const X = x + ox, Y = y + oy; if (X >= 0 && Y >= 0 && X < N && Y < N) apart[Y][X] = c; }
+  }
+  for (const [x, y, c] of stays) apart[y][x] = c;
+  for (const ground of ['light', 'dark']) {
+    const host = $('egg-' + ground); host.innerHTML = '';
+    [SP.egg.whole, ...SP.egg.cracks].forEach((g, i) => { const c = makeCanvas(N, N, 3, i ? `Crack ${i}` : 'Whole'); paint(c, g); fig(host, c, i ? `Crack ${i}` : 'Whole'); });
+    const a = makeCanvas(N, N, 3, 'Seven pieces'); paint(a, apart.map(r => r.join(''))); fig(host, a, 'Seven pieces');
+    const c = makeCanvas(N, N, 4, 'The egg, moving'); fig(host, c, { wobble: 'Wobbling', block: 'Through a block', hatch: 'The hatch' }[state.egg]);
+    eggLive.push(c);
+  }
+}
+function buildEvo() {
+  evo = [];
+  for (const ground of ['light', 'dark']) {
+    const host = $('evo-' + ground); host.innerHTML = '';
+    for (let i = 0; i < SP.stages.length - 1; i++) { const c = makeCanvas(N, N, 4, `Stage ${i + 1} to ${i + 2}`); fig(host, c, `${i + 1} → ${i + 2}`); evo.push([c, i]); }
+  }
+}
+function buildHow() {
+  const list = ps => ps.length ? ps.join(', ') : 'none';
+  const rows = [
+    ['Painted back to front', SP.paintOrder.join(', ')],
+    ['Rides with the head', list(SP.ridesWithHead) + ' (breathing sinks them a pixel; leaning slides them)'],
+    ['Leans whole', SP.leansWhole.length ? SP.leansWhole.join(', ') + ' (two pixels all the way down)' : 'none (every riding part bends at the lean step)'],
+    ['Twitches', list(SP.twitches)],
+    ['Lifts one more on the jump', list(SP.liftsOnJump)],
+    ['Stays at the hatch', SP.egg.stays.length ? SP.egg.stays.join('') + ' (the pet\'s own pixels; the rest flies)' : 'nothing; the whole shell flies'],
+    ...SP.stages.map((st, i) => [`Stage ${i + 1}`, `eyes at ${st.eyes.map(([x, y]) => `(${x}, ${y})`).join(' and ')} · lean step row ${st.lean} · ` +
+      (st.breath == null ? 'breath: the riding parts only' : `breath: also everything above row ${st.breath}`)]),
+  ];
+  $('how').innerHTML = rows.map(([k, v]) => `<tr><th scope="row">${k}</th><td class="wrap-cell">${v}</td></tr>`).join('');
+}
+function buildChecks() {
+  $('checks').innerHTML = SP.checks.map(([ok, text]) => `<div class="${ok ? 'ok' : 'bad'}">${ok ? '✓' : '✗'} ${text.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>`).join('');
+}
+function buildMarks() {
+  const chip = s => `<span class="chip ${s}">${s === 'changed' ? 'Changed since approval' : s === 'approved' ? 'Approved' : 'Draft'}</span>`;
+  $('marks').innerHTML = SP.drawings.map(d => `<tr><td>${d.label}</td><td>${chip(d.status)}</td><td>${d.fingerprint}</td><td class="wrap-cell">${d.mark ? `<a href="${d.mark.approvedIn}">${d.mark.approvedIn.replace(/^https:\/\/github.com\//, '')}</a>` : '—'}</td></tr>`).join('');
+  const open = SP.drawings.filter(d => d.status !== 'approved').length;
+  $('title').textContent = `${SP.name}, every drawing`;
+  $('lede').innerHTML = `Generated from <code>lib/art/pets/${SP.id}.dart</code>. <strong>${open ? `${open} of ${SP.drawings.length} drawings are not approved yet.` : `All ${SP.drawings.length} drawings are approved.`}</strong> Pets are shown on the app's two grounds, light <code>#F5F1EA</code> and true black <code>#000</code>, in one set of colours.`;
+  $('footer').textContent = `Built ${DATA.built} UTC by tool/art/review_page.mjs from lib/art/pets. Timings are the shared defaults from How pixel pets move and The pet's ambient life outside sessions; idle moves repeat faster here than in the app so you can see them.`;
+}
+function render() {
+  SP = DATA.species.find(s => s.id === state.pet);
+  buildMarks(); buildStages(); buildClose(); buildSheet(); buildEgg(); buildEvo(); buildHow(); buildChecks();
+}
+
+// ---------- controls ----------
+function seg(id, items, key, after) {
+  const host = $(id);
+  host.innerHTML = items.map(([v, l]) => `<button type="button" id="${id}-${v}" data-v="${v}" aria-pressed="${String(state[key]) === String(v)}">${l}</button>`).join('');
+  host.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    state[key] = key === 'stage' ? +b.dataset.v : b.dataset.v;
+    if (key !== 'play' && key !== 'reduce') pref(key, b.dataset.v);
+    host.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    after && after();
+  });
+}
+seg('ctl-pet', DATA.species.map(s => [s.id, s.name]), 'pet', () => { t0 = performance.now(); render(); });
+seg('ctl-move', MOVES, 'move', () => { $('now-move').textContent = MOVES.find(m => m[0] === state.move)[1]; });
+seg('ctl-reduce', [['off', 'Off'], ['on', 'On']], 'reduce');
+seg('ctl-stage', [[1, '1'], [2, '2'], [3, '3'], [4, '4']], 'stage', buildClose);
+seg('ctl-marks', [['off', 'Off'], ['on', 'Hidden pixels']], 'marks', buildClose);
+seg('ctl-play', [['play', 'Play'], ['pause', 'Pause']], 'play');
+seg('ctl-egg', [['wobble', 'Wobble'], ['block', 'Through a block'], ['hatch', 'Hatch']], 'egg', () => { eggT0 = performance.now(); buildEgg(); });
+$('now-move').textContent = MOVES.find(m => m[0] === state.move)[1];
+render();
+
+// ---------- the loop ----------
+const SWAPS = [0, 500, 950, 1350, 1700];
+let t0 = performance.now(), eggT0 = t0, paused = 0, eggPaused = 0;
+function egg(t) {
+  const red = state.reduce === 'on', last = SP.egg.cracks.at(-1) ?? SP.egg.whole;
+  const shifted = (g, dx) => g.map(r => dx > 0 ? '.'.repeat(dx) + r.slice(0, N - dx) : dx < 0 ? r.slice(-dx) + '.'.repeat(-dx) : r);
+  if (state.egg === 'wobble') { const u = t % 2600; return { g: shifted(SP.egg.whole, red ? (u < 150 ? 1 : 0) : at([-1, 1], 150, u)) }; }
+  if (state.egg === 'block') { const all = [SP.egg.whole, ...SP.egg.cracks], k = Math.floor(t / 900) % (all.length + 1); return { g: all[Math.min(k, all.length - 1)] }; }
+  const u = t % 6000;
+  if (u < 2500) {
+    let dx = 0;
+    if (u >= 300 && u < 620) dx = at([-1, 1, -1, 1], 80, u - 300);
+    if (u >= 1100 && u < 1420) dx = at([-1, 1, -1, 1], 80, u - 1100);
+    if (u >= 1800 && u < 2400) dx = 2 * [-1, 1][Math.floor((u - 1800) / 60) % 2];
+    if (red) dx = Math.sign(Math.abs(dx));
+    return { g: shifted(last, dx) };
+  }
+  const s = u - 2500, pet = compose(SP, 0, { face: 'pleased' }).g;
+  if (red) return s < 600 ? { g: last, fade: [pet, s / 600] } : { g: pet };
+  const out = compose(SP, 0, { face: 'pleased', lift: s > 400 ? (JUMP[Math.floor((s - 400) / 70)] ?? 0) : 0 }).g.map(r => [...r]);
+  if (s < 1500) {
+    const q = Math.floor(s / 50) * 50;
+    for (const p of eggPieces(SP).pieces) {
+      const ox = Math.round(Math.cos(p.a) * .05 * q), oy = Math.round((Math.sin(p.a) * .05 - .045) * q + .5 * .00016 * q * q);
+      for (const [x, y, c] of p.px) { const X = x + ox, Y = y + oy; if (X >= 0 && Y >= 0 && X < N && Y < N) out[Y][X] = c; }
+    }
+  }
+  return { g: out.map(r => r.join('')) };
+}
+function frame(now) {
+  now = Math.max(now, t0, eggT0);   // a frame's timestamp can be earlier than the clock read at start
+  const playing = state.play === 'play';
+  const t = playing ? now - t0 : paused, te = playing ? now - eggT0 : eggPaused;
+  if (playing) { paused = t; eggPaused = te; } else { t0 = now - paused; eggT0 = now - eggPaused; }
+  for (const l of live) {
+    const m = motion(state.move, t, l.si);
+    let marks = gaps(SP, l.si, m).map(([x, y]) => [x, y, 'gap']);
+    if (l.close && state.marks === 'on' && still(m)) marks = marks.concat(hiddenPixels(SP, l.si).map(([x, y]) => [x, y, 'hidden']));
+    paint(l.c, compose(SP, l.si, m).g, marks);
+  }
+  const red = state.reduce === 'on';
+  for (const [c, i] of evo) {
+    const s = t % 4300 - 800, a = compose(SP, i).g, b = compose(SP, i + 1).g;
+    if (red) { const f = Math.max(0, Math.min(1, s / 600)); c.getContext('2d').clearRect(0, 0, c.width, c.height); paint(c, a, null, 1 - f); paint(c, b, null, f); }
+    else paint(c, SWAPS.filter(x => s >= x).length % 2 ? b : a);
+  }
+  const e = egg(te);
+  for (const c of eggLive) {
+    if (e.fade) { c.getContext('2d').clearRect(0, 0, c.width, c.height); paint(c, e.g, null, 1 - e.fade[1]); paint(c, e.fade[0], null, e.fade[1]); }
+    else paint(c, e.g);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
