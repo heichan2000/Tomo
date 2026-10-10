@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- What Android 12+ may copy off the phone (ADR-0028, spec §6.4): exactly the
+     database (with the two side files SQLite may leave beside it) and the
+     settings file. Naming any file leaves every other file out, so the
+     device-only file and the diagnostic log stay on the phone.
+     test/platform/android_settings_test.dart holds this list. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="tomo.sqlite"/>
+        <include domain="file" path="tomo.sqlite-wal"/>
+        <include domain="file" path="tomo.sqlite-journal"/>
+        <include domain="sharedpref" path="FlutterSharedPreferences.xml"/>
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="tomo.sqlite"/>
+        <include domain="file" path="tomo.sqlite-wal"/>
+        <include domain="file" path="tomo.sqlite-journal"/>
+        <include domain="sharedpref" path="FlutterSharedPreferences.xml"/>
+    </device-transfer>
+</data-extraction-rules>

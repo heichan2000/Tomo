@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The same list as data_extraction_rules.xml, for Android 11 and older. -->
+<full-backup-content>
+    <include domain="file" path="tomo.sqlite"/>
+    <include domain="file" path="tomo.sqlite-wal"/>
+    <include domain="file" path="tomo.sqlite-journal"/>
+    <include domain="sharedpref" path="FlutterSharedPreferences.xml"/>
+</full-backup-content>

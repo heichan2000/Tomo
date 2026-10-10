@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A notification names its icon by a string from Dart, so the release
+     shrinker cannot see the icon is used and would throw it away
+     (flutter_local_notifications). Keep every drawable. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/*"/>

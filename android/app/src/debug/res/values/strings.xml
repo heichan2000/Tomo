@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Debug installs beside the real app (spec §15.5). -->
+    <string name="app_name">Tomo Dev</string>
+</resources>
