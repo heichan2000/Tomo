@@ -1,2 +1,35 @@
+# Dart and Flutter
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
 build/
+.flutter-plugins-dependencies
+*.iml
+.idea/
+
+# FVM: the pin is .fvmrc; the links it makes are local
+.fvm/
+
+# Android
+android/.gradle/
+android/local.properties
+android/.kotlin/
+android/app/.cxx/
+*.jks
+*.keystore
+key.properties
+
+# iOS
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+**/xcuserdata/
+**/DerivedData/
+
+# Tools
 __pycache__/
+node_modules/
+.DS_Store

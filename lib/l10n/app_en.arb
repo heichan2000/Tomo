@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appName": "Tomo",
+  "@appName": {
+    "description": "The app's name, as the phone's app switcher shows it."
+  }
+}
