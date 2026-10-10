@@ -1,0 +1,13 @@
+# One line ending in the working tree, whatever a machine's git settings say.
+# The art tools and the art fingerprints read source files character by
+# character, and a Windows checkout with CRLF breaks them.
+* text=auto eol=lf
+
+# Windows runs these, and wants its own line endings.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+*.png binary
+*.jar binary
+*.ttf binary
+*.otf binary

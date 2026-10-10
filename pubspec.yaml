@@ -1,0 +1,42 @@
+name: tomo
+description: "A focus timer with a pocket pet."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+# One lock file and one `pub get` for the app and both packages (ADR-0027).
+workspace:
+  - packages/tomo_core
+  - packages/tomo_lints
+
+# Every package here is named in Tomo_Build_Spec.md §15.2. Adding one means
+# adding it to docs/package-allowlist too, or the never-online test fails.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  tomo_core: ^0.0.0
+
+  drift_flutter: ^0.3.1
+  flutter_local_notifications: ^22.3.1
+  flutter_riverpod: ^3.4.3
+  intl: ^0.20.3
+  package_info_plus: ^10.2.2
+  path_provider: ^2.1.6
+  share_plus: ^13.3.1
+  shared_preferences: ^2.5.6
+  timezone: ^0.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  mocktail: ^1.0.5
+
+flutter:
+  generate: true
+  uses-material-design: false

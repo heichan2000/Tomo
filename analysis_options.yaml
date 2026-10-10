@@ -1,0 +1,32 @@
+# One file for the app and both packages. Do not add an analysis_options.yaml
+# inside packages/: a nested file switches the tomo_lints plugin off for that
+# package (test/repo_shape_test.dart guards this). flutter_lints includes
+# lints/recommended, so tomo_core is held to that and more.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    avoid_print: error
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - "**/*.g.dart"
+    - lib/l10n/app_localizations*.dart
+
+linter:
+  rules:
+    - avoid_print
+    - prefer_final_locals
+    - unawaited_futures
+
+# Tomo's own rule: no print or debugPrint outside the Log facade (ADR-0004).
+# Plugins can only be switched on here, at the workspace root. Only
+# `dart analyze` shows what it finds: `flutter analyze` returns too early.
+plugins:
+  tomo_lints:
+    path: packages/tomo_lints

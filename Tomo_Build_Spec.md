@@ -1247,8 +1247,10 @@ providers, no codegen, app only) · `drift` ^2.35.2 (core) · `drift_flutter`
 ^0.20.3 + `flutter_localizations` · `path_provider` ^2.1.6 · `share_plus`
 ^13.3.1 · `package_info_plus` ^10.2.2.
 
-Dev: `build_runner` ^2.16.2, `drift_dev` ^2.35.1, `mocktail` ^1.0.5, `crypto`
-^3.0.7, `flutter_test`, the lint packages.
+Dev: `build_runner` ^2.16.1 (C9), `drift_dev` ^2.35.1, `mocktail` ^1.0.5, `crypto`
+^3.0.7, `test`, `flutter_test`, `flutter_lints`. `tomo_lints` alone also asks for
+`analysis_server_plugin`, `analyzer`, `analyzer_testing` and
+`test_reflective_loader`.
 
 **Deliberately absent:** `http`, `flutter_secure_storage` (ADR-0029), `rive`,
 `flutter_svg`, `lottie`, `google_fonts`, any crash/analytics SDK or Firebase,
@@ -1256,14 +1258,18 @@ Dev: `build_runner` ^2.16.2, `drift_dev` ^2.35.1, `mocktail` ^1.0.5, `crypto`
 `flutter_timezone`, `device_info_plus`, `flutter_launcher_icons`,
 `flutter_native_splash`, `sqlite3_flutter_libs` (end of life; current `sqlite3`
 bundles SQLite, including for host tests). A test keeps the resolved set to a
-written allowlist (§16).
+written allowlist, `docs/package-allowlist` (§16). *Absent* means Tomo never
+asks for these and never imports them: `http` and `sqlite3_flutter_libs` are
+still resolved, because packages Tomo does use depend on them (C13).
 
 ### 15.3 Lints
 
-`flutter_lints` (app), `lints/recommended` (core); `strict-casts`,
-`strict-inference`, `strict-raw-types`; `unawaited_futures`, `avoid_print` as an
-error, `prefer_final_locals`; plus **`packages/tomo_lints`**, one rule: no
-`print` or `debugPrint` outside the `Log` facade.
+`flutter_lints`, which includes `lints/recommended`, for the app and both
+packages, from **one `analysis_options.yaml` at the root** (C10);
+`strict-casts`, `strict-inference`, `strict-raw-types`; `unawaited_futures`,
+`avoid_print` as an error, `prefer_final_locals`; plus
+**`packages/tomo_lints`**, one rule, an error: no `print` or `debugPrint`
+outside the `Log` facade.
 
 ### 15.4 Layout — a Dart workspace
 
@@ -1329,9 +1335,11 @@ folders: ADR-0029.)*
 - **No flavors.** Debug and release differ only in the `Log` sinks.
 - **Generated files are committed:** Drift `.g.dart`, `gen_l10n` output,
   `drift_schemas/`, the icon and splash files.
-- **`tool/check`** runs `build_runner`, `gen_l10n`, `flutter analyze` (with
-  `tomo_lints`) and every test in both packages, and fails if any generated file
-  changed. CI is out of scope.
+- **`tool/check`** runs `build_runner`, `gen_l10n`, the analyzer (with
+  `tomo_lints`; `dart analyze --fatal-infos`, C11) and every test in the app and
+  both packages, and fails if any generated file changed or the Flutter on PATH
+  is not the pinned one. It is a Dart script, `tool/check.dart`, behind
+  `tool/check` and `tool/check.cmd` (C12). CI is out of scope.
 - Windows build notes (#53): Gradle 9.3 needs JDK 17+ (`flutter config
   --jdk-dir`); Kotlin incremental compilation fails when the project and the pub
   cache are on different drives.
@@ -1420,6 +1428,18 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C7 | `focus_cycle.task_id` delete action (#10 left it to #11, which didn't name it) | `ON DELETE RESTRICT`, as a backstop. |
 | C8 | Device-only file format | A small JSON file in application-support, excluded from backup. |
 
+**Small calls made while building** (same rule: overrule freely):
+
+| # | Gap | Call |
+|---|---|---|
+| C9 | `build_runner` ^2.16.2 cannot share a lock with `test` on Flutter 3.47.6: it needs `analyzer` 14.3+, and the only `test` that fits Flutter's pinned `test_api` needs `analyzer` below 14 | `build_runner` ^2.16.1. Raise it with the next Flutter upgrade. |
+| C10 | An `analysis_options.yaml` inside a package switches the `tomo_lints` plugin off for that package | One file at the root for everything; a test fails if a nested one appears. `tomo_core` is held to `flutter_lints`, which includes `lints/recommended`. |
+| C11 | On Flutter 3.47.6 `flutter analyze` returns before analyzer plugins report, so it never shows a `tomo_lints` finding | `tool/check` runs `dart analyze --fatal-infos`. Do not trust a bare `flutter analyze`. |
+| C12 | `tool/check` has to run on Windows | A Dart script with two thin wrappers; it also fails if the Flutter on PATH is not the one `.fvmrc` pins. |
+| C13 | `http` (through `timezone` and `package_info_plus`) and `sqlite3_flutter_libs` (through `drift_flutter`) are resolved whatever Tomo asks for | Both are on the allowlist as brought-in packages. The never-online test fails if any pubspec asks for a deliberately absent package or Tomo's own code imports one. |
+| C14 | The project needs an application id before store prep picks the real one | Placeholder `io.github.heichan2000.tomo`. Changing it later makes a fresh install, so settle it before dogfooding a real pet. |
+| C15 | A Windows checkout turned line endings into CRLF, which broke `tool/art` | `.gitattributes` keeps LF everywhere (`.cmd`/`.bat` excepted). |
+
 ---
 
 ## 18. What the builder inherits
@@ -1438,6 +1458,7 @@ The map's *Not yet specified* section is empty. These are known, not unknown:
    `minus`'s approval is [its own comment](https://github.com/heichan2000/Tomo/issues/43#issuecomment-6094789501).
 3. Write the icon/splash generator script and its test.
 4. Write `docs/package-allowlist` (or equivalent) for the never-online test.
+   *(Done: `docs/package-allowlist`, `test/never_online_test.dart`.)*
 
 **Checks only a real phone can answer** (all in `docs/manual-checks.md`):
 - Text and dither **start on whole dots** on a 2.625× Android phone (#35, #38).
