@@ -1049,7 +1049,9 @@ fails if they differ. No launcher-icon or splash packages.
 notifications, the plain-voice lines and the screen-reader runs — is in
 [#51's resolution](https://github.com/heichan2000/Tomo/issues/51#issuecomment-6052038890).**
 Write the ARB file from it with numbers, task and project names as placeholders.
-It is not copied here so it has one home.
+It is not copied here so it has one home. *(Written: `lib/l10n/app_en.arb`. A
+test holds every line to the script's wording, and `lib/voice/pet_voice.dart`
+picks the line.)*
 
 ### 10.3 Lines written at consolidation
 
@@ -1456,6 +1458,11 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C30 | A pet that hatched but was never named (killed on the naming screen) | Its notifications go by its species' name. |
 | C31 | The diagnostic log's byte ceiling, file and shape were not fixed | `diagnostics.log` in application-support: one JSON line per entry, at most 200 entries and 512 KiB, the oldest dropped first, a stack trace kept to its first 30 frames. *Share diagnostics* gets it rendered as plain text. Device facts (app version and build, OS version, device class, locale) are stamped on each entry. |
 | C32 | Debug builds and Flutter's own error report | In debug, an error Flutter caught is still printed by Flutter's own console report (with its message), as well as recorded. Release prints nothing. |
+| C33 | The script's key `break` is a word Dart keeps for itself | The copy file calls it `onBreak` (and `onBreakChattyToday`). |
+| C34 | The script shows each line with sample numbers; other numbers need "1 block", "1 hour", "1 minute" | Only the noun changes with the number. No other word of an approved line is touched. Five cases where that is not enough are with the user in [#85](https://github.com/heichan2000/Tomo/issues/85). |
+| C35 | When a Chatty detail "isn't true" | Block done: the task's first block. Level-up and evolution: under one (or two) whole hours focused. Task done: no focus time (and for Lily, one block). Break and break over: nothing finished yet today. |
+| C36 | How Geode says numbers above one hundred | American style, no "and": "one hundred twenty", "four hundred twenty-five". |
+| C37 | Screen labels that are not in the script (buttons, tab names, Stats row labels) | Not typed in here: the approved prototypes are private to the owner. Each screen ticket adds its labels to the copy file. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---

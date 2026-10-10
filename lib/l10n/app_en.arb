@@ -3,5 +3,729 @@
   "appName": "Tomo",
   "@appName": {
     "description": "The app's name, as the phone's app switcher shows it."
+  },
+  "speciesName": "{species, select, geode{Geode} joe{Joe} lily{Lily} other{}}",
+  "@speciesName": {
+    "description": "A species' name.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      }
+    }
+  },
+  "blockDone": "{species, select, geode{{minutesWords} minutes. They stay.} joe{{minutes} of {minutes} minutes. Counted!} lily{You stayed with it the whole way, didn't you?} other{}}",
+  "@blockDone": {
+    "description": "Pet voice. A focus block was credited.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "blockDoneChattyTaskTotal": "{species, select, geode{{minutesWords} minutes. {taskMinutesWords} on {task} now, all of it in me.} joe{{minutes} of {minutes} minutes. Counted! Block {taskBlocks} on {task}.} lily{You stayed with it the whole way, didn't you? That's {taskBlocks} blocks you've given {task}.} other{}}",
+  "@blockDoneChattyTaskTotal": {
+    "description": "Pet voice, Chatty. Block done, when this task has 2 or more blocks.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      },
+      "taskMinutesWords": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "taskBlocks": {
+        "type": "int"
+      }
+    }
+  },
+  "levelUp": "{species, select, geode{Level {levelWords}. Another hour in me.} joe{Level {level}! Up from {levelBefore}.} lily{Level {level}. You did that, you know?} other{}}",
+  "@levelUp": {
+    "description": "Pet voice. The pet reached a level.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "level": {
+        "type": "int"
+      },
+      "levelWords": {
+        "type": "String"
+      },
+      "levelBefore": {
+        "type": "int"
+      }
+    }
+  },
+  "levelUpChattyTotalTime": "{species, select, geode{Level {levelWords}. {hoursWords} {hours, plural, =1{hour} other{hours}} in me now, layer on layer.} joe{Level {level}! Up from {levelBefore}. {totalMinutes} minutes of focus, all counted.} lily{Level {level}. That's {hours} {hours, plural, =1{hour} other{hours}} you've focused. Can you believe it?} other{}}",
+  "@levelUpChattyTotalTime": {
+    "description": "Pet voice, Chatty. Level-up, with the total time focused.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "level": {
+        "type": "int"
+      },
+      "levelWords": {
+        "type": "String"
+      },
+      "levelBefore": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "hoursWords": {
+        "type": "String"
+      },
+      "totalMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "evolution": "{species, select, geode{I am bigger. All of me is still here.} joe{Stage {stage} of 4!} lily{Look at me! You did this, didn't you?} other{}}",
+  "@evolution": {
+    "description": "Pet voice. The pet changed stage.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "int"
+      }
+    }
+  },
+  "evolutionChattyTotalTime": "{species, select, geode{I am bigger. {hoursWords} hours, and this is what they make. All of me is still here.} joe{Stage {stage} of 4! Folded from {hours} hours of focus.} lily{Look at me! {hours} hours of your focus did this, didn't they?} other{}}",
+  "@evolutionChattyTotalTime": {
+    "description": "Pet voice, Chatty. Evolution, with the total time focused.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "hoursWords": {
+        "type": "String"
+      }
+    }
+  },
+  "taskDone": "{species, select, geode{{task} is done. It stays done.} joe{Done: {task}!} lily{You finished {task}. Feels good, doesn't it?} other{}}",
+  "@taskDone": {
+    "description": "Pet voice. A task was marked done.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "taskDoneChattyTaskTotal": "{species, select, geode{{task} is done. {taskMinutesWords} minutes are in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes.} lily{You finished {task}, all {taskBlocks} blocks of it. Feels good, doesn't it?} other{}}",
+  "@taskDoneChattyTaskTotal": {
+    "description": "Pet voice, Chatty. Task done, when the task has focus time.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "taskBlocks": {
+        "type": "int"
+      },
+      "taskMinutes": {
+        "type": "int"
+      },
+      "taskMinutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "onBreak": "{species, select, geode{A break. Everything is still here.} joe{Break: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You're resting. Nice, isn't it?} other{}}",
+  "@onBreak": {
+    "description": "Pet voice. A break is running. (The script calls this key \"break\", a word Dart keeps for itself.)",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "breakMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "onBreakChattyToday": "{species, select, geode{A break. {todayMinutesWords} minutes today, and everything is still here.} joe{Break: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} done today.} lily{You're resting after {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} today. Nice, isn't it?} other{}}",
+  "@onBreakChattyToday": {
+    "description": "Pet voice, Chatty. On a break, with what was finished today.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "breakMinutes": {
+        "type": "int"
+      },
+      "todayBlocks": {
+        "type": "int"
+      },
+      "todayMinutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "breakOver": "{species, select, geode{The break is whole. I am here.} joe{Break done: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You're back. A bit rested now, aren't you?} other{}}",
+  "@breakOver": {
+    "description": "Pet voice. The break has ended.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "breakMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "breakOverChattyToday": "{species, select, geode{The break is whole. {todayMinutesWords} minutes today, and I am here.} joe{Break done: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} so far today.} lily{You're back, with {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} behind you today. A bit rested now, aren't you?} other{}}",
+  "@breakOverChattyToday": {
+    "description": "Pet voice, Chatty. Break over, with what was finished today.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "breakMinutes": {
+        "type": "int"
+      },
+      "todayBlocks": {
+        "type": "int"
+      },
+      "todayMinutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "hatch": "{species, select, geode{{minutesWords} minutes. I am made of them.} joe{Hello! 1 block, {minutes} minutes, 1 me.} lily{Oh! It was you, wasn't it?} other{}}",
+  "@hatch": {
+    "description": "Pet voice. The hatch line, after the first finished block.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "hatchChattyFirstBlock": "{species, select, geode{{minutesWords} minutes of {task}. I am made of them.} joe{Hello! 1 block, {minutes} minutes on {task}, 1 me. First of everything!} lily{Oh! It was you, wasn't it? {minutes} minutes on {task}, and here I am.} other{}}",
+  "@hatchChattyFirstBlock": {
+    "description": "Pet voice, Chatty. The hatch line, with the first block's task.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "setup": "{species, select, geode{I am Geode. I keep every minute.} joe{Joe. 1 paper bird. I count.} lily{I'm Lily. I'd like to know you.} other{}}",
+  "@setup": {
+    "description": "Pet voice. A pet's description on onboarding's first screen.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      }
+    }
+  },
+  "setupChatty": "{species, select, geode{I am Geode. I keep every minute of focus, layer on layer, and I like to say so.} joe{I'm Joe! 1 paper bird who counts every block and every minute, out loud.} lily{I'm Lily! I notice every block you finish, and I tell you about it. You don't mind, do you?} other{}}",
+  "@setupChatty": {
+    "description": "Pet voice, Chatty. The description when Chatty is selected.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      }
+    }
+  },
+  "egg": "{species, select, geode{I am in here. A finished focus block opens me.} joe{1 egg. 1 focus block to hatch.} lily{I hatch when you finish a focus block. Shall we?} other{}}",
+  "@egg": {
+    "description": "Pet voice. The egg's line on Home.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      }
+    }
+  },
+  "awayNote": "{species, select, geode{{time}: the block is whole, with no one watching. {minutesWords} minutes, counted.} joe{Finished at {time}. {minutes} of {minutes} minutes, counted.} lily{Your block finished at {time} while you were away. All {minutes} minutes count.} other{}}",
+  "@awayNote": {
+    "description": "Pet voice. A block finished while the user was away. {time} is a time of day as this phone writes it.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "countdown": "{species, select, geode{The next block begins in {secondsWords}.} joe{Next block in {seconds}.} lily{Your next block starts in {seconds}. Ready?} other{}}",
+  "@countdown": {
+    "description": "Pet voice. The auto-start countdown, in seconds.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      },
+      "secondsWords": {
+        "type": "String"
+      }
+    }
+  },
+  "estimate": "{species, select, geode{Every planned block is here.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}.} lily{That's all {estimate} {estimate, plural, =1{block} other{blocks}} you planned for it.} other{}}",
+  "@estimate": {
+    "description": "Pet voice. The estimate card's fact line.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "estimate": {
+        "type": "int"
+      }
+    }
+  },
+  "notifTitleEgg": "Your egg",
+  "@notifTitleEgg": {
+    "description": "A notification's title before the hatch."
+  },
+  "notifBlockDone": "{species, select, geode{{minutesWords} minutes of {task}. They are counted.} joe{{task}: {minutes} of {minutes} minutes, counted.} lily{You gave {task} {minutes} minutes. Every one of them counted.} other{}}",
+  "@notifBlockDone": {
+    "description": "Notification body. A focus block ended.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBlockDoneBreakBegun": "{species, select, geode{{minutesWords} minutes of {task}, counted. The break is here.} joe{{task}: {minutes} of {minutes} minutes, counted. Break started: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You gave {task} {minutes} minutes, and they all counted. Your break has begun.} other{}}",
+  "@notifBlockDoneBreakBegun": {
+    "description": "Notification body. A focus block ended and auto-start began the break.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      },
+      "breakMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "notifBreakOver": "{species, select, geode{The break is whole. I am here.} joe{Break finished: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{Your break is over. Did you stretch? Either way, it was yours.} other{}}",
+  "@notifBreakOver": {
+    "description": "Notification body. A break ended.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "breakMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "notifFirstBlock": "{species, select, geode{{minutesWords} minutes of {task}, counted. My shell is cracking.} joe{{task}: {minutes} of {minutes} minutes, counted. My shell: 5 cracks.} lily{You gave {task} {minutes} minutes, and my shell is cracking. Who's in here, I wonder?} other{}}",
+  "@notifFirstBlock": {
+    "description": "Notification body. The first block ended, before the hatch.",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minutesWords": {
+        "type": "String"
+      }
+    }
+  },
+  "notifHiddenBlock": "A focus block counted.",
+  "@notifHiddenBlock": {
+    "description": "Notification body on Android when content is hidden: a block."
+  },
+  "notifHiddenBreak": "A break finished.",
+  "@notifHiddenBreak": {
+    "description": "Notification body on Android when content is hidden: a break."
+  },
+  "notifPreviewsOff": "Something you started has finished.",
+  "@notifPreviewsOff": {
+    "description": "Notification body on iOS when previews are off."
+  },
+  "pickTitle": "Choose your pet",
+  "@pickTitle": {
+    "description": "Plain voice. Onboarding 1, title."
+  },
+  "pickLine": "You keep this one. It hatches from an egg when you finish your first focus block.",
+  "@pickLine": {
+    "description": "Plain voice. Onboarding 1, line."
+  },
+  "persLabel": "Personality",
+  "@persLabel": {
+    "description": "Plain voice. Onboarding 1, personality label."
+  },
+  "persHint": "How much your pet says. You can change it in Settings.",
+  "@persHint": {
+    "description": "Plain voice. Onboarding 1, under Quiet / Chatty."
+  },
+  "taskTitle": "What are you working on?",
+  "@taskTitle": {
+    "description": "Plain voice. Onboarding 2, title."
+  },
+  "taskLine": "One line is enough. It becomes your first task.",
+  "@taskLine": {
+    "description": "Plain voice. Onboarding 2, line."
+  },
+  "permFrame": "When a block ends, Tomo can tell you, even with the app closed. Your phone will ask first.",
+  "@permFrame": {
+    "description": "Plain voice. Focus, before the phone asks about notifications."
+  },
+  "permDenied": "Notifications are off, so Tomo can't tell you when a block ends. Your blocks still count. The bell at the top opens your phone's settings.",
+  "@permDenied": {
+    "description": "Plain voice. Focus, once, after notifications are turned down."
+  },
+  "autoNote": "Break started on its own. Auto-start is on (change it in Settings).",
+  "@autoNote": {
+    "description": "Plain voice. Focus, the note when auto-start began the break."
+  },
+  "clock": "Your phone's clock moved back during a block, so that block couldn't count. Everything you finished before is safe.",
+  "@clock": {
+    "description": "Plain voice. Home, the clock notice."
+  },
+  "stopTitle": "Stop this block?",
+  "@stopTitle": {
+    "description": "Plain voice. Stop early sheet, title."
+  },
+  "stopBody": "Only finished blocks count, so this one won't. Everything you've finished before stays.",
+  "@stopBody": {
+    "description": "Plain voice. Stop early sheet, body."
+  },
+  "delTaskTitle": "Delete this task?",
+  "@delTaskTitle": {
+    "description": "Plain voice. Delete task sheet, title."
+  },
+  "delTask": "\"{task}\" and its notes go for good. The {minutes} minutes you focused on it stay in your stats.",
+  "@delTask": {
+    "description": "Plain voice. Delete task sheet, with focus time.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "delTaskNone": "\"{task}\" and its notes go for good. It has no focus time, so your stats don't change.",
+  "@delTaskNone": {
+    "description": "Plain voice. Delete task sheet, no focus time.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "delProjTitle": "Delete \"{project}\"?",
+  "@delProjTitle": {
+    "description": "Plain voice. Delete project sheet, title.",
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "delProj": "{count, plural, =1{Its 1 task goes with it, for good.} other{Its {count} tasks go with it, for good.}} The {duration} you focused on them stays in your stats.",
+  "@delProj": {
+    "description": "Plain voice. Delete project sheet, with tasks. {duration} is written as on Stats (\"6 h 40 min\").",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "delProjNone": "It has no tasks, so nothing else changes.",
+  "@delProjNone": {
+    "description": "Plain voice. Delete project sheet, no tasks."
+  },
+  "lockTask": "A block is running on this task. Stop it or let it finish first.",
+  "@lockTask": {
+    "description": "Plain voice. Task lock, under the ring, Done or Delete."
+  },
+  "lockProject": "A block is running on a task in this project. Stop it or let it finish first.",
+  "@lockProject": {
+    "description": "Plain voice. Task lock, under Delete project."
+  },
+  "emptyProjectsTitle": "No projects yet",
+  "@emptyProjectsTitle": {
+    "description": "Plain voice. Work, no projects, title."
+  },
+  "emptyProjects": "A project holds the tasks for one piece of work, like a thesis or a move.",
+  "@emptyProjects": {
+    "description": "Plain voice. Work, no projects, line."
+  },
+  "emptyProjectTitle": "Nothing in {project} yet",
+  "@emptyProjectTitle": {
+    "description": "Plain voice. Empty project, title.",
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "emptyProject": "Add the first task. You can focus on it from here or from Home.",
+  "@emptyProject": {
+    "description": "Plain voice. Empty project, line."
+  },
+  "allDone": "Everything in {project} is done.",
+  "@allDone": {
+    "description": "Plain voice. Project, everything done.",
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "doneTask": "To focus on this again, set it back to To do.",
+  "@doneTask": {
+    "description": "Plain voice. Task detail, a done task."
+  },
+  "otherRunning": "A block is running on \"{task}\". Stop it or let it finish first.",
+  "@otherRunning": {
+    "description": "Plain voice. Task detail, another task's block running.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "about": "Tomo never connects to the internet. Your pet and tasks are kept in your phone's own backup. Moving between iPhone and Android doesn't bring them across.",
+  "@about": {
+    "description": "Plain voice. Settings > About."
+  },
+  "aboutOs": "Your phone may send crash reports to Apple or Google if its settings allow it. Tomo never sees them.",
+  "@aboutOs": {
+    "description": "Plain voice. Settings > About, crash reports."
+  },
+  "shareDiag": "A list of errors, with no tasks, names or notes in it. You choose where it goes.",
+  "@shareDiag": {
+    "description": "Plain voice. Settings > About, under Share diagnostics."
+  },
+  "error": "Something went wrong here. If it keeps happening, Settings > About > Share diagnostics makes a report you can send.",
+  "@error": {
+    "description": "Plain voice. Error block (any screen)."
+  },
+  "customTitle": "Custom length",
+  "@customTitle": {
+    "description": "Plain voice. Custom sheet, title."
+  },
+  "customFocus": "Focus",
+  "@customFocus": {
+    "description": "Plain voice. Custom sheet, focus stepper."
+  },
+  "customBreak": "Break",
+  "@customBreak": {
+    "description": "Plain voice. Custom sheet, break stepper."
+  },
+  "customUse": "Use these",
+  "@customUse": {
+    "description": "Plain voice. Custom sheet, button."
+  },
+  "customChip": "Custom · {minutes} min",
+  "@customChip": {
+    "description": "Plain voice. Length chip, while a custom pair is chosen.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "startAnotherTask": "Start another task",
+  "@startAnotherTask": {
+    "description": "Plain voice. Choice after a finished block or break."
+  },
+  "srPet": "{name}, level {level}. {exp} of 600 EXP toward level {nextLevel}. Stage {stage} of 4.",
+  "@srPet": {
+    "description": "Screen reader. The pet, read when touched.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "level": {
+        "type": "int"
+      },
+      "exp": {
+        "type": "int"
+      },
+      "nextLevel": {
+        "type": "int"
+      },
+      "stage": {
+        "type": "int"
+      }
+    }
+  },
+  "srEgg": "{speciesName} egg. It hatches when you finish a focus block.",
+  "@srEgg": {
+    "description": "Screen reader. The egg, read when touched.",
+    "placeholders": {
+      "speciesName": {
+        "type": "String"
+      }
+    }
+  },
+  "srClock": "About {minutes} {minutes, plural, =1{minute} other{minutes}} left on {task}.",
+  "@srClock": {
+    "description": "Screen reader. The quiet clock, read when touched.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "srRunBlock": "Block done: {minutes} minutes on {task}.",
+  "@srRunBlock": {
+    "description": "Screen reader. A run: the block.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "srRunTask": "Task done: {task}.",
+  "@srRunTask": {
+    "description": "Screen reader. A run: the task done.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "srRunHatch": "Your egg hatched.",
+  "@srRunHatch": {
+    "description": "Screen reader. A run: the hatch."
+  },
+  "srRunGained": "{name} gained {exp} EXP.",
+  "@srRunGained": {
+    "description": "Screen reader. A run: what was gained.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "exp": {
+        "type": "int"
+      }
+    }
+  },
+  "srRunGainedLevel": "{name} gained {exp} EXP and reached level {level}.",
+  "@srRunGainedLevel": {
+    "description": "Screen reader. A run: what was gained, with a level reached.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "exp": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "srRunGainedLevelStage": "{name} gained {exp} EXP, reached level {level} and grew to stage {stage} of 4.",
+  "@srRunGainedLevelStage": {
+    "description": "Screen reader. A run: what was gained, with a level and a stage reached.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "exp": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      },
+      "stage": {
+        "type": "int"
+      }
+    }
+  },
+  "srRunPetLine": "{name}: {line}",
+  "@srRunPetLine": {
+    "description": "Screen reader. A run: the pet's name and its shown line.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "line": {
+        "type": "String"
+      }
+    }
   }
 }
