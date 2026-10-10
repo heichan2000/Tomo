@@ -25,7 +25,7 @@ void main() {
 
       final entry = sink.entries.single;
       expect(entry.code, DiagnosticCode.appStarted);
-      expect(entry.level, DiagnosticLevel.info);
+      expect(entry.level, EntryLevel.info);
       expect(entry.at, noon);
       expect(entry.errorType, isNull);
       expect(entry.stackTrace, isNull);
@@ -40,7 +40,7 @@ void main() {
       ).error(DiagnosticCode.unanticipated, StateError('boom'), stack);
 
       final entry = sink.entries.single;
-      expect(entry.level, DiagnosticLevel.error);
+      expect(entry.level, EntryLevel.error);
       expect(entry.errorType, 'StateError');
       expect(entry.stackTrace, same(stack));
     });

@@ -30,7 +30,14 @@ const lily = SpeciesArt(
   // Her head, tuft and ears ride together: breathing sinks them a pixel, and
   // leaning slides her ears whole, two pixels. Her ears twitch; nothing extra lifts
   // on the jump (#42).
-  paintOrder: [Part.body, Part.head, Part.accent, Part.limbA, Part.limbB, Part.eyes],
+  paintOrder: [
+    Part.body,
+    Part.head,
+    Part.accent,
+    Part.limbA,
+    Part.limbB,
+    Part.eyes,
+  ],
   ridesWithHead: {Part.head, Part.eyes, Part.limbA, Part.limbB, Part.accent},
   leansWhole: {Part.limbA, Part.limbB},
   twitches: {Part.limbA, Part.limbB},
@@ -1542,25 +1549,40 @@ const lily = SpeciesArt(
       approvedIn: 'https://github.com/heichan2000/Tomo/issues/47#issuecomment-5986103311',
     ),
     faces: {
-      EyeShape.resting: Eye((x: 0, y: 0), r'''
+      EyeShape.resting: Eye(
+        (x: 0, y: 0),
+        r'''
 E
 E
-'''),
-      EyeShape.blink: Eye((x: 0, y: 0), r'''
+''',
+      ),
+      EyeShape.blink: Eye(
+        (x: 0, y: 0),
+        r'''
 .
 E
-'''),
-      EyeShape.pleased: Eye((x: -1, y: 0), r'''
+''',
+      ),
+      EyeShape.pleased: Eye(
+        (x: -1, y: 0),
+        r'''
 .E.
 E.E
-'''),
-      EyeShape.drowsy: Eye((x: 0, y: 0), r'''
+''',
+      ),
+      EyeShape.drowsy: Eye(
+        (x: 0, y: 0),
+        r'''
 S
 E
-'''),
-      EyeShape.puzzled: Eye((x: 0, y: 0), r'''
+''',
+      ),
+      EyeShape.puzzled: Eye(
+        (x: 0, y: 0),
+        r'''
 E
-'''),
+''',
+      ),
     },
   ),
 );

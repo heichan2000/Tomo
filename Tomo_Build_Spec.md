@@ -1454,6 +1454,8 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C28 | The egg between a block's end and its settle | It holds its last crack picture. |
 | C29 | Under auto-start, with Tomo closed, nothing settles the block, so the row has no `break_start_at` when *Break complete* should fire | The schedule treats the break as beginning at `end_at` ahead of time, and announces its end at `end_at + break_minutes`. |
 | C30 | A pet that hatched but was never named (killed on the naming screen) | Its notifications go by its species' name. |
+| C31 | The diagnostic log's byte ceiling, file and shape were not fixed | `diagnostics.log` in application-support: one JSON line per entry, at most 200 entries and 512 KiB, the oldest dropped first, a stack trace kept to its first 30 frames. *Share diagnostics* gets it rendered as plain text. Device facts (app version and build, OS version, device class, locale) are stamped on each entry. |
+| C32 | Debug builds and Flutter's own error report | In debug, an error Flutter caught is still printed by Flutter's own console report (with its message), as well as recorded. Release prints nothing. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---

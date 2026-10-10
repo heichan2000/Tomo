@@ -30,7 +30,14 @@ const geode = SpeciesArt(
   // The head is the upper mass and carries the crystals (the crown at stage 4), so
   // the lean and the breath move them together. The crystal twitches, and lifts a
   // pixel on the jump.
-  paintOrder: [Part.body, Part.limbA, Part.limbB, Part.head, Part.accent, Part.eyes],
+  paintOrder: [
+    Part.body,
+    Part.limbA,
+    Part.limbB,
+    Part.head,
+    Part.accent,
+    Part.eyes,
+  ],
   ridesWithHead: {Part.head, Part.eyes, Part.accent},
   twitches: {Part.accent},
   liftsOnJump: {Part.accent},
@@ -1496,31 +1503,46 @@ const geode = SpeciesArt(
       approvedIn: 'https://github.com/heichan2000/Tomo/issues/47#issuecomment-5986103311',
     ),
     faces: {
-      EyeShape.resting: Eye((x: -1, y: 0), r'''
+      EyeShape.resting: Eye(
+        (x: -1, y: 0),
+        r'''
 .EE.
 .EE.
 .EE.
-'''),
-      EyeShape.blink: Eye((x: -1, y: 0), r'''
+''',
+      ),
+      EyeShape.blink: Eye(
+        (x: -1, y: 0),
+        r'''
 ....
 ....
 .EE.
-'''),
-      EyeShape.pleased: Eye((x: -1, y: 0), r'''
+''',
+      ),
+      EyeShape.pleased: Eye(
+        (x: -1, y: 0),
+        r'''
 ....
 .EE.
 E..E
-'''),
-      EyeShape.drowsy: Eye((x: -1, y: 0), r'''
+''',
+      ),
+      EyeShape.drowsy: Eye(
+        (x: -1, y: 0),
+        r'''
 .SS.
 .EE.
 .EE.
-'''),
-      EyeShape.puzzled: Eye((x: -1, y: 0), r'''
+''',
+      ),
+      EyeShape.puzzled: Eye(
+        (x: -1, y: 0),
+        r'''
 ....
 .EE.
 .EE.
-'''),
+''',
+      ),
     },
   ),
 );
