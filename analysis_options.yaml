@@ -16,6 +16,8 @@ analyzer:
     - android/**
     - ios/**
     - "**/*.g.dart"
+    # drift_dev's schema snapshots as code, for the migration tests.
+    - "**/test/data/*/generated/**"
     - lib/l10n/app_localizations*.dart
 
 linter:

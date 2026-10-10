@@ -422,7 +422,7 @@ Indices `local_date`, `task_id`.
 
 | column | type | notes |
 |---|---|---|
-| `id` | int PK | |
+| `id` | int PK, default 1 | not auto-incremented (C18) |
 | `task_id` | int not null, FK `tasks` ON DELETE RESTRICT | the service always ends the cycle before a delete (§5.4); RESTRICT is the backstop |
 | `start_at`, `end_at` | int not null | anchors |
 | `focus_minutes`, `break_minutes` | int not null | |
@@ -439,7 +439,7 @@ write a diagnostic entry, leave the file untouched.
 
 One `openTomoDatabase(QueryExecutor)` builds the database for production and
 tests (`NativeDatabase.memory()`), so `beforeOpen` and migrations are the same
-code. The clock is injected.
+code. The clock is injected, and `start()` reports a failed open (C19).
 
 ### 6.3 Key-value store
 
@@ -1441,6 +1441,8 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C14 | The project needs an application id before store prep picks the real one | Placeholder `io.github.heichan2000.tomo`. Changing it later makes a fresh install, so settle it before dogfooding a real pet. |
 | C15 | A Windows checkout turned line endings into CRLF, which broke `tool/art` | `.gitattributes` keeps LF everywhere (`.cmd`/`.bat` excepted). |
 | C16 | "The database" in the Android backup rules: SQLite can leave recent writes in a side file | The rules name `tomo.sqlite`, `tomo.sqlite-wal` and `tomo.sqlite-journal`, plus `FlutterSharedPreferences.xml`. So the database file must be called `tomo.sqlite`, and the six settings must go through the plugin's shared-preferences backend, not its DataStore one. |
+| C18 | The id convention is `AUTOINCREMENT`, but `focus_cycle` has `CHECK (id = 1)`: an auto-incremented second cycle would get id 2 and be refused | `focus_cycle.id` is a plain primary key that defaults to 1. |
+| C19 | How "a failed migration never wipes" reaches the screen | `TomoDatabase.start()` opens the file at start-up and returns `ready` or `failed`. On `failed` the file is untouched (every migration step runs in one transaction; a file from a newer Tomo is refused outright), a `storageStartFailed` diagnostic entry is written, and the caller shows the error block. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---

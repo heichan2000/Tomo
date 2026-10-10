@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # For `dart run drift_dev make-migrations` (spec §6.2): one schema
+          # snapshot per released version, and the upgrade tests made from them.
+          databases:
+            tomo: lib/data/tomo_database.dart
+          schema_dir: drift_schemas/
+          test_dir: test/data/
