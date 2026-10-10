@@ -76,7 +76,7 @@ void main() {
 
         final entry = sink.entries.single;
         expect(entry.code, DiagnosticCode.storageStartFailed);
-        expect(entry.level, DiagnosticLevel.error);
+        expect(entry.level, EntryLevel.error);
         expect(entry.errorType, 'DatabaseNewerThanApp');
 
         expect(file.readAsBytesSync(), before);

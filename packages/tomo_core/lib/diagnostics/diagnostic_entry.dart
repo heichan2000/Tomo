@@ -16,13 +16,19 @@ enum DiagnosticCode {
   /// Finishing onboarding failed and was rolled back (spec §8.2).
   onboardingWriteFailed,
 
+  /// An error Flutter caught while building, laying out or painting.
+  uncaughtFlutterError,
+
+  /// An error nothing caught, outside Flutter's own callbacks.
+  uncaughtPlatformError,
+
   /// An error no other code names: something Tomo did not see coming.
   unanticipated,
 }
 
 /// How much an entry matters. Only [error] entries are kept in the diagnostic
 /// log; the rest are console logging.
-enum DiagnosticLevel { info, error }
+enum EntryLevel { info, error }
 
 /// One record the `Log` facade can emit, and the only thing it can emit
 /// (ADR-0004, spec §13).
@@ -33,7 +39,7 @@ enum DiagnosticLevel { info, error }
 /// contributes its type name and its stack trace, nothing else.
 final class DiagnosticEntry {
   final DiagnosticCode code;
-  final DiagnosticLevel level;
+  final EntryLevel level;
 
   /// The moment it happened, in UTC.
   final DateTime at;
@@ -45,7 +51,7 @@ final class DiagnosticEntry {
   final StackTrace? stackTrace;
 
   DiagnosticEntry.info(this.code, {required DateTime at})
-    : level = DiagnosticLevel.info,
+    : level = EntryLevel.info,
       at = at.toUtc(),
       errorType = null,
       stackTrace = null;
@@ -57,7 +63,7 @@ final class DiagnosticEntry {
     Object error,
     StackTrace this.stackTrace, {
     required DateTime at,
-  }) : level = DiagnosticLevel.error,
+  }) : level = EntryLevel.error,
        at = at.toUtc(),
        errorType = error.runtimeType.toString();
 }
