@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tomo's adaptive icon (spec §9.7): the Tomo egg on the warm grey, plus the
+     one-colour layer for themed icons. The pictures and the colour are made
+     by `dart run tool/app_icon.dart`. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/tomo_icon_grey" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>

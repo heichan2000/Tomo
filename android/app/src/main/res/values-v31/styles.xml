@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+'s system splash screen, Dark Mode off (spec §9.7): the
+         egg (240 dp, egg pixels 4 dp) inside the system's 160 dp circle of
+         the icon grey, on the theme's ground. Removed when the Flutter engine
+         draws its first frame. -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@color/tomo_ground</item>
+        <item name="android:windowSplashScreenBackground">@color/tomo_ground</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_egg</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/tomo_icon_grey</item>
+    </style>
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@color/tomo_ground</item>
+    </style>
+</resources>

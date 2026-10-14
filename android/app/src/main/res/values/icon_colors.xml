@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Made by `dart run tool/app_icon.dart`. Edit the generator, not this. -->
+<resources>
+    <!-- The icon's background layer and the splash circle (spec §9.7). -->
+    <color name="tomo_icon_grey">#4A443C</color>
+    <!-- The theme's ground, behind the splash circle and the app. -->
+    <color name="tomo_ground">#F5F1EA</color>
+</resources>
