@@ -1,9 +1,11 @@
-// Reads a species' art from its Dart file, fingerprints each drawing and checks
-// it (ADR-0020). The Dart side of the model is lib/art/pixel_art.dart; the
-// fingerprint rule is written out in its library doc, and this computes it.
+// Reads the art from its Dart files, fingerprints each drawing and checks it
+// (ADR-0020): a species' art, and the icons, sparkle and Tomo egg. The Dart side
+// of the model is packages/tomo_core/lib/art/pixel_art.dart; the fingerprint
+// rule is written out in its library doc, and this computes it.
 
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { N, PARTS, SHAPES, compose, eyeLayer, gaps, newHoles, slivers } from './pose.mjs';
 
 // ---------- the Dart subset the species files are written in ----------
@@ -102,6 +104,14 @@ const rowsOf = g => {
 const partName = v => v.replace(/^Part\./, '');
 const markOf = c => c.name === 'Approved' ? { fingerprint: c.named.fingerprint, approvedIn: c.named.approvedIn } : null;
 
+// The value of `const [Type] <name> = ...` in a Dart file, parsed.
+function readConst(path, name) {
+  const src = readFileSync(path, 'utf8');
+  const m = new RegExp(`\\bconst\\s+(?:[\\w<>, ]+\\s+)?${name}\\s*=\\s*`).exec(src);
+  if (!m) throw new SyntaxError(`${path}: no \`const ${name} =\``);
+  return parse(tokens(src.slice(m.index + m[0].length)));
+}
+
 /// The `const <id> = SpeciesArt(...)` in a species file, as plain data.
 export function readSpecies(path) {
   const src = readFileSync(path, 'utf8');
@@ -185,6 +195,79 @@ export function drawings(sp) {
     ...sp.stages.map((st, i) => one(`${sp.id}.stage${i + 1}`, `Stage ${i + 1}`, st.mark, stageText(sp, i))),
     one(`${sp.id}.eyes`, 'Eye sheet', sp.eyeSheet.mark, eyesText(sp)),
   ];
+}
+
+// ---------- the icons, the sparkle and the Tomo egg ----------
+
+export const ICON = 12, TOMO_EGG = 36;
+export const ICON_PAINTS = { '#': 'icon' };
+export const SPARKLE_PAINTS = { '#': 'arms', o: 'centre', x: 'centre' };
+
+/// The icons, sparkle and Tomo egg from their Dart files in `dir`, as plain data.
+export function readKit(dir) {
+  const icons = [...readConst(join(dir, 'icons.dart'), 'icons')].map(([k, c]) => ({
+    name: k.replace(/^IconName\./, ''), mark: markOf(c.named.mark), rows: rowsOf(c.named.grid),
+  }));
+  const sp = readConst(join(dir, 'sparkle.dart'), 'sparkle').named;
+  const egg = readConst(join(dir, 'tomo_egg.dart'), 'tomoEgg').named;
+  const colours = {};
+  for (const [k, v] of egg.colours) colours[k] = '#' + (v & 0xffffff).toString(16).padStart(6, '0');
+  return {
+    icons,
+    sparkle: { mark: markOf(sp.mark), frames: sp.frames.map(rowsOf) },
+    tomoEgg: { mark: markOf(egg.mark), colours, rows: rowsOf(egg.grid) },
+  };
+}
+
+function paintLines(paints, grids) {
+  const used = new Set();
+  for (const g of grids) for (const r of g) for (const c of r) if (c !== '.') used.add(c);
+  return [...used].sort().map(c => `paint ${c} ${paints[c] ?? '?'}`);
+}
+export const iconText = ic =>
+  ['tomo-art 1', `drawing icon.${ic.name}`, ...paintLines(ICON_PAINTS, [ic.rows]), 'grid icon', ...ic.rows];
+export function sparkleText(s) {
+  const lines = ['tomo-art 1', 'drawing sparkle', ...paintLines(SPARKLE_PAINTS, s.frames)];
+  s.frames.forEach((f, k) => lines.push(`grid frame${k + 1}`, ...f));
+  return lines;
+}
+export const tomoEggText = e =>
+  ['tomo-art 1', 'drawing tomo.egg', ...colourLines({ id: 'tomo', colours: e.colours }, [e.rows]), 'grid whole', ...e.rows];
+
+/// Every drawing that isn't a pet's, with its fingerprint and status.
+export function kitDrawings(kit) {
+  const one = (id, label, mark, lines) => {
+    const fingerprint = digest(lines);
+    return { id, label, mark, fingerprint, status: !mark ? 'draft' : mark.fingerprint === fingerprint ? 'approved' : 'changed' };
+  };
+  return [
+    ...kit.icons.map(ic => one(`icon.${ic.name}`, ic.name, ic.mark, iconText(ic))),
+    one('sparkle', 'Sparkle', kit.sparkle.mark, sparkleText(kit.sparkle)),
+    one('tomo.egg', 'Tomo egg', kit.tomoEgg.mark, tomoEggText(kit.tomoEgg)),
+  ];
+}
+
+/// [ok, text] lines for the kit page and the console.
+export function kitChecks(kit) {
+  const out = [];
+  const add = (ok, good, bad) => out.push([ok, ok ? good : bad]);
+  const square = (rows, n) => rows.length === n && rows.every(r => r.length === n);
+
+  const badIcons = kit.icons.filter(ic => !square(ic.rows, ICON) || /[^#.]/.test(ic.rows.join(''))).map(ic => ic.name);
+  add(!badIcons.length, `All ${kit.icons.length} icons are ${ICON}×${ICON} and use only # and .`, `Not ${ICON}×${ICON} or stray characters: ${badIcons.join(', ')}.`);
+
+  const fr = kit.sparkle.frames;
+  const badFrames = fr.map((f, k) => square(f, 2 * k + 1) && !/[^#ox.]/.test(f.join('')) ? 0 : k + 1).filter(Boolean);
+  add(fr.length === 4 && !badFrames.length, 'The sparkle has four frames, 1, 3, 5 and 7 wide, using only #, o, x and .',
+    `Sparkle frames wrong: ${fr.length} frames${badFrames.length ? `; frame ${badFrames.join(', ')} misshapen` : ''}.`);
+  const centred = fr.every((f, k) => f[k][k] !== '.');
+  add(centred, 'Every sparkle frame is lit at its middle pixel.', 'A sparkle frame is clear at its middle pixel.');
+
+  const e = kit.tomoEgg;
+  const stray = new Set([...e.rows.join('')].filter(c => c !== '.' && !e.colours[c]));
+  add(square(e.rows, TOMO_EGG) && !stray.size, `The Tomo egg is ${TOMO_EGG}×${TOMO_EGG} and uses only its key.`,
+    `The Tomo egg is not ${TOMO_EGG}×${TOMO_EGG}, or uses ${[...stray].join('')}.`);
+  return out;
 }
 
 // ---------- checks ----------

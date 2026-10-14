@@ -181,7 +181,7 @@ Tomo is **pixel art**, pets and chrome alike, in a light theme and a true-black 
 
 ### 9.1 The art — text grids in the code
 
-All pixel art is **text grids in Dart source**: one character per pixel, `.` for clear, plus a colour key ([ADR-0020](docs/adr/0020-pixel-art-as-text-grids-in-code.md)). That covers the pets, their eggs and eye sheets, the reward sparkles, the 12×12 interface icons and the *Tomo egg* on the app icon. The model is `lib/art/pixel_art.dart`; each species is one file in `lib/art/pets/`.
+All pixel art is **text grids in Dart source**: one character per pixel, `.` for clear, plus a colour key ([ADR-0020](docs/adr/0020-pixel-art-as-text-grids-in-code.md)). That covers the pets, their eggs and eye sheets, the reward sparkles, the 12×12 interface icons and the *Tomo egg* on the app icon. The model is `packages/tomo_core/lib/art/pixel_art.dart`; each species is one file in `pets/` beside it, and the icons, sparkle and Tomo egg are `icons.dart`, `sparkle.dart` and `tomo_egg.dart`.
 
 - **Claude draws, the user approves.** There is no pixel editor and no image generator. The user says what to change; Claude edits the grid.
 - **Each drawing is a draft or approved.** An approval holds a fingerprint (SHA-256) of the exact pixels and colours. One art test fails a release build if any drawing is missing, a draft, or changed since approval.

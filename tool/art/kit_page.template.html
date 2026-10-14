@@ -1,0 +1,288 @@
+<title>Tomo Kit Art Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: the pet review page's system. A marks table, then one section per kind of drawing, always on both real grounds. */
+  :root {
+    --bg: #ecebe6; --panel: #f7f6f2; --ink: #1f1d1a; --muted: #5e5952; --hair: #d4cfc6;
+    --sel: #1f1d1a; --sel-ink: #f7f6f2;
+    --draft: #9a5b12; --ok: #2f7a4a; --bad: #b0352a;
+    --light-ground: #F5F1EA; --dark-ground: #000000; --light-ink: #24211D; --dark-ink: #EDE7DC;
+    --display: "Pixelify Sans", "Courier New", monospace;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e0d0c; --panel: #171614; --ink: #e9e4da; --muted: #9c958a; --hair: #2b2825;
+      --sel: #e9e4da; --sel-ink: #0e0d0c; --draft: #e0a65a; --ok: #8fd6a4; --bad: #ff8a7a; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e0d0c; --panel: #171614; --ink: #e9e4da; --muted: #9c958a; --hair: #2b2825;
+    --sel: #e9e4da; --sel-ink: #0e0d0c; --draft: #e0a65a; --ok: #8fd6a4; --bad: #ff8a7a; color-scheme: dark;
+  }
+  html, body { background: var(--bg); color: var(--ink); }
+  body { font: 15px/1.55 var(--sans); padding-inline: 18px; padding-block: 32px 72px; }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 44px; }
+  header { display: grid; gap: 10px; max-width: 72ch; }
+  .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  h1 { font: 600 clamp(30px, 5vw, 46px)/1.04 var(--display); margin: 0; text-wrap: balance; }
+  h2 { font: 600 23px/1.15 var(--display); margin: 0; text-wrap: balance; }
+  h3 { font: 500 11px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0; }
+  p { margin: 0; }
+  .lede, .section-head p { color: var(--muted); }
+  .lede strong, .section-head strong { color: var(--ink); font-weight: 600; }
+  code { font: 13px var(--mono); }
+  a { color: inherit; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-start; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--hair); }
+  .ctl { display: grid; gap: 5px; min-width: 0; }
+  .ctl > span { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--hair); padding: 3px; gap: 3px; background: var(--panel); }
+  .seg button { font: 500 13px/1 var(--mono); color: var(--muted); background: transparent; border: 0; padding: 8px 10px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--sel); color: var(--sel-ink); }
+  .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  @media (max-width: 760px) { .controls { position: static; } }
+
+  .section { display: grid; gap: 16px; }
+  .section-head { display: grid; gap: 6px; max-width: 74ch; }
+  .chip { font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 5px 7px; border: 1px solid currentColor; white-space: nowrap; }
+  .chip.draft { color: var(--draft); } .chip.approved { color: var(--ok); } .chip.changed { color: var(--bad); }
+
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 760px) { .pair { grid-template-columns: 1fr; } }
+  .ground { padding: 16px 14px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .ground.light { background: var(--light-ground); color: var(--light-ink); }
+  .ground.dark { background: var(--dark-ground); color: var(--dark-ink); }
+  .ground .cap { font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+  canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; }
+
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 14px 8px; }
+  .icons figure, .row figure { margin: 0; display: grid; gap: 6px; justify-items: center; align-content: start; }
+  .icons figcaption, .row figcaption { font: 11px/1.25 var(--mono); opacity: .8; text-align: center; overflow-wrap: anywhere; }
+  .icons .sizes { display: flex; gap: 8px; align-items: flex-end; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: flex-end; }
+  .on-accent { padding: 10px; }
+
+  .sparkle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 0; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--hair); background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; font: 13px/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--hair); white-space: nowrap; vertical-align: top; }
+  thead th { font-weight: 500; color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .checks { display: grid; gap: 6px; font: 13px/1.5 var(--mono); }
+  .checks .ok { color: var(--ok); } .checks .bad { color: var(--bad); }
+  footer { font: 12px/1.6 var(--mono); color: var(--muted); border-top: 1px solid var(--hair); padding-top: 14px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Review page · generated from the code</span>
+    <h1>Icons, sparkle and the Tomo egg</h1>
+    <p class="lede">These drawings were approved in their own tickets and have now moved into the code, <strong>pixel for pixel</strong>. Moving them gave each one a new fingerprint, so this is the one look to confirm they're unchanged. The pets have their own page.</p>
+  </header>
+
+  <section class="controls" aria-label="Switches">
+    <div class="ctl"><span>Sparkle motion</span><div class="seg" role="group" aria-label="Sparkle motion" id="ctl-play"></div></div>
+    <div class="ctl"><span>Speed</span><div class="seg" role="group" aria-label="Speed" id="ctl-speed"></div></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-marks">
+    <div class="section-head">
+      <h2 id="h-marks">Drawings and marks</h2>
+      <p>A drawing is approved only while its fingerprint matches the one in the code. Changing any pixel or colour turns it back into a draft.</p>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Drawing</th><th>Mark</th><th>Fingerprint</th><th>Approved in</th></tr></thead>
+      <tbody id="marks"></tbody>
+    </table></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-icons">
+    <div class="section-head">
+      <h2 id="h-icons">The 20 icons</h2>
+      <p>Each icon is drawn in the colour it gets on screen: ink, the filled tabs and <code>doing</code> in the accent, and <code>done</code> in muted. Each is shown zoomed and at about real size (12×12, one UI pixel per icon pixel). The accent below is Geode's; the next row shows every accent.</p>
+    </div>
+    <div class="pair"><div class="ground light" id="icons-light"></div><div class="ground dark" id="icons-dark"></div></div>
+    <div class="section-head"><h3>In every accent</h3><p>The selected tabs and <code>doing</code>, for each pet and before the hatch. On an accent fill, <code>next</code> and <code>up</code> are drawn on-accent: white in light, black in dark.</p></div>
+    <div class="pair"><div class="ground light" id="accent-light"></div><div class="ground dark" id="accent-dark"></div></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-sparkle">
+    <div class="section-head">
+      <h2 id="h-sparkle">The sparkle</h2>
+      <p>Four frames, drawn in pet pixels. The arms take the theme's accent and the centre a lighter colour of the same pet, as in ADR-0019. Each frame is shown zoomed, then each size plays at Focus size, 70 ms a frame: <strong>small</strong> 1 2 2 1, <strong>medium</strong> 1 2 3 3 2 1, <strong>large</strong> 1 2 3 4 4 3 2 1.</p>
+    </div>
+    <div class="sparkle-grid" id="sparkles"></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-egg">
+    <div class="section-head">
+      <h2 id="h-egg">The Tomo egg</h2>
+      <p>The 36×36 app icon grid on the icon's warm grey background (<code>#4A443C</code>), zoomed and at launcher size. The icon and splash files will all be generated from this one grid.</p>
+    </div>
+    <div class="pair"><div class="ground light" id="egg-light"></div><div class="ground dark" id="egg-dark"></div></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-checks">
+    <div class="section-head"><h2 id="h-checks">Checks</h2></div>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const DATA = /*{{DATA}}*/null;
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+// Chrome and accents from Tomo_Build_Spec.md §9.1; sparkle centres from ADR-0019.
+const THEME = {
+  light: { ink: '#24211D', muted: '#6A6359', onAccent: '#FFFFFF' },
+  dark: { ink: '#EDE7DC', muted: '#A39B8F', onAccent: '#000000' },
+};
+const PETS = [
+  { id: 'geode', name: 'Geode', light: ['#3a6470', '#6ee0c6'], dark: ['#6ee0c6', '#b6f0e2'] },
+  { id: 'joe', name: 'Joe', light: ['#4a57b8', '#6f7ed8'], dark: ['#6f7ed8', '#fdf6ea'] },
+  { id: 'lily', name: 'Lily', light: ['#4a2a44', '#c89ab3'], dark: ['#c89ab3', '#f2e7da'] },
+  { id: 'egg', name: 'Before hatch', light: ['#4A443C', '#c4af8c'], dark: ['#EDE7DC', '#e9dcc3'] },
+];
+const ACCENT_ICONS = new Set(['homeF', 'workClipF', 'doing']);
+const MUTED_ICONS = new Set(['done']);
+
+const state = { play: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'pause' : 'play', speed: '1' };
+
+function paint(rows, scale, colourOf, bg) {
+  const h = rows.length, w = rows[0].length, c = el('canvas');
+  c.width = w * scale; c.height = h * scale;
+  const ctx = c.getContext('2d');
+  if (bg) { ctx.fillStyle = bg; ctx.fillRect(0, 0, c.width, c.height); }
+  rows.forEach((r, y) => [...r].forEach((ch, x) => {
+    if (ch === '.') return;
+    ctx.fillStyle = colourOf(ch); ctx.fillRect(x * scale, y * scale, scale, scale);
+  }));
+  return c;
+}
+function figure(children, caption) {
+  const f = el('figure'); children.forEach(ch => f.append(ch));
+  if (caption) f.append(el('figcaption', null, caption));
+  return f;
+}
+function seg(id, key, options, onChange) {
+  const host = $(id);
+  for (const [val, label] of options) {
+    const b = el('button', null, label); b.type = 'button';
+    b.setAttribute('aria-pressed', String(state[key] === val));
+    b.addEventListener('click', () => { state[key] = val; host.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); onChange(); });
+    host.append(b);
+  }
+}
+
+// ---------- marks ----------
+const byId = Object.fromEntries(DATA.drawings.map(d => [d.id, d]));
+for (const d of DATA.drawings) {
+  const tr = el('tr');
+  tr.append(el('td', null, d.id));
+  const td = el('td'); td.append(el('span', 'chip ' + d.status, d.status === 'changed' ? 'changed: draft' : d.status)); tr.append(td);
+  tr.append(el('td', null, d.fingerprint));
+  const link = el('td');
+  if (d.mark) { const a = el('a', null, d.mark.approvedIn.replace('https://github.com/heichan2000/Tomo/issues/', '#').replace('#issuecomment-', ' comment ')); a.href = d.mark.approvedIn; a.target = '_blank'; a.rel = 'noopener'; link.append(a); } else link.textContent = '—';
+  tr.append(link);
+  $('marks').append(tr);
+}
+
+// ---------- icons ----------
+for (const theme of ['light', 'dark']) {
+  const t = THEME[theme], accent = PETS[0][theme][0];
+  const grid = el('div', 'icons');
+  for (const ic of DATA.kit.icons) {
+    const colour = ACCENT_ICONS.has(ic.name) ? accent : MUTED_ICONS.has(ic.name) ? t.muted : t.ink;
+    const sizes = el('div', 'sizes');
+    sizes.append(paint(ic.rows, 5, () => colour), paint(ic.rows, 2, () => colour));
+    grid.append(figure([sizes], ic.name + ' · ' + byId['icon.' + ic.name].status));
+  }
+  const host = $('icons-' + theme);
+  host.append(el('span', 'cap', theme === 'light' ? 'Light ground' : 'Black ground'), grid);
+
+  const acc = $('accent-' + theme);
+  acc.append(el('span', 'cap', theme === 'light' ? 'Light ground' : 'Black ground'));
+  for (const pet of PETS) {
+    const row = el('div', 'row'), a = pet[theme][0];
+    row.append(el('span', 'cap', pet.name));
+    for (const n of ['homeF', 'workClipF', 'doing']) {
+      const ic = DATA.kit.icons.find(i => i.name === n);
+      row.append(figure([paint(ic.rows, 4, () => a)], n));
+    }
+    for (const n of ['next', 'up']) {
+      const ic = DATA.kit.icons.find(i => i.name === n);
+      const box = el('div', 'on-accent'); box.style.background = a;
+      box.append(paint(ic.rows, 4, () => t.onAccent));
+      row.append(figure([box], n + ' on accent'));
+    }
+    acc.append(row);
+  }
+}
+
+// ---------- sparkle ----------
+const FRAMES = DATA.kit.sparkle.frames;
+const SEQS = [['Small', [0, 1, 1, 0]], ['Medium', [0, 1, 2, 2, 1, 0]], ['Large', [0, 1, 2, 3, 3, 2, 1, 0]]];
+const players = [];
+// Pad a frame to 7×7 so every step of a sequence sits on the same middle pixel.
+const padded = f => { const n = f.length, p = (7 - n) / 2, blank = '.'.repeat(7); return [...Array(p).fill(blank), ...f.map(r => '.'.repeat(p) + r + '.'.repeat(p)), ...Array(p).fill(blank)]; };
+for (const pet of PETS) for (const theme of ['light', 'dark']) {
+  const [arms, centre] = pet[theme];
+  const colourOf = ch => ch === '#' ? arms : centre;
+  const g = el('div', 'ground ' + theme);
+  g.append(el('span', 'cap', `${pet.name} · ${theme}`));
+  const frames = el('div', 'row');
+  FRAMES.forEach((f, k) => frames.append(figure([paint(padded(f), 8, colourOf)], 'frame ' + (k + 1))));
+  g.append(frames);
+  const plays = el('div', 'row');
+  for (const [name, seq] of SEQS) {
+    const c = paint(padded(FRAMES[0]), 4, colourOf);
+    players.push({ c, seq, colourOf });
+    plays.append(figure([c], name));
+  }
+  g.append(plays);
+  $('sparkles').append(g);
+}
+function drawStep(p, step) {
+  const ctx = p.c.getContext('2d'), s = 4;
+  ctx.clearRect(0, 0, p.c.width, p.c.height);
+  const k = p.seq[step];
+  if (k == null) return;
+  padded(FRAMES[k]).forEach((r, y) => [...r].forEach((ch, x) => { if (ch !== '.') { ctx.fillStyle = p.colourOf(ch); ctx.fillRect(x * s, y * s, s, s); } }));
+}
+let t0 = performance.now();
+function tick(now) {
+  const ms = 70 / Number(state.speed);
+  for (const p of players) {
+    if (state.play === 'pause') { drawStep(p, p.seq.indexOf(Math.max(...p.seq))); continue; }
+    const cycle = p.seq.length + 6;   // a short rest between plays
+    drawStep(p, Math.floor((now - t0) / ms) % cycle);
+  }
+  requestAnimationFrame(tick);
+}
+seg('ctl-play', 'play', [['play', 'Play'], ['pause', 'Hold largest']], () => { t0 = performance.now(); });
+seg('ctl-speed', 'speed', [['1', '1×'], ['0.25', '¼×']], () => { t0 = performance.now(); });
+requestAnimationFrame(tick);
+
+// ---------- Tomo egg ----------
+const E = DATA.kit.tomoEgg, eggColour = ch => E.colours[ch];
+for (const theme of ['light', 'dark']) {
+  const host = $('egg-' + theme);
+  host.append(el('span', 'cap', theme === 'light' ? 'Light ground' : 'Black ground'));
+  const row = el('div', 'row');
+  row.append(figure([paint(E.rows, 8, eggColour, '#4A443C')], 'Zoomed, 8 per pixel'));
+  row.append(figure([paint(E.rows, 2, eggColour, '#4A443C')], 'About launcher size'));
+  host.append(row);
+}
+
+// ---------- checks ----------
+for (const [ok, text] of DATA.checks) $('checks').append(el('div', ok ? 'ok' : 'bad', (ok ? 'ok   ' : 'LOOK ') + text));
+$('footer').textContent = `Built ${DATA.built} UTC by node tool/art/review_page.mjs from packages/tomo_core/lib/art/.`;
+</script>

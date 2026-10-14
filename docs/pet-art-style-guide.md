@@ -17,7 +17,8 @@ Three starters ship — **Geode**, **Joe**, **Lily** — and the user picks one 
 setup, forever. They are three characters in **one art direction**, not three
 art directions. Everything below is shared unless a section says otherwise.
 
-The art itself is in `lib/art/pets/geode.dart`, `joe.dart` and `lily.dart`.
+The art itself is in `packages/tomo_core/lib/art/pets/geode.dart`, `joe.dart`
+and `lily.dart`.
 Every drawing there is approved; this guide describes them, it does not
 replace them.
 

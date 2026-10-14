@@ -478,7 +478,7 @@ Three starters, **Geode** (a rock that grows crystals, then a crown), **Joe** (a
 paper chick that refolds) and **Lily** (a creature that stands up). The full
 arc, colours, parts, faces, eggs and voices are in
 [`docs/pet-art-style-guide.md`](docs/pet-art-style-guide.md); the approved art
-is the code in `lib/art/` (moving to `packages/tomo_core/lib/art/`, §15.4).
+is the code in `packages/tomo_core/lib/art/` (§15.4).
 
 - One **48×48 pet grid** per species for every stage and the egg, standing on
   the same bottom row. Stage 1 is the Tomo Pixel Starters sprite (with two
@@ -999,10 +999,12 @@ art test refuses drafts.)*
   makes it a draft.
 - **One art test fails a release build** if any drawing is missing, a draft, or
   doesn't match its fingerprint.
-- **Status today:** all 18 pet drawings are approved in code. **The icons
-  (#43), the sparkle (#39) and the Tomo egg (#44) are approved but still live as
-  grids in their ticket comments**; moving them into the code is an early build
-  step (§18).
+- **Status today:** all 40 drawings are approved in code: the 18 pet
+  drawings, the 20 icons (`icons.dart`), the sparkle (`sparkle.dart`) and the
+  Tomo egg (`tomo_egg.dart`). The art test is
+  `packages/tomo_core/test/art/art_test.dart`; `drawings.dart` lists every
+  drawing it checks. The review tool writes two pages, `pets.html` and
+  `kit.html` (icons, sparkle, Tomo egg).
 
 ### 9.7 App icon and splash
 
@@ -1463,6 +1465,9 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C35 | When a Chatty detail "isn't true" | Block done: the task's first block. Level-up and evolution: under one (or two) whole hours focused. Task done: no focus time (and for Lily, one block). Break and break over: nothing finished yet today. |
 | C36 | How Geode says numbers above one hundred | American style, no "and": "one hundred twenty", "four hundred twenty-five". |
 | C37 | Screen labels that are not in the script (buttons, tab names, Stats row labels) | Not typed in here: the approved prototypes are private to the owner. Each screen ticket adds its labels to the copy file. |
+| C38 | Icons and the sparkle are coloured at run time, so they have no colour key for the fingerprint | They fingerprint `paint <char> <role>` lines instead (icon `#` = `icon`; sparkle `#` = `arms`, `o` and `x` = `centre`). The Tomo egg has its own colour key. Ids are `icon.<name>`, `sparkle` and `tomo.egg`. Written out in `pixel_art.dart`. |
+| C39 | The approved sparkle draws its centre with two characters, `o` and `x`, that are the same colour | Both kept exactly as drawn; both are the centre colour. |
+| C40 | Where the sparkle's colours (ADR-0019's table) and the app icon's `#4A443C` background live | Not in the art. The sparkle is coloured where it is drawn (*Reward effects*); the background belongs to the icon generator. The kit review page copies both from the spec for display only. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---
@@ -1473,7 +1478,7 @@ The map's *Not yet specified* section is empty. These are known, not unknown:
 
 **First steps (in order):**
 1. Move `lib/art/` to `packages/tomo_core/lib/art/` and update
-   `tool/art/review_page.mjs`'s paths.
+   `tool/art/review_page.mjs`'s paths. *(Done.)*
 2. Move the approved grids that still live in tickets into the code under the
    same model: the icon set ([#43](https://github.com/heichan2000/Tomo/issues/43)),
    the sparkle ([#39](https://github.com/heichan2000/Tomo/issues/39)) and the
@@ -1481,6 +1486,7 @@ The map's *Not yet specified* section is empty. These are known, not unknown:
    don't change, so each can be marked approved pointing at its ticket comment,
    but the fingerprint is new — show them on a generated review page once.
    `minus`'s approval is [its own comment](https://github.com/heichan2000/Tomo/issues/43#issuecomment-6094789501).
+   *(Done, with the art test: [#58](https://github.com/heichan2000/Tomo/issues/58).)*
 3. Write the icon/splash generator script and its test.
 4. Write `docs/package-allowlist` (or equivalent) for the never-online test.
    *(Done: `docs/package-allowlist`, `test/never_online_test.dart`.)*

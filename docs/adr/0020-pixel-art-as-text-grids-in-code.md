@@ -109,7 +109,9 @@ fingerprint and review tool. They are now one:
 
 - **Folder.** All pixel art lives under `lib/art/`: the model in
   `lib/art/pixel_art.dart`, one file per species in `lib/art/pets/`. The icons,
-  sparkles and Tomo egg join it there.
+  sparkles and Tomo egg join it there. *(Since moved, with the icons, sparkle and
+  Tomo egg, to `packages/tomo_core/lib/art/` by ADR-0027 and
+  [#58](https://github.com/heichan2000/Tomo/issues/58).)*
 - **Model.** A species file holds its colour key, egg, four stages (six parts,
   eye spots, lean step, optional breath row) and eye sheet (five faces, each a
   small grid plus an offset; Thinking and Still are rules, not drawings). The
