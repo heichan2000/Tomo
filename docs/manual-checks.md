@@ -64,15 +64,22 @@ Tick each box on both phones, and note the phone and date at the bottom.
 
 ## Pixels on a real screen (first release, then when the kit changes)
 
-A debug build opens on the **pixel check** screen (spec §17 C48) until the app
-shell exists: the type steps at any text size, every pet and egg at every spot,
-the dither and both haptics. A screenshot from the phone (`adb exec-out
-screencap -p`) is at the phone's own resolution, so its dots can be counted.
+A debug build opens on the **kit gallery** (spec §17 C51) until the app shell
+exists: every part of the kit in every state, in either theme, any accent and
+any text size. Its *Pixel check screen* button opens the **pixel check** (C48):
+the type steps, every pet and egg at every spot, the dither and both haptics. A
+screenshot from the phone (`adb exec-out screencap -p`) is at the phone's own
+resolution, so its dots can be counted.
 
 - [ ] On a **2.625× Android phone**, text and the dither behind sheets start on
       whole dots: no grey dither, no soft text edges
       ([Pixel fonts](https://github.com/heichan2000/Tomo/issues/35),
       [Pixel interface kit](https://github.com/heichan2000/Tomo/issues/38)).
+- [ ] On the kit gallery, light and dark, 100% and 200% text, every box, line
+      and corner starts and ends on whole dots: no faint seams, no grey edges.
+      Every dot of a screenshot below the status bar is exactly one of the
+      kit's colours ([Pixel kit](https://github.com/heichan2000/Tomo/issues/69),
+      spec §17 C55).
 - [ ] The pet's pixels are all the same size and sharp at every spot (Home,
       Focus, setup tiles, hatch).
 - [ ] Android haptics work without a manifest permission

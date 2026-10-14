@@ -93,22 +93,60 @@ class RenderInDots extends RenderProxyBox {
   Matrix4 get _shrink =>
       Matrix4.diagonal3Values(1 / _devicePixelRatio, 1 / _devicePixelRatio, 1);
 
-  @override
-  void performLayout() {
+  BoxConstraints _inDots(BoxConstraints c) {
     final dpr = _devicePixelRatio;
-    final c = constraints;
-    BoxConstraints inDots(BoxConstraints c) => BoxConstraints(
+    return BoxConstraints(
       minWidth: c.minWidth * dpr,
       maxWidth: c.maxWidth * dpr,
       minHeight: c.minHeight * dpr,
       maxHeight: c.maxHeight * dpr,
     );
+  }
+
+  @override
+  void performLayout() {
+    final c = constraints;
     if (child == null) {
       size = c.smallest;
       return;
     }
-    child!.layout(inDots(c), parentUsesSize: true);
-    size = c.constrain(child!.size / dpr);
+    child!.layout(_inDots(c), parentUsesSize: true);
+    size = c.constrain(child!.size / _devicePixelRatio);
+  }
+
+  // Asked from outside in points, answered inside in dots.
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) => child == null
+      ? constraints.smallest
+      : constraints.constrain(
+          child!.getDryLayout(_inDots(constraints)) / _devicePixelRatio,
+        );
+
+  @override
+  double computeMinIntrinsicWidth(double height) =>
+      (child?.getMinIntrinsicWidth(height * _devicePixelRatio) ?? 0) /
+      _devicePixelRatio;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) =>
+      (child?.getMaxIntrinsicWidth(height * _devicePixelRatio) ?? 0) /
+      _devicePixelRatio;
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      (child?.getMinIntrinsicHeight(width * _devicePixelRatio) ?? 0) /
+      _devicePixelRatio;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) =>
+      (child?.getMaxIntrinsicHeight(width * _devicePixelRatio) ?? 0) /
+      _devicePixelRatio;
+
+  @override
+  double? computeDistanceToActualBaseline(TextBaseline baseline) {
+    final distance = child?.getDistanceToActualBaseline(baseline);
+    return distance == null ? null : distance / _devicePixelRatio;
   }
 
   @override

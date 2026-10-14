@@ -915,6 +915,12 @@ key** (never a new colour):
 shape, word and list position. Contrast: 4.5:1 text, 3:1 large text and UI parts,
 **per theme** (computed test, §16). Pet art is exempt and judged by eye.
 
+The values live in `packages/tomo_core/lib/look/palette.dart` (`Palette`), the
+accent read from each pet's colour key; the contrast test is
+`packages/tomo_core/test/look/palette_test.dart`. The app reads them through
+`TomoTheme` (`lib/ui/tomo_theme.dart`), set above the navigator by `TomoLook`
+(`lib/app/tomo_look.dart`).
+
 ### 9.2 Type
 
 [ADR-0016](docs/adr/0016-one-pixel-font-sharp-sizes.md). **One font: Ark Pixel
@@ -957,6 +963,15 @@ font; Pixeloid Sans is the fallback font if Ark fails on a device.
   full; the finished banner wraps; rows and fields wrap and the screen scrolls.
 - **Status glyphs** (10×10 on the icon grid): to-do empty ink ring; doing accent
   ring, left half filled; done filled muted with the check cut out.
+
+**Built** in [Pixel kit](https://github.com/heichan2000/Tomo/issues/69), in
+`lib/ui/`: `PixelBox` (every box, its corners, outline and focus ring, painted
+on whole dots), `PixelButton` / `PixelIconButton` and their shared `Pressable`,
+`PixelTextField`, `PixelSegmented`, `PixelSwitch` / `PixelSwitchRow`, `ExpBar`,
+`PixelRow`, `PixelChip`, `PixelIcon` / `StatusGlyph`, `showPixelSheet`,
+`PixelPageRoute` and the motion tiers in `motion.dart`. Every part in every
+state is on the **kit gallery** (`lib/ui/kit_gallery_screen.dart`, debug only,
+C51). Approved by the user on the emulator in both themes. Its calls: C52–C58.
 
 ### 9.4 Motion tiers
 
@@ -1289,7 +1304,7 @@ tomo/
 ├─ pubspec.yaml               ← the app; declares the workspace
 ├─ lib/                       ← Flutter app, feature-first
 │  ├─ main.dart
-│  ├─ app/                    ← routes, 2-tab shell, two ThemeData, startup, wide-screen column
+│  ├─ app/                    ← routes, 2-tab shell, the look (theme, sharp text), startup, wide-screen column
 │  ├─ ui/                     ← pixel kit: grid painting, icons, buttons, sheets, text sizing
 │  ├─ home/ focus/ work/ stats/ settings/ onboarding/
 │  ├─ pet/                    ← painting the pet, movements, sparkles
@@ -1302,6 +1317,7 @@ tomo/
 │  │  ├─ lib/ focus/ rewards/ pet/ tasks/ notifications/ stats/ diagnostics/
 │  │  │       data/ (the Drift database, tables, migrations)
 │  │  │       art/  (pixel_art.dart, pets/, icons, sparkles, Tomo egg)
+│  │  │       look/ (palette.dart: the colours and their contrast)
 │  │  │       testing/ (exported as package:tomo_core/testing.dart)
 │  │  ├─ drift_schemas/
 │  │  └─ test/
@@ -1480,9 +1496,17 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C45 | Which build of Ark Pixel to bundle: the research measured the OTF | The **TTF** build, subset to the same Latin range (49 KB, not ~27). On the real phone the OTF's outlines get nudged up and down by the phone's font engine, leaving edges about 4% soft even on whole dots; the TTF's come out exact. Measured on [#60](https://github.com/heichan2000/Tomo/issues/60). |
 | C46 | Laid out in points, text starts on a whole dot but its letters don't stay on whole dots: at 2.8125× the letters right of mid-screen land a quarter dot off, and the renderer adds its own slight smear | **All text is laid out in screen dots**: `PixelText` sets the font size to `12 × n` dots inside `InDots`, which lays out in dots and draws scaled back down from a whole dot. Measured exact at 2.8125× and 3.75×, light and dark, 100–200% text ([#60](https://github.com/heichan2000/Tomo/issues/60)). Flutter's newer renderer (Impeller) stays on; turning it off is deprecated. |
 | C47 | Text set smaller than the phone's default (below 100%) | Rounds to the nearest whole number of dots per font pixel, never below one, as at 100%. |
-| C48 | Where the real-phone pixel check lives | `lib/ui/pixel_check_screen.dart`: the app's first screen in debug and profile builds until the app shell exists, never in release. A builder's tool, so its words are not in the copy file. It is how *Pixels on a real screen* in `docs/manual-checks.md` is run. |
+| C48 | Where the real-phone pixel check lives | `lib/ui/pixel_check_screen.dart`, a builder's tool, so its words are not in the copy file. It is how *Pixels on a real screen* in `docs/manual-checks.md` is run. Since [#69](https://github.com/heichan2000/Tomo/issues/69) it opens from the kit gallery (C51). Neither is ever in release. |
 | C49 | `flutter_local_notifications` adds `VIBRATE` to the manifest | Accepted: an ordinary permission, never asked of the user. Checked anyway: with it removed, the timer buzz (`vibrate()`) and the reward tap (`lightImpact()`) are both felt ([#60](https://github.com/heichan2000/Tomo/issues/60)). |
 | C50 | Where a pet stage's six parts and its eyes become one picture | `composeStage` in `packages/tomo_core/lib/art/compose.dart`, standing still, the same stacking as `tool/art/pose.mjs`. The pet-on-screen ticket adds the poses. |
+| C51 | Where the kit is shown | The **kit gallery** (`lib/ui/kit_gallery_screen.dart`) is the app's first screen in debug and profile builds until the app shell exists; release opens on the bare ground. Its switches (theme, accent, text size, motion) set `lookOverride`, which `TomoLook` applies above the navigator, so sheets and pushed screens follow them. A builder's tool: its words are not in the copy file. |
+| C52 | Pressing a primary button before the hatch, in dark: its fill is the ink, so "one shade toward ink" changes nothing | It moves one shade toward **muted** instead: slightly greyer. Chosen by the user ([#69](https://github.com/heichan2000/Tomo/issues/69)). The press share is 22%, as on the approved kit. |
+| C53 | The approved kit's segmented options (5 UI pixels above and below a caption) come under the 48 pt target | Each option is **at least 48 pt tall**, padded like a button. Chosen by the user ([#69](https://github.com/heichan2000/Tomo/issues/69)). When the options don't all fit side by side in equal shares, they stack one per row, full width. |
+| C54 | The focus ring's one-pixel gap | **See-through**, not painted in the ground colour, so it looks right on sheets and cards too. Chosen by the user ([#69](https://github.com/heichan2000/Tomo/issues/69)). The ring is painted outside the part, so it never moves the layout. |
+| C55 | Boxes laid out in points land between dots | Layout stays in points; every box moves its start **and** end to the nearest whole dot when it paints (`PixelBox`, `wholeDotRect`). Every length inside is whole UI pixels, so text and boxes agree. Centred and end-aligned text has each line moved to a whole dot. Checked on the emulator (2.625×), light and dark, 100% and 200%: every dot of the gallery is exactly a kit colour. |
+| C56 | The EXP bar's blocks and "every corner loses one pixel" | The blocks keep their corners, as on the approved kit: each is one pixel block. |
+| C57 | The text field's text, caret and selection | Laid out in dots like all text (C46): `EditableText` inside `InDots`, caret one UI pixel wide and one line tall, blinking without a fade; selection a solid pressed-sunken. The selection handles and copy/paste menu are the phone's own. The outline is drawn over the padding, so the text doesn't move when it thickens. |
+| C58 | What the screen does at its edges | No overscroll stretch or glow (they scale or blur the screen); the status bar's icons follow the theme. Both set in `TomoLook` / `TomoScrollBehavior`. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---
@@ -1510,6 +1534,10 @@ The map's *Not yet specified* section is empty. These are known, not unknown:
 **Checks only a real phone can answer** (all in `docs/manual-checks.md`):
 - Text and dither **start on whole dots** on a 2.625× Android phone (#35, #38).
   *(Done on a 2.8125× and a 3.75× phone, [#60](https://github.com/heichan2000/Tomo/issues/60): exact, with C45 and C46.)*
+- Boxes, lines and corners of the kit **start and end on whole dots** on a real
+  phone (#60 passed this to the kit). *(Done on the 2.625× emulator,
+  [#69](https://github.com/heichan2000/Tomo/issues/69), C55; the real phone is
+  in `docs/manual-checks.md`.)*
 - Whether Android's `vibrate()` needs a manifest permission (#22 expects not).
   *(Done: it does not, [#60](https://github.com/heichan2000/Tomo/issues/60); C49.)*
 - iOS release size (unmeasured; needs a Mac) (#53).

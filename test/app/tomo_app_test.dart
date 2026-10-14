@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/tomo_app.dart';
 import 'package:tomo/l10n/app_localizations.dart';
-import 'package:tomo/ui/pixel_check_screen.dart';
+import 'package:tomo/ui/kit_gallery_screen.dart';
 
 void main() {
-  testWidgets('a debug build opens on the pixel check screen', (tester) async {
+  testWidgets('a debug build opens on the kit gallery', (tester) async {
     await tester.pumpWidget(const TomoApp());
     await tester.pumpAndSettle();
 
-    expect(find.byType(PixelCheckScreen), findsOneWidget);
+    expect(find.byType(KitGalleryScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -17,7 +17,7 @@ void main() {
     await tester.pumpWidget(const TomoApp());
     await tester.pumpAndSettle();
 
-    final context = tester.element(find.byType(PixelCheckScreen));
+    final context = tester.element(find.byType(KitGalleryScreen));
     expect(AppLocalizations.of(context).appName, 'Tomo');
     expect(tester.widget<Title>(find.byType(Title)).title, 'Tomo');
   });
