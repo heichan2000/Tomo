@@ -64,6 +64,11 @@ Tick each box on both phones, and note the phone and date at the bottom.
 
 ## Pixels on a real screen (first release, then when the kit changes)
 
+A debug build opens on the **pixel check** screen (spec §17 C48) until the app
+shell exists: the type steps at any text size, every pet and egg at every spot,
+the dither and both haptics. A screenshot from the phone (`adb exec-out
+screencap -p`) is at the phone's own resolution, so its dots can be counted.
+
 - [ ] On a **2.625× Android phone**, text and the dither behind sheets start on
       whole dots: no grey dither, no soft text edges
       ([Pixel fonts](https://github.com/heichan2000/Tomo/issues/35),

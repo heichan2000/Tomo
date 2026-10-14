@@ -40,3 +40,11 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: false
+
+  # Ark Pixel, cut down to Latin (spec §9.2, ADR-0016), and its licence.
+  fonts:
+    - family: ArkPixel
+      fonts:
+        - asset: assets/fonts/ark-pixel-12px-proportional-latin.ttf
+  assets:
+    - assets/fonts/ArkPixel-OFL.txt

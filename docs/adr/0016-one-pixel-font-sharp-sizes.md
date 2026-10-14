@@ -3,6 +3,10 @@
 - **Status:** Accepted
 - **Date:** 2026-09-27
 - **Decided in:** [#35 Pixel fonts](https://github.com/heichan2000/Tomo/issues/35)
+- **Amended by:** [#60 First run on the real phone](https://github.com/heichan2000/Tomo/issues/60)
+  — the font ships as its **TTF** build (49 KB), and all text is laid out in
+  screen dots, not points. Both were needed for text to land exactly on whole
+  dots on a real phone (spec §17 C45, C46). The rules below are unchanged.
 - **Supersedes:** the typography part of [#12 Visual design system](https://github.com/heichan2000/Tomo/issues/12)
   (system body face plus Fredoka display, and tick cells)
 
