@@ -918,8 +918,8 @@ shape, word and list position. Contrast: 4.5:1 text, 3:1 large text and UI parts
 ### 9.2 Type
 
 [ADR-0016](docs/adr/0016-one-pixel-font-sharp-sizes.md). **One font: Ark Pixel
-12px Proportional, regular**, bundled as a ~27 KB Latin subset, never fetched,
-OFL registered in `LicenseRegistry`. Missing characters fall back to the phone's
+12px Proportional, regular**, bundled as a Latin subset of its **TTF** build
+(49 KB, §17 C45), never fetched, OFL registered in `LicenseRegistry`. Missing characters fall back to the phone's
 font; Pixeloid Sans is the fallback font if Ark fails on a device.
 
 - **Sharp sizes only:** `fontSize = 12 × n / devicePixelRatio`; a custom
@@ -930,6 +930,9 @@ font; Pixeloid Sans is the fallback font if Ark fails on a device.
 - **Numbers and the pet's name stop growing at 130%**, then step down to the
   largest sharp size that fits. A time or number never scrolls or wraps.
 - Digits are all 6 font pixels wide, so changing numbers are plain text.
+- **Text is laid out in screen dots, not points** (`PixelText`, §17 C46): the
+  font size is `12 × n` dots, drawn scaled back down from a whole dot. Laid out
+  in points, letters land a fraction of a dot off on the real phone.
 
 ### 9.3 Chrome: quiet steps
 
@@ -1474,6 +1477,12 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C42 | *Liquid Glass off on the egg's layer* needs an Icon Composer file, which only Xcode 26 on a Mac makes and checks | Not written. The generator writes the classic asset catalog (default, dark, tinted 1024 masters), which every Xcode accepts. The Icon Composer file belongs with the iPhone work, like C17. |
 | C43 | Android 8 to 11 have no system splash screen | The launch background draws the same picture from a layer list: the ground, a 160 dp grey circle, the splash egg. On every version the app's window background is the theme's ground, so nothing flashes white before the first frame. |
 | C44 | Where the generator lives and how its test compares | `dart run tool/app_icon.dart`, its rules in `tool/app_icon/` with a small PNG writer of its own. `tool/check` does not run it; `test/tool/app_icon_test.dart` fails if a committed file differs, comparing pictures by pixel, not byte, so a new zlib in a Flutter upgrade can't fail it. The Android colours (`tomo_icon_grey`, `tomo_ground`) and the iPhone `LaunchBackground` colour are generated too. |
+| C45 | Which build of Ark Pixel to bundle: the research measured the OTF | The **TTF** build, subset to the same Latin range (49 KB, not ~27). On the real phone the OTF's outlines get nudged up and down by the phone's font engine, leaving edges about 4% soft even on whole dots; the TTF's come out exact. Measured on [#60](https://github.com/heichan2000/Tomo/issues/60). |
+| C46 | Laid out in points, text starts on a whole dot but its letters don't stay on whole dots: at 2.8125× the letters right of mid-screen land a quarter dot off, and the renderer adds its own slight smear | **All text is laid out in screen dots**: `PixelText` sets the font size to `12 × n` dots inside `InDots`, which lays out in dots and draws scaled back down from a whole dot. Measured exact at 2.8125× and 3.75×, light and dark, 100–200% text ([#60](https://github.com/heichan2000/Tomo/issues/60)). Flutter's newer renderer (Impeller) stays on; turning it off is deprecated. |
+| C47 | Text set smaller than the phone's default (below 100%) | Rounds to the nearest whole number of dots per font pixel, never below one, as at 100%. |
+| C48 | Where the real-phone pixel check lives | `lib/ui/pixel_check_screen.dart`: the app's first screen in debug and profile builds until the app shell exists, never in release. A builder's tool, so its words are not in the copy file. It is how *Pixels on a real screen* in `docs/manual-checks.md` is run. |
+| C49 | `flutter_local_notifications` adds `VIBRATE` to the manifest | Accepted: an ordinary permission, never asked of the user. Checked anyway: with it removed, the timer buzz (`vibrate()`) and the reward tap (`lightImpact()`) are both felt ([#60](https://github.com/heichan2000/Tomo/issues/60)). |
+| C50 | Where a pet stage's six parts and its eyes become one picture | `composeStage` in `packages/tomo_core/lib/art/compose.dart`, standing still, the same stacking as `tool/art/pose.mjs`. The pet-on-screen ticket adds the poses. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
 
 ---
@@ -1500,7 +1509,9 @@ The map's *Not yet specified* section is empty. These are known, not unknown:
 
 **Checks only a real phone can answer** (all in `docs/manual-checks.md`):
 - Text and dither **start on whole dots** on a 2.625× Android phone (#35, #38).
+  *(Done on a 2.8125× and a 3.75× phone, [#60](https://github.com/heichan2000/Tomo/issues/60): exact, with C45 and C46.)*
 - Whether Android's `vibrate()` needs a manifest permission (#22 expects not).
+  *(Done: it does not, [#60](https://github.com/heichan2000/Tomo/issues/60); C49.)*
 - iOS release size (unmeasured; needs a Mac) (#53).
 - Play review accepting `USE_EXACT_ALARM` (fallback pre-decided, #15).
 

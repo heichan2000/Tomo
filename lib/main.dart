@@ -11,6 +11,7 @@ import 'app/error_handlers.dart';
 import 'app/tomo_app.dart';
 import 'platform/device_facts.dart';
 import 'platform/diagnostic_log_file.dart';
+import 'ui/font_licence.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ void main() {
   final log = Log(sinks: [diagnostics, if (kDebugMode) const ConsoleSink()]);
   installErrorHandlers(log);
   log.info(DiagnosticCode.appStarted);
+  registerFontLicence();
 
   runApp(const ProviderScope(child: TomoApp()));
 }
