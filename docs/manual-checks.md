@@ -73,6 +73,15 @@ Tick each box on both phones, and note the phone and date at the bottom.
 - [ ] Android haptics work without a manifest permission
       ([Sound & haptics spec](https://github.com/heichan2000/Tomo/issues/22)).
 
+## App icon and splash ([App icon and splash screen](https://github.com/heichan2000/Tomo/issues/44))
+
+- [ ] The home-screen icon is the Tomo egg on the warm grey, its pixels even
+      and sharp.
+- [ ] Android 13+: with themed icons on, the icon shows the one-colour egg,
+      the eyes still readable through the cut-out crack.
+- [ ] The splash is the egg in a grey circle, on cream in light and on black
+      in dark, with no white flash before the first screen.
+
 ## Run log
 
 | Date | Version | iPhone | Android | By |
