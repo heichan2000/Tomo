@@ -1,11 +1,16 @@
 /// Pixel art as text grids in the code (ADR-0020).
 ///
-/// Every drawing is a text grid, one character per pixel, `.` for clear, read
-/// through its species' colour key. Pet grids are 48×48 (ADR-0014), so a
-/// part's position is simply where its pixels are. A species file
-/// (`pets/geode.dart`, `pets/joe.dart`, `pets/lily.dart`) is the one real copy
-/// of that pet's art; review pages and tests are generated from it
-/// (`node tool/art/review_page.mjs`).
+/// Every drawing is a text grid, one character per pixel, `.` for clear. Pet
+/// grids are 48×48 (ADR-0014), so a part's position is simply where its pixels
+/// are. A species file (`pets/geode.dart`, `pets/joe.dart`, `pets/lily.dart`)
+/// is the one real copy of that pet's art; `icons.dart`, `sparkle.dart` and
+/// `tomo_egg.dart` are the one real copy of the rest. Review pages are
+/// generated from these files (`node tool/art/review_page.mjs`), and
+/// `drawings.dart` lists every drawing for the art test.
+///
+/// Pets and the Tomo egg are read through their own colour key. Icons and the
+/// sparkle are coloured at run time, so their characters name a *paint* (a
+/// role such as "the icon's colour" or "the sparkle's centre") instead.
 ///
 /// Each drawing carries a [Mark]. An [Approved] mark holds the fingerprint of
 /// the exact pixels and colours the user said yes to, and a link to where they
@@ -16,22 +21,28 @@
 /// drawing's canonical text, UTF-8, lines joined by `\n`:
 ///
 /// 1. `tomo-art 1`, then `drawing <id>`, where the id is `<species>.egg`,
-///    `<species>.stage<N>` or `<species>.eyes` (species in lower case);
-/// 2. one `colour <char> #rrggbb` line per character the drawing's grids use,
-///    sorted by character code, lower-case hex, no alpha;
+///    `<species>.stage<N>` or `<species>.eyes` (species in lower case),
+///    `icon.<name>` (an [IconName]), `sparkle` or `tomo.egg`;
+/// 2. for a drawing with a colour key, one `colour <char> #rrggbb` line per
+///    character its grids use, sorted by character code, lower-case hex, no
+///    alpha. For an icon or the sparkle, one `paint <char> <role>` line per
+///    character its grids use, sorted the same way, the role taken from
+///    [IconArt.paints] or [Sparkle.paints];
 /// 3. for a stage, the species' motion settings it was approved with, each a
 ///    list of part names in [Part] order, or `-` when empty: `order` (the
 ///    paint order, as listed), `rides`, `leans-whole`, `twitches`,
 ///    `lifts-on-jump`; then `eye <x> <y>` per eye, `lean <row>` and
-///    `breath <row>` (or `breath -`). For an egg, `stays <chars>` (sorted, or
-///    `-`). Nothing for an eye sheet;
+///    `breath <row>` (or `breath -`). For a species egg, `stays <chars>`
+///    (sorted, or `-`). Nothing for anything else;
 /// 4. its grids, each introduced by a `grid <name>` line and followed by its
-///    rows. A stage's grids are its parts in [Part] order; an egg's are
+///    rows. A stage's grids are its parts in [Part] order; a species egg's are
 ///    `whole`, then `crack1`, `crack2`, …; an eye sheet's are its shapes in
-///    [EyeShape] order, each introduced as `grid <shape> <dx> <dy>`.
+///    [EyeShape] order, each introduced as `grid <shape> <dx> <dy>`. An icon's
+///    one grid is `grid icon`, the sparkle's are `frame1` to `frame4`, and the
+///    Tomo egg's one grid is `grid whole`.
 ///
-/// `tool/art/pixel_art.mjs` computes it today; the release art test must
-/// compute the same.
+/// `drawings.dart` writes the canonical text out and the art test hashes it;
+/// `tool/art/pixel_art.mjs` computes the same for the review page.
 library;
 
 /// A pixel on the 48×48 pet grid, or an offset from one.
@@ -177,6 +188,82 @@ final class EyeSheet {
 
   final Mark mark;
   final Map<EyeShape, Eye> faces;
+}
+
+/// The 20 interface icons that ship (spec §9.5). `homeF` and `workClipF` are
+/// the filled versions for the selected tab; `todo`, `doing` and `done` are
+/// the task status glyphs.
+enum IconName {
+  home,
+  homeF,
+  workClip,
+  workClipF,
+  back,
+  next,
+  up,
+  down,
+  close,
+  plus,
+  minus,
+  more,
+  gear,
+  trash,
+  external,
+  check,
+  bellOff,
+  todo,
+  doing,
+  done,
+}
+
+/// A 12×12 interface icon, one UI pixel per icon pixel (ADR-0017). It has one
+/// colour, chosen where it is drawn: ink, muted, the accent or on-accent.
+final class IconArt {
+  const IconArt({required this.mark, required this.grid});
+
+  /// The size of every icon grid, both ways.
+  static const size = 12;
+
+  /// `#` is the icon's colour.
+  static const paints = {'#': 'icon'};
+
+  final Mark mark;
+  final String grid;
+}
+
+/// The reward sparkle (ADR-0019), drawn in pet pixels. Four frames, each a
+/// square grid centred on the sparkle's middle pixel: 1, 3, 5 and 7 wide.
+/// Its colours depend on the pet and the theme, so they are chosen where it is
+/// drawn: the arms take the theme's accent, the centre a lighter colour of the
+/// same pet.
+final class Sparkle {
+  const Sparkle({required this.mark, required this.frames});
+
+  /// `#` is an arm; `o` and `x` are both the centre colour.
+  static const paints = {'#': 'arms', 'o': 'centre', 'x': 'centre'};
+
+  final Mark mark;
+  final List<String> frames;
+}
+
+/// The Tomo egg: the app icon and the splash picture (spec §9.7). A 36×36 grid
+/// with its own colour key; `.` shows the icon's background.
+final class TomoEgg {
+  const TomoEgg({
+    required this.mark,
+    required this.colours,
+    required this.grid,
+  });
+
+  /// The size of the grid, both ways.
+  static const size = 36;
+
+  final Mark mark;
+
+  /// `0xAARRGGBB`.
+  final Map<String, int> colours;
+
+  final String grid;
 }
 
 /// The rows of a grid literal: the newline after the opening quotes and the
