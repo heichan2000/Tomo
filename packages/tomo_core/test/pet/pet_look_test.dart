@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:tomo_core/art/drawings.dart';
 import 'package:tomo_core/focus/live_cycle.dart';
 import 'package:tomo_core/focus/projection.dart';
 import 'package:tomo_core/pet/beat.dart';
@@ -260,6 +261,14 @@ void main() {
       expect(eggPictureCount(Species.geode), 4);
       expect(eggPictureCount(Species.joe), 6);
       expect(eggPictureCount(Species.lily), 5);
+      // The same as the eggs drawn: whole, then each crack.
+      for (final species in Species.values) {
+        expect(
+          eggPictureCount(species),
+          artOf(species).egg.cracks.length + 1,
+          reason: '$species',
+        );
+      }
     });
 
     test('cracks in equal shares across a running block', () {
@@ -320,6 +329,24 @@ void main() {
         ).picture,
         3,
       );
+    });
+
+    test('wobbles only while it waits, and never under Calm pet', () {
+      expect(egg(state(hatched: false, exp: 0)).mayWobble, isTrue);
+      expect(
+        egg(state(hatched: false, exp: 0, calmPet: true)).mayWobble,
+        isFalse,
+      );
+      for (final focus in FocusState.values.where(
+        (f) => f != FocusState.idle,
+      )) {
+        expect(
+          egg(state(hatched: false, exp: 0, focus: focus, cycle: firstBlock()))
+              .mayWobble,
+          isFalse,
+          reason: '$focus',
+        );
+      }
     });
 
     test('the settle has hatched the pet, but until the hatch beat plays it '
