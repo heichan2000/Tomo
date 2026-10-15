@@ -185,7 +185,10 @@ class _ShellLayoutDelegate extends MultiChildLayoutDelegate {
     final bottom = tabs.height + banner.height;
     positionChild(_Part.tabBar, Offset(0, size.height - tabs.height));
     positionChild(_Part.banner, Offset(0, size.height - bottom));
-    final contentHeight = math.max(0.0, size.height - math.max(bottom, keyboard));
+    final contentHeight = math.max(
+      0.0,
+      size.height - math.max(bottom, keyboard),
+    );
     layoutChild(
       _Part.content,
       BoxConstraints.tightFor(width: size.width, height: contentHeight),

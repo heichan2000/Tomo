@@ -26,9 +26,7 @@ Never _setAtStartUp() =>
 final logProvider = Provider<Log>((ref) => _setAtStartUp());
 
 /// The diagnostic log itself, for Settings → About → *Share diagnostics*.
-final diagnosticLogProvider = Provider<DiagnosticLog>(
-  (ref) => _setAtStartUp(),
-);
+final diagnosticLogProvider = Provider<DiagnosticLog>((ref) => _setAtStartUp());
 
 /// The open database, its start already reported `ready`.
 final databaseProvider = Provider<TomoDatabase>((ref) => _setAtStartUp());
