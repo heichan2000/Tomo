@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/shell.dart';
@@ -71,7 +70,7 @@ void main() {
     );
     expect(
       tester.getSemantics(tile('Joe')),
-      containsSemantics(isSelected: false),
+      isSemantics(isSelected: false),
     );
     expect(find.words('I am Geode. I keep every minute.'), findsOneWidget);
     expect(find.words('Personality'), findsOneWidget);
@@ -89,11 +88,11 @@ void main() {
     await tap(tester, tile('Joe'));
     expect(
       tester.getSemantics(tile('Joe')),
-      containsSemantics(isSelected: true),
+      isSemantics(isSelected: true),
     );
     expect(
       tester.getSemantics(tile('Geode')),
-      containsSemantics(isSelected: false),
+      isSemantics(isSelected: false),
     );
     expect(find.words('Joe. 1 paper bird. I count.'), findsOneWidget);
 
@@ -128,7 +127,7 @@ void main() {
     expect(find.words('Choose your pet'), findsOneWidget);
     expect(
       tester.getSemantics(tile('Lily')),
-      containsSemantics(isSelected: true),
+      isSemantics(isSelected: true),
     );
     expect(find.words('Chatty'), findsOneWidget);
   });

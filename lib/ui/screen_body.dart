@@ -105,9 +105,7 @@ class _RenderContentAndFoot extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _Slot>,
         RenderBoxContainerDefaultsMixin<RenderBox, _Slot> {
-  _RenderContentAndFoot({required double gap, required double minHeight})
-    : _gap = gap,
-      _minHeight = minHeight;
+  _RenderContentAndFoot({required this._gap, required this._minHeight});
 
   double _gap;
   set gap(double value) {

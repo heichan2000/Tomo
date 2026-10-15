@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/error_block.dart';
-import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/app/shell.dart';
 import 'package:tomo/onboarding/onboarding_screens.dart';
 import 'package:tomo/l10n/app_localizations.dart';

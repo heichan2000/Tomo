@@ -729,6 +729,12 @@ transaction** creates the pet row (species, personality, `name` and
 `hatched_at` null), the project, and the task if typed. A kill before that
 restarts onboarding from screen 1.
 
+**Built** in [Onboarding](https://github.com/heichan2000/Tomo/issues/93), in
+`lib/onboarding/onboarding_screens.dart`: `PickPetScreen` pushes
+`FirstTaskScreen`, which calls `Onboarding.complete` and then
+`finishOnboarding`. The skipped project is called **My work**. Screens lay out
+through `ScreenBody` (`lib/ui/screen_body.dart`). Its calls: C73–C77.
+
 ### 8.3 Home
 
 - **Top:** level chip (*Lv 7*, opens Stats) at the left, gear (Settings) at the
@@ -1533,6 +1539,11 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C70 | What the keyboard does to the shell | It covers the banner and the tab bar; the screen above shrinks to meet it, and nothing in the shell moves. The tab bar sits 4 UI pixels above the phone's own buttons or gesture bar, its surface reaching under them. |
 | C71 | Start-up details | The settings are read before the database, so the error block wears the chosen theme. A cycle that can't be brought up to now at start-up also shows the error block. The hatched pet's species is read at start-up, so the first frame has the right accent. Tab names are in the copy file (`tabHome`, `tabWork`). |
 | C72 | Widget tests of the whole app and the database's watched queries | Drift's watched queries never finish on a widget test's pretend clock. Whole-app tests use `pumpTomo` / `testTomo` (`test/app/app_harness.dart`): database work runs on the real clock, and watched streams are replaced (today only `speciesChangesProvider`). Screen tickets that watch the database in widget tests need the same care. |
+| C73 | The project made when *What are you working on?* is skipped | **My work** (`defaultProject`). Chosen by the user ([#93](https://github.com/heichan2000/Tomo/issues/93)). |
+| C74 | *Done* with nothing typed | Turned off until the field holds more than spaces; *Skip* is right under it. The keyboard's Done key finishes only once a line is typed. Chosen by the user ([#93](https://github.com/heichan2000/Tomo/issues/93)). The field takes at most 60 characters (C24). |
+| C75 | The setup tiles' pets | The chosen pet is alive (Resting: breath, blink, idle moves); the other two hold still (Still), as on the approved screen. A tile is one button to a screen reader, named by its pet, with its selected state; the pet itself is not a separate item and doesn't hop on tap. |
+| C76 | Onboarding's write fails | Nothing is written (one transaction), so the screen stays, shows the plain `error` line in a sunken strip under the field, and both buttons try again. |
+| C77 | How a screen fits its buttons and large text | `ScreenBody`: the approved padding (6 top, 12 sides, 10 bottom UI pixels, 6 between parts), the buttons at the foot at least 16 UI pixels below the content, and the whole screen, buttons included, scrolling once it doesn't fit. It keeps clear of the status bar, the gesture bar outside the shell, and the keyboard. Back on Onboarding 2 (and Android back) returns to screen 1 with the choices kept. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
