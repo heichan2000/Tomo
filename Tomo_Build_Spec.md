@@ -558,7 +558,11 @@ Five beat kinds: `blockCredited(minutes, exp)`, `levelUp(level)`,
   an interrupted run replays exactly once. Ending the cycle without returning to
   Focus drops the run with the row; the EXP stays.
 - `taskCompleted` plays only if a pet is on screen (Focus); otherwise it is
-  dropped (marking done on Work is quiet, §8.7).
+  dropped (marking done on Work is quiet, §8.7). **If its bonus reaches a new
+  level or stage, the level-up and the evolution follow it** in the same run
+  (C26).
+- **The first block's run ends on the hatch.** No level-up plays beside it,
+  however long the block was (C25).
 - **One spoken line per run, at its start**: plain facts first, then the pet's
   name and its shown line (§10.4).
 - Each beat fires one **reward tap** as it plays (§11.5).
@@ -1491,8 +1495,8 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C22 | A task with no focus marked done pays a bonus of zero: is its one bonus then used up? | Yes. "Once per task, ever, on the first change into done": the flag is set even when the amount is zero, so reopening it, focusing and finishing again pays no bonus. |
 | C23 | "Recent first" inside a project's status groups was not defined | The latest of a task's creation, last focus and completion. The picker orders by last focus, then creation. |
 | C24 | How long the onboarding line may be, given it names the project and is the first task | The project-name limit, 60. |
-| C25 | Does a level-up play beside the hatch when the first block was 60 minutes or more? | **Built as a default, awaiting the user in [#81](https://github.com/heichan2000/Tomo/issues/81):** no. That block's run is the block beat, then the hatch. |
-| C26 | Does a task bonus that reaches a new level or stage celebrate it? | **Built as a default, awaiting the user in [#81](https://github.com/heichan2000/Tomo/issues/81):** yes, on Focus: *Task done*, then the level-up, then the evolution. |
+| C25 | Does a level-up play beside the hatch when the first block was 60 minutes or more? | **No** (the user, [#81](https://github.com/heichan2000/Tomo/issues/81)). That block's run is the block beat, then the hatch; the level chip simply shows level 2 or 3 when it first appears. |
+| C26 | Does a task bonus that reaches a new level or stage celebrate it? | **Yes** (the user, [#81](https://github.com/heichan2000/Tomo/issues/81)), on Focus: *Task done*, then the level-up, then the evolution. On Work it stays quiet. |
 | C27 | A block that crosses two levels at once | One level-up beat, to the level reached. |
 | C28 | The egg between a block's end and its settle | It holds its last crack picture. |
 | C29 | Under auto-start, with Tomo closed, nothing settles the block, so the row has no `break_start_at` when *Break complete* should fire | The schedule treats the break as beginning at `end_at` ahead of time, and announces its end at `end_at + break_minutes`. |

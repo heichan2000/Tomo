@@ -8,7 +8,9 @@
 - **Amends:** [ADR-0018](0018-pixel-pets-slide-whole-pixels-flicker-evolution.md)
   (the flicker is five swaps, and the hatch does not flicker)
 - **Amended by:** [#40 Draw Geode](https://github.com/heichan2000/Tomo/issues/40)
-  — the shell rule made exact (see *Amendment* below)
+  — the shell rule made exact (see *Amendment* below); [#81 Which celebrations
+  play after a long first block, and after a task bonus?](https://github.com/heichan2000/Tomo/issues/81)
+  — the two runs that stack, see *Consequences*
 
 ## Context
 
@@ -75,8 +77,12 @@ whose differences survive the flag.
   animations" line for incidental FX is out of date.
 - Each pet's egg must break along the shell rule (seven pieces cut by angle
   around the egg's centre). The Draw tickets draw eggs that break cleanly that way.
-- A level-up and a task done can't both play in one beat run: task done is a live
-  beat on its own tap. So the ladder never stacks those two.
+- Task done is a live beat on its own tap, so it never shares a run with a
+  block's beats. It can still be followed by a level-up and an evolution when
+  its bonus reaches them ([#81](https://github.com/heichan2000/Tomo/issues/81)),
+  so the ladder does stack those: *Task done*, then *Level up*, then evolution.
+- The hatch is never followed by a level-up, even when the first block was long
+  enough to reach level 2 ([#81](https://github.com/heichan2000/Tomo/issues/81)).
 
 ## Alternatives considered
 
