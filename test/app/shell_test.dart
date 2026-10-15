@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/placeholder_screens.dart';
+import 'package:tomo/home/home_screen.dart';
 import 'package:tomo/app/shell.dart';
+import 'package:tomo/ui/buttons.dart';
 import 'package:tomo/ui/kit_gallery_screen.dart';
 import 'package:tomo/ui/sheet.dart';
 import 'package:tomo_core/look/palette.dart';
@@ -31,6 +33,10 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Finder gear() => find.byWidgetPredicate(
+    (widget) => widget is PixelIconButton && widget.semanticLabel == 'Settings',
+  );
+
   bool showing(WidgetTester tester, String words) =>
       find.words(words).hitTestable().evaluate().isNotEmpty;
 
@@ -40,7 +46,7 @@ void main() {
     await pumpTomo(tester);
 
     expect(find.byType(TomoShell), findsOneWidget);
-    expect(find.byType(HomePlaceholder).hitTestable(), findsOneWidget);
+    expect(find.byType(HomeScreen).hitTestable(), findsOneWidget);
     expect(find.words('Home'), findsWidgets);
     expect(find.words('Work'), findsWidgets);
     expect(find.byType(RunningBannerSlot), findsOneWidget);
@@ -89,7 +95,7 @@ void main() {
 
     await tester.tap(tab('Home'));
     await tester.pumpAndSettle();
-    await tester.tap(find.words('Settings').hitTestable());
+    await tester.tap(gear().hitTestable());
     await tester.pumpAndSettle();
     expect(showing(tester, 'Settings'), isTrue);
 
@@ -124,10 +130,10 @@ void main() {
     await pumpTomo(tester);
     final bar = tester.getRect(find.byType(ShellTabBar));
 
-    await tester.tap(find.words('Stats'));
+    await tester.tap(gear());
     await tester.pumpAndSettle();
 
-    expect(showing(tester, 'Stats'), isTrue);
+    expect(showing(tester, 'Settings'), isTrue);
     expect(tester.getRect(find.byType(ShellTabBar)), bar);
     expect(tabBarShown(), findsOneWidget);
   });
@@ -135,12 +141,12 @@ void main() {
   group('Android back', () {
     testTomo("closes the tab's top screen", (tester) async {
       await pumpTomo(tester);
-      await tester.tap(find.words('Stats'));
+      await tester.tap(gear());
       await tester.pumpAndSettle();
 
       await back(tester);
 
-      expect(find.byType(HomePlaceholder).hitTestable(), findsOneWidget);
+      expect(find.byType(HomeScreen).hitTestable(), findsOneWidget);
     });
 
     testTomo("on Work's first screen goes to Home", (tester) async {
@@ -150,7 +156,7 @@ void main() {
 
       await back(tester);
 
-      expect(find.byType(HomePlaceholder).hitTestable(), findsOneWidget);
+      expect(find.byType(HomeScreen).hitTestable(), findsOneWidget);
     });
 
     testTomo("on Home's first screen leaves the app", (tester) async {
@@ -183,6 +189,8 @@ void main() {
 
     await tester.tap(find.words('Start focusing'));
     await tester.pumpAndSettle();
+    await tester.tap(find.words('A task'));
+    await tester.pumpAndSettle();
 
     expect(find.byType(FocusPlaceholder).hitTestable(), findsOneWidget);
     expect(tabBarShown(), findsNothing);
@@ -198,7 +206,7 @@ void main() {
 
     unawaited(
       showPixelSheet<void>(
-        tester.element(find.byType(HomePlaceholder)),
+        tester.element(find.byType(HomeScreen)),
         (_) => const SizedBox(height: 100),
       ),
     );
@@ -211,7 +219,7 @@ void main() {
     tester,
   ) async {
     await pumpTomo(tester);
-    final screen = tester.getRect(find.byType(HomePlaceholder));
+    final screen = tester.getRect(find.byType(HomeScreen));
     final bar = tester.getRect(find.byType(ShellTabBar));
 
     tester.view.viewInsets = const FakeViewPadding(bottom: 900);
@@ -221,15 +229,13 @@ void main() {
     final keyboardTop = (2400 - 900) / 2.625;
     expect(tester.getRect(find.byType(ShellTabBar)), bar);
     expect(
-      tester.getRect(find.byType(HomePlaceholder)).bottom,
+      tester.getRect(find.byType(HomeScreen)).bottom,
       closeTo(keyboardTop, 1e-9),
     );
-    expect(tester.getRect(find.byType(HomePlaceholder)).top, screen.top);
+    expect(tester.getRect(find.byType(HomeScreen)).top, screen.top);
   });
 
-  testTomo('the tab bar sits above the phone\'s own buttons', (
-    tester,
-  ) async {
+  testTomo('the tab bar sits above the phone\'s own buttons', (tester) async {
     tester.view.viewPadding = const FakeViewPadding(bottom: 63);
     tester.view.padding = const FakeViewPadding(bottom: 63);
     addTearDown(tester.view.resetViewPadding);
@@ -242,9 +248,7 @@ void main() {
     expect(tabs.bottom, lessThanOrEqualTo(bar.bottom - 63 / 2.625));
   });
 
-  testTomo('tabs are at least 48 pt, and land on whole dots', (
-    tester,
-  ) async {
+  testTomo('tabs are at least 48 pt, and land on whole dots', (tester) async {
     for (final dpr in screens) {
       await pumpTomo(tester, dpr: dpr);
       for (final label in ['Home', 'Work']) {
@@ -256,9 +260,7 @@ void main() {
     }
   });
 
-  testTomo('nothing overflows at 200% text, in both themes', (
-    tester,
-  ) async {
+  testTomo('nothing overflows at 200% text, in both themes', (tester) async {
     for (final dpr in screens) {
       for (final theme in ThemeName.values) {
         await pumpTomo(tester, dpr: dpr, textScale: 2, theme: theme);

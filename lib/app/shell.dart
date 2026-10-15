@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tomo_core/art/pixel_art.dart';
 
+import '../home/home_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../ui/buttons.dart';
 import '../ui/motion.dart';
@@ -83,7 +84,7 @@ class _TomoShellState extends State<TomoShell> {
                   navigatorKey: _stacks[tab]!,
                   shown: tab == _tab,
                   firstScreen: switch (tab) {
-                    ShellTab.home => const HomePlaceholder(),
+                    ShellTab.home => const HomeScreen(),
                     ShellTab.work => const WorkPlaceholder(),
                   },
                 ),

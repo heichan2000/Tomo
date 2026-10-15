@@ -751,6 +751,14 @@ through `ScreenBody` (`lib/ui/screen_body.dart`). Its calls: C73–C77.
   muted caption; chevron up) and finished (accent strip, "Block done · 25 min
   counted" or "Break over", wraps at large text).
 
+**Built** in [Home](https://github.com/heichan2000/Tomo/issues/94), in
+`lib/home/home_screen.dart`: `HomeScreen` shows the pet through
+`petStandingProvider`, which reads `PetReader` (`tomo_core/pet/pet_standing.dart`):
+the pet, the live cycle and the owed run, so the look is `PetStanding.lookAt`.
+The level chip and the gear push the Stats and Settings stand-ins; *Start
+focusing* opens the task-picker stand-in (`openTaskPicker`). Its calls:
+C78–C83.
+
 ### 8.4 Focus
 
 From [Focus view design](https://github.com/heichan2000/Tomo/issues/17)
@@ -1538,12 +1546,18 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C69 | The wide-screen column's width, and "600 dp" | From 600 pt of **width**, the column is **412 pt** (a large phone), both edges on whole dots; screens inside see that width and no side insets. |
 | C70 | What the keyboard does to the shell | It covers the banner and the tab bar; the screen above shrinks to meet it, and nothing in the shell moves. The tab bar sits 4 UI pixels above the phone's own buttons or gesture bar, its surface reaching under them. |
 | C71 | Start-up details | The settings are read before the database, so the error block wears the chosen theme. A cycle that can't be brought up to now at start-up also shows the error block. The hatched pet's species is read at start-up, so the first frame has the right accent. Tab names are in the copy file (`tabHome`, `tabWork`). |
-| C72 | Widget tests of the whole app and the database's watched queries | Drift's watched queries never finish on a widget test's pretend clock. Whole-app tests use `pumpTomo` / `testTomo` (`test/app/app_harness.dart`): database work runs on the real clock, and watched streams are replaced (today only `speciesChangesProvider`). Screen tickets that watch the database in widget tests need the same care. |
+| C72 | Widget tests of the whole app and the database's watched queries | Drift's watched queries never finish on a widget test's pretend clock. Whole-app tests use `pumpTomo` / `testTomo` (`test/app/app_harness.dart`): database work runs on the real clock, and watched streams are replaced (`speciesChangesProvider`, and `petChangesProvider`, which a test feeds with `petChanged`). Screen tickets that watch the database in widget tests need the same care. |
 | C73 | The project made when *What are you working on?* is skipped | **My work** (`defaultProject`). Chosen by the user ([#93](https://github.com/heichan2000/Tomo/issues/93)). |
 | C74 | *Done* with nothing typed | Turned off until the field holds more than spaces; *Skip* is right under it. The keyboard's Done key finishes only once a line is typed. Chosen by the user ([#93](https://github.com/heichan2000/Tomo/issues/93)). The field takes at most 60 characters (C24). |
 | C75 | The setup tiles' pets | The chosen pet is alive (Resting: breath, blink, idle moves); the other two hold still (Still), as on the approved screen. A tile is one button to a screen reader, named by its pet, with its selected state; the pet itself is not a separate item and doesn't hop on tap. |
 | C76 | Onboarding's write fails | Nothing is written (one transaction), so the screen stays, shows the plain `error` line in a sunken strip under the field, and both buttons try again. |
 | C77 | How a screen fits its buttons and large text | `ScreenBody`: the approved padding (6 top, 12 sides, 10 bottom UI pixels, 6 between parts), the buttons at the foot at least 16 UI pixels below the content, and the whole screen, buttons included, scrolling once it doesn't fit. It keeps clear of the status bar, the gesture bar outside the shell, and the keyboard. Back on Onboarding 2 (and Android back) returns to screen 1 with the choices kept. |
+| C78 | When the hello plays | On a cold start that lands on Home, and when the app comes back from the background (Flutter's *shown*, not a mere pause such as the notification shade) while Home is the screen showing: its tab chosen and nothing over it. Not after Onboarding, not on returning from Stats or Settings or Focus, not on a tab change. |
+| C79 | Home's pet while a cycle is live, or a run is owed | Home follows the look like any screen: the egg cracks (and stops wobbling) through a running block, the pet is Pleased in a block and Drowsy on a break, and Home looks again at each minute of a block and at a break's end. The owed run only waits there: an unplayed hatch keeps the egg (so no chip, name or bar), an unplayed evolution keeps the old stage. Only Focus plays them. |
+| C80 | Home's EXP and level before the beats are seen | The chip, name, bar and "480 / 600 EXP" show the stored EXP. The bar lights one block per whole 30 EXP. |
+| C81 | Home to a screen reader | The pet is one item (`srPet`, or `srEgg`); the name, bar and EXP line under it are hidden behind that item, so they aren't read twice. The level chip reads "Level 13. Stats" (`srLevelChip`), the gear "Settings", the clock notice's close "Dismiss". The egg line is read as written. The chip's target is 48 pt, larger than the chip. |
+| C82 | Where Calm pet is read | Once at start-up, then kept in `calmPetProvider`, whose `set` changes the pet at once and writes the setting (for *Stats and Settings*). |
+| C83 | The task picker before its ticket | A stand-in sheet (`TaskPickerPlaceholder`) opened by `openTaskPicker`; *Focus: the task picker and Ready* replaces it. *Start focusing* opens Focus instead whenever the cycle projects to anything but `idle` (C3). |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

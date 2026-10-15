@@ -10,18 +10,20 @@ import 'routes.dart';
 // start-up routing can be used before them. Each goes when its real screen
 // arrives. A builder's tool: their words are not in the copy file.
 
-class HomePlaceholder extends StatelessWidget {
-  const HomePlaceholder({super.key});
+/// Stands in for Stats, pushed from Home's level chip.
+class StatsPlaceholder extends StatelessWidget {
+  const StatsPlaceholder({super.key});
 
   @override
-  Widget build(BuildContext context) => _Placeholder(
-    title: 'Home',
-    actions: [
-      ('Stats', () => pushInTab(context, (_) => const _Pushed('Stats'))),
-      ('Settings', () => pushInTab(context, (_) => const _Pushed('Settings'))),
-      ('Start focusing', () => openFocus(context)),
-    ],
-  );
+  Widget build(BuildContext context) => const _Pushed('Stats');
+}
+
+/// Stands in for Settings, pushed from Home's gear.
+class SettingsPlaceholder extends StatelessWidget {
+  const SettingsPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) => const _Pushed('Settings');
 }
 
 class WorkPlaceholder extends StatelessWidget {
@@ -46,6 +48,40 @@ class WorkPlaceholder extends StatelessWidget {
       ),
     ],
   );
+}
+
+/// Stands in for the task picker, a sheet. *A task* closes it and opens
+/// Focus, as picking a task will.
+class TaskPickerPlaceholder extends StatelessWidget {
+  const TaskPickerPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final u = UiPixel.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const PixelText('Task picker', step: TypeStep.title),
+        SizedBox(height: u(2)),
+        PixelText(
+          'Placeholder until its own ticket builds it.',
+          step: TypeStep.caption,
+          colour: TomoTheme.of(context).muted,
+        ),
+        SizedBox(height: u(6)),
+        PixelButton(
+          label: 'A task',
+          kind: ButtonKind.secondary,
+          wide: true,
+          onPressed: () {
+            Navigator.of(context).pop();
+            openFocus(context);
+          },
+        ),
+      ],
+    );
+  }
 }
 
 /// Stands in for Focus, a takeover over the tab bar.

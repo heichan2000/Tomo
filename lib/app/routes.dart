@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../onboarding/onboarding_screens.dart';
 import '../ui/kit_gallery_screen.dart';
 import '../ui/motion.dart';
+import '../ui/sheet.dart';
 import 'placeholder_screens.dart';
 import 'shell.dart';
 import 'start_up.dart';
@@ -44,6 +45,11 @@ void finishOnboarding(BuildContext context) => Navigator.of(
 /// ADR-0003). Minimise, *Leave*, *Close* and *Stop early* close it again.
 void openFocus(BuildContext context) =>
     Navigator.of(context, rootNavigator: true).push(_focusRoute());
+
+/// Opens the task picker (spec §8.1), a sheet over the whole app. Picking
+/// a task opens Focus on Ready.
+void openTaskPicker(BuildContext context) =>
+    showPixelSheet<void>(context, (_) => const TaskPickerPlaceholder());
 
 /// Pushes [screen] onto the current tab's own stack (spec §8.1): Project,
 /// Task detail, Stats and Settings. The tab bar stays.
