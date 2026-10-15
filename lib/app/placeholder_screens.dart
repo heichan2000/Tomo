@@ -10,19 +10,6 @@ import 'routes.dart';
 // start-up routing can be used before them. Each goes when its real screen
 // arrives. A builder's tool: their words are not in the copy file.
 
-/// Stands in for Onboarding. *Continue* opens the shell without writing
-/// anything, so the next cold start comes back here.
-class OnboardingPlaceholder extends StatelessWidget {
-  const OnboardingPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) => _Placeholder(
-    title: 'Onboarding',
-    note: 'Stands in for setup. Continue writes nothing.',
-    actions: [('Continue', () => finishOnboarding(context))],
-  );
-}
-
 class HomePlaceholder extends StatelessWidget {
   const HomePlaceholder({super.key});
 
@@ -89,10 +76,9 @@ class _Pushed extends StatelessWidget {
 }
 
 class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.title, this.note, required this.actions});
+  const _Placeholder({required this.title, required this.actions});
 
   final String title;
-  final String? note;
   final List<(String, VoidCallback)> actions;
 
   @override
@@ -111,7 +97,7 @@ class _Placeholder extends StatelessWidget {
               PixelText(title, step: TypeStep.title),
               SizedBox(height: u(2)),
               PixelText(
-                note ?? 'Placeholder until its own ticket builds it.',
+                'Placeholder until its own ticket builds it.',
                 step: TypeStep.caption,
                 colour: colours.muted,
               ),

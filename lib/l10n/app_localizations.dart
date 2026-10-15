@@ -629,6 +629,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Work'**
   String get tabWork;
+
+  /// Screen reader. The back arrow at the top left of a screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// Personality control, the Quiet option (onboarding and Settings).
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet'**
+  String get persQuiet;
+
+  /// Personality control, the Chatty option (onboarding and Settings).
+  ///
+  /// In en, this message translates to:
+  /// **'Chatty'**
+  String get persChatty;
+
+  /// Onboarding 1, the button to the second screen (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// Onboarding 2, the primary button (approved on Tomo Pixel Screens). Turned off while the field is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get onboardingDone;
+
+  /// Onboarding 2, the quiet button that finishes without a task (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// The name of the one project onboarding makes when the user skips "What are you working on?" (chosen by the user, spec §17).
+  ///
+  /// In en, this message translates to:
+  /// **'My work'**
+  String get defaultProject;
 }
 
 class _AppLocalizationsDelegate

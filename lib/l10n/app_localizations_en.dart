@@ -685,4 +685,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabWork => 'Work';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get persQuiet => 'Quiet';
+
+  @override
+  String get persChatty => 'Chatty';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingDone => 'Done';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get defaultProject => 'My work';
 }

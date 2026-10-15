@@ -735,5 +735,33 @@
   "tabWork": "Work",
   "@tabWork": {
     "description": "Tab bar. The Work tab (approved on Tomo Pixel Screens)."
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Screen reader. The back arrow at the top left of a screen."
+  },
+  "persQuiet": "Quiet",
+  "@persQuiet": {
+    "description": "Personality control, the Quiet option (onboarding and Settings)."
+  },
+  "persChatty": "Chatty",
+  "@persChatty": {
+    "description": "Personality control, the Chatty option (onboarding and Settings)."
+  },
+  "onboardingNext": "Next",
+  "@onboardingNext": {
+    "description": "Onboarding 1, the button to the second screen (approved on Tomo Pixel Screens)."
+  },
+  "onboardingDone": "Done",
+  "@onboardingDone": {
+    "description": "Onboarding 2, the primary button (approved on Tomo Pixel Screens). Turned off while the field is empty."
+  },
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Onboarding 2, the quiet button that finishes without a task (approved on Tomo Pixel Screens)."
+  },
+  "defaultProject": "My work",
+  "@defaultProject": {
+    "description": "The name of the one project onboarding makes when the user skips \"What are you working on?\" (chosen by the user, spec §17)."
   }
 }

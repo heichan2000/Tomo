@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/error_block.dart';
 import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/app/shell.dart';
+import 'package:tomo/onboarding/onboarding_screens.dart';
 import 'package:tomo/l10n/app_localizations.dart';
 import 'package:tomo/ui/tomo_theme.dart';
 import 'package:tomo_core/data/settings.dart';
@@ -19,18 +20,8 @@ void main() {
   ) async {
     await pumpTomo(tester, onboarded: false);
 
-    expect(find.byType(OnboardingPlaceholder), findsOneWidget);
+    expect(find.byType(PickPetScreen), findsOneWidget);
     expect(find.byType(TomoShell), findsNothing);
-  });
-
-  testTomo('finishing Onboarding opens the shell on Home', (tester) async {
-    await pumpTomo(tester, onboarded: false);
-
-    await tester.tap(find.words('Continue'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(OnboardingPlaceholder), findsNothing);
-    expect(find.byType(HomePlaceholder).hitTestable(), findsOneWidget);
   });
 
   testTomo('the app name comes from the copy files', (tester) async {
