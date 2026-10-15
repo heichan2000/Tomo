@@ -679,4 +679,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String srRunPetLine(String name, String line) {
     return '$name: $line';
   }
+
+  @override
+  String get tabHome => 'Home';
+
+  @override
+  String get tabWork => 'Work';
 }

@@ -11,8 +11,10 @@ import 'whole_dots.dart';
 /// dither. Every dialog in Tomo is one (spec §8.1). A tap on the dither or
 /// the back gesture closes it. It rises above the keyboard, and once it
 /// nearly fills the screen its content scrolls.
+///
+/// It opens over the whole app, the tab bar and the banner included.
 Future<T?> showPixelSheet<T>(BuildContext context, WidgetBuilder builder) =>
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       PixelSheetRoute<T>(
         builder: builder,
         dismissLabel: MaterialLocalizations.of(context)

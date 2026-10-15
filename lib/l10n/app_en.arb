@@ -727,5 +727,13 @@
         "type": "String"
       }
     }
+  },
+  "tabHome": "Home",
+  "@tabHome": {
+    "description": "Tab bar. The Home tab (approved on Tomo Pixel Screens)."
+  },
+  "tabWork": "Work",
+  "@tabWork": {
+    "description": "Tab bar. The Work tab (approved on Tomo Pixel Screens)."
   }
 }

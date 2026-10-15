@@ -9,6 +9,9 @@ import '../tasks/task_status.dart';
 import 'tables.dart';
 import 'tomo_database.steps.dart';
 
+// The app builds the file's executor and hands it to [openTomoDatabase].
+export 'package:drift/drift.dart' show QueryExecutor;
+
 part 'tomo_database.g.dart';
 
 /// Builds Tomo's one database on [executor]: a file on the phone, or
