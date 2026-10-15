@@ -2,6 +2,7 @@
 // over (the rule is in pixel_art.dart's library doc). The art test hashes each
 // text and holds it to the drawing's mark (spec §9.6).
 
+import '../pet/species.dart';
 import 'icons.dart';
 import 'pets/geode.dart';
 import 'pets/joe.dart';
@@ -12,6 +13,13 @@ import 'tomo_egg.dart';
 
 /// The three starters, in the order they are offered.
 const List<SpeciesArt> allSpecies = [geode, joe, lily];
+
+/// The art of [species].
+SpeciesArt artOf(Species species) => switch (species) {
+  Species.geode => geode,
+  Species.joe => joe,
+  Species.lily => lily,
+};
 
 /// One drawing: its id, its mark, and the canonical text its fingerprint is
 /// taken over.

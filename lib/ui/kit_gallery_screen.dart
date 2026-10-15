@@ -5,6 +5,7 @@ import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 
 import '../app/tomo_look.dart';
+import '../pet/pet_gallery_screen.dart';
 import 'buttons.dart';
 import 'exp_bar.dart';
 import 'motion.dart';
@@ -221,6 +222,15 @@ class _KitGalleryScreenState extends State<KitGalleryScreen> {
               wide: true,
               onPressed: () => Navigator.of(context).push(
                 PixelPageRoute<void>(builder: (_) => const PixelCheckScreen()),
+              ),
+            ),
+            gap(4),
+            PixelButton(
+              label: 'Pet gallery',
+              kind: ButtonKind.secondary,
+              wide: true,
+              onPressed: () => Navigator.of(context).push(
+                PixelPageRoute<void>(builder: (_) => const PetGalleryScreen()),
               ),
             ),
 

@@ -99,20 +99,26 @@ final class EggLook extends PetLook {
     required super.species,
     required super.movement,
     required this.picture,
+    this.mayWobble = false,
   });
 
   /// Which of the egg's pictures to show: 0 is whole, then each crack step.
   final int picture;
+
+  /// Whether the egg wobbles now and then and when tapped: only while it
+  /// waits (no cycle running) and Calm pet is off (§7.6).
+  final bool mayWobble;
 
   @override
   bool operator ==(Object other) =>
       other is EggLook &&
       other.species == species &&
       other.movement == movement &&
-      other.picture == picture;
+      other.picture == picture &&
+      other.mayWobble == mayWobble;
 
   @override
-  int get hashCode => Object.hash(species, movement, picture);
+  int get hashCode => Object.hash(species, movement, picture, mayWobble);
 }
 
 /// What the pet looks like (spec §7.2, ADR-0009). A pure function: worked out
@@ -131,6 +137,8 @@ PetLook look(LookState state, PendingBeats pending) {
       picture: hatchWaiting
           ? eggPictureCount(species) - 1
           : _crackPicture(state),
+      mayWobble:
+          !hatchWaiting && !state.calmPet && state.focus == FocusState.idle,
     );
   }
 
