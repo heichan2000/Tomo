@@ -14,3 +14,14 @@ TomoDatabase openTestDatabase({Clock? clock, Log? log}) => openTomoDatabase(
   clock: clock ?? systemClock,
   log: log ?? Log(sinks: const []),
 );
+
+/// A database in memory that a newer Tomo wrote: its [TomoDatabase.start]
+/// reports [StorageStart.failed], as on a phone holding a newer app's file.
+TomoDatabase openNewerTestDatabase({Clock? clock, Log? log}) =>
+    openTomoDatabase(
+      NativeDatabase.memory(
+        setup: (raw) => raw.execute('PRAGMA user_version = 99'),
+      ),
+      clock: clock ?? systemClock,
+      log: log ?? Log(sinks: const []),
+    );

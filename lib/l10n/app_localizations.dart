@@ -617,6 +617,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name}: {line}'**
   String srRunPetLine(String name, String line);
+
+  /// Tab bar. The Home tab (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get tabHome;
+
+  /// Tab bar. The Work tab (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get tabWork;
 }
 
 class _AppLocalizationsDelegate

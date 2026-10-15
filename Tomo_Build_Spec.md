@@ -697,6 +697,16 @@ ADR-0003, ADR-0029.
   project, new project, move to project, custom length, the row menu. The share
   sheet is the OS's.
 
+**Built** in [Start-up and the app shell](https://github.com/heichan2000/Tomo/issues/92),
+in `lib/app/`: `startTomo` (`start_up.dart`) opens the stores, brings the
+cycle up to now and picks the first surface; the providers in `providers.dart`
+hand out the database, the services, the logs and the stores; `TomoShell`
+(`shell.dart`) is the two tabs, the banner's slot (`RunningBannerSlot`) and
+`ShellTabBar`; `routes.dart` has `openFocus`, `pushInTab` and
+`finishOnboarding`; `PhoneColumn` is the wide-screen column. Screens not yet
+built are stand-ins in `placeholder_screens.dart`. Approved by the user on the
+emulator. Its calls: C64–C72.
+
 ### 8.2 Onboarding
 
 From [Onboarding & hatch flow design](https://github.com/heichan2000/Tomo/issues/18)
@@ -880,6 +890,8 @@ Species is permanent; name and personality are not.
 
 In release, `ErrorWidget.builder` renders a small plain block with the `error`
 line naming *Settings > About > Share diagnostics*. No pet, no pet voice.
+The same block, alone on the ground, is all that opens when the database
+can't be (C19): `ErrorBlock` and `StartFailedApp` in `lib/app/error_block.dart`.
 
 ---
 
@@ -1512,7 +1524,16 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C61 | Which egg is "waiting" | The egg wobbles only when no cycle is running and Calm pet is off: `EggLook.mayWobble`, worked out by `look`. Cracking during a block, and holding its last crack before the hatch, it stays still. |
 | C62 | How the pet keeps time on screen | `PetView` has its own stopwatch, never the time of day. It wakes only when the picture next changes (at most a second away), not every frame, and sleeps while the app is hidden or its screen is covered. A move missed while asleep is dropped, not caught up. |
 | C63 | Where the pet stands in its spot | Bottom-centred in a square the size of the spot (§7.1); the grid is the largest whole number of dots per pixel that fits. |
-| C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written yet. It belongs with the code that creates those two files, and can only be checked on a Mac. |
+| C64 | Which `shared_preferences` API keeps the settings | The plugin's first API, `SharedPreferences.getInstance()` (`SharedPreferencesStore`, `lib/platform/stores.dart`). On Android it writes `FlutterSharedPreferences.xml`, the file the backup rules name (C16). The newer API's default is DataStore, and even its SharedPreferences backend writes a different file unless told otherwise. |
+| C65 | Android back on a tab's first screen, and tapping the tab you are on | Back closes the tab's top screen; on Work's first screen it goes to Home; on Home's first screen it leaves the app. Tapping the tab you are on takes it back to its first screen. Chosen by the user ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
+| C66 | How debug builds reach the kit gallery once the app opens on the shell | A long press on the Home tab, in debug and profile builds only. Chosen by the user ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
+| C67 | Onboarding "above the shell" with no pet yet | Onboarding opens alone; finishing it puts the shell in its place, on Home. A cold start routed to Focus has the shell under it, so minimising lands on Home. |
+| C68 | Sheets opened from inside a tab | Every sheet opens over the whole app, the tab bar and banner included (`showPixelSheet` uses the top navigator). Focus, Onboarding and the kit gallery do too; Project, Task detail, Stats and Settings push inside their tab. |
+| C69 | The wide-screen column's width, and "600 dp" | From 600 pt of **width**, the column is **412 pt** (a large phone), both edges on whole dots; screens inside see that width and no side insets. |
+| C70 | What the keyboard does to the shell | It covers the banner and the tab bar; the screen above shrinks to meet it, and nothing in the shell moves. The tab bar sits 4 UI pixels above the phone's own buttons or gesture bar, its surface reaching under them. |
+| C71 | Start-up details | The settings are read before the database, so the error block wears the chosen theme. A cycle that can't be brought up to now at start-up also shows the error block. The hatched pet's species is read at start-up, so the first frame has the right accent. Tab names are in the copy file (`tabHome`, `tabWork`). |
+| C72 | Widget tests of the whole app and the database's watched queries | Drift's watched queries never finish on a widget test's pretend clock. Whole-app tests use `pumpTomo` / `testTomo` (`test/app/app_harness.dart`): database work runs on the real clock, and watched streams are replaced (today only `speciesChangesProvider`). Screen tickets that watch the database in widget tests need the same care. |
+| C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
 
