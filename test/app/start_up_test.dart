@@ -16,6 +16,8 @@ import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_service.dart';
 import 'package:tomo_core/testing.dart';
 
+import '../platform/fake_notifications.dart';
+
 /// Start-up (spec §6.2, §8.1, C19): what it opens, where a cold start lands,
 /// and that a database it can't open stops everything but the error block.
 void main() {
@@ -61,10 +63,14 @@ void main() {
     expect(started, isA<Success<CycleStanding>>());
   }
 
-  /// A container holding what [start] handed out.
+  /// A container holding what [start] handed out, and the phone's
+  /// notifications, which `main()` adds.
   ProviderContainer containerOf(TomoStart started) {
     final container = ProviderContainer(
-      overrides: (started as Started).overrides,
+      overrides: [
+        ...(started as Started).overrides,
+        notificationSchedulerProvider.overrideWithValue(FakeScheduler()),
+      ],
     );
     addTearDown(container.dispose);
     return container;
@@ -95,16 +101,19 @@ void main() {
       expect((await start(db) as Started).first, FirstSurface.focus);
     });
 
-    test('on Focus, already credited, when a block finished while closed', () async {
-      final db = await onboarded();
-      await startBlock(db);
-      clock.advance(const Duration(days: 2));
+    test(
+      'on Focus, already credited, when a block finished while closed',
+      () async {
+        final db = await onboarded();
+        await startBlock(db);
+        clock.advance(const Duration(days: 2));
 
-      expect((await start(db) as Started).first, FirstSurface.focus);
-      final records = await db.select(db.blockRecords).get();
-      expect(records, hasLength(1));
-      expect(records.single.minutes, 25);
-    });
+        expect((await start(db) as Started).first, FirstSurface.focus);
+        final records = await db.select(db.blockRecords).get();
+        expect(records, hasLength(1));
+        expect(records.single.minutes, 25);
+      },
+    );
 
     test('on Home with the clock notice when the clock went back', () async {
       final db = await onboarded();
@@ -133,7 +142,9 @@ void main() {
       expect(container.read(onboardingProvider), isNotNull);
       expect(container.read(diagnosticLogProvider), isNotNull);
       expect(
-        await container.read(deviceOnlyFileProvider).notificationPermissionAsked(),
+        await container
+            .read(deviceOnlyFileProvider)
+            .notificationPermissionAsked(),
         isFalse,
       );
       expect(container.read(clockNoticeProvider), isFalse);
@@ -199,17 +210,20 @@ void main() {
     });
   });
 
-  test('a settings store that fails still opens, in the phone\'s theme', () async {
-    final started = await startTomo(
-      database: await onboarded(),
-      keyValues: _BrokenStore(),
-      deviceFile: MemoryDeviceFileStorage(),
-      log: log,
-      diagnostics: _diagnostics(),
-    );
+  test(
+    'a settings store that fails still opens, in the phone\'s theme',
+    () async {
+      final started = await startTomo(
+        database: await onboarded(),
+        keyValues: _BrokenStore(),
+        deviceFile: MemoryDeviceFileStorage(),
+        log: log,
+        diagnostics: _diagnostics(),
+      );
 
-    expect(containerOf(started).read(appearanceProvider), Appearance.system);
-  });
+      expect(containerOf(started).read(appearanceProvider), Appearance.system);
+    },
+  );
 }
 
 final class _BrokenStore implements KeyValueStore {

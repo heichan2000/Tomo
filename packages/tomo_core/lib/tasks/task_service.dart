@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:characters/characters.dart';
 import 'package:drift/drift.dart';
 
@@ -24,10 +26,15 @@ const maxEstimate = 20;
 /// writes are fixed; screens may add reads freely, because a read can't break
 /// a rule.
 abstract interface class TaskService {
+  ///
+  /// [afterWrite] runs, unawaited, after each write that commits: the app
+  /// syncs the notifications there, because a write can end or settle the
+  /// cycle (spec §11.2).
   factory TaskService(
     TomoDatabase db, {
     required Log log,
     UtcOffsetAt? utcOffsetAt,
+    Future<void> Function()? afterWrite,
   }) = _DriftTaskService;
 
   /// A new task is always to-do.
@@ -72,12 +79,17 @@ abstract interface class TaskService {
 }
 
 final class _DriftTaskService implements TaskService {
-  _DriftTaskService(this._db, {required this._log, UtcOffsetAt? utcOffsetAt})
-    : _ledger = CycleLedger(_db, utcOffsetAt: utcOffsetAt);
+  _DriftTaskService(
+    this._db, {
+    required this._log,
+    UtcOffsetAt? utcOffsetAt,
+    this._afterWrite,
+  }) : _ledger = CycleLedger(_db, utcOffsetAt: utcOffsetAt);
 
   final TomoDatabase _db;
   final Log _log;
   final CycleLedger _ledger;
+  final Future<void> Function()? _afterWrite;
 
   @override
   Future<Result<Task>> createTask({
@@ -341,7 +353,9 @@ final class _DriftTaskService implements TaskService {
   /// rolls the transaction back and comes out as its error.
   Future<Result<T>> _write<T>(Future<T> Function(DateTime now) body) async {
     try {
-      return Success(await _db.transaction(() => body(_db.clock().toUtc())));
+      final value = await _db.transaction(() => body(_db.clock().toUtc()));
+      unawaited(_afterWrite?.call());
+      return Success(value);
     } on _Refused catch (refused) {
       return Failure(refused.error);
     } catch (error, stackTrace) {

@@ -470,6 +470,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get channelFocusBlock => 'Focus block finished';
+
+  @override
+  String get channelFocusBlockAbout =>
+      'When a focus block you started reaches its end.';
+
+  @override
+  String get channelBreak => 'Break finished';
+
+  @override
+  String get channelBreakAbout => 'When a break reaches its end.';
+
+  @override
   String get notifHiddenBlock => 'A focus block counted.';
 
   @override

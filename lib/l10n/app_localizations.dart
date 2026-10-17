@@ -318,6 +318,30 @@ abstract class AppLocalizations {
     String minutesWords,
   );
 
+  /// Android notification channel name (spec §11.3), shown in the phone's settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus block finished'**
+  String get channelFocusBlock;
+
+  /// Android notification channel description (spec §11.3).
+  ///
+  /// In en, this message translates to:
+  /// **'When a focus block you started reaches its end.'**
+  String get channelFocusBlockAbout;
+
+  /// Android notification channel name (spec §11.3), shown in the phone's settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Break finished'**
+  String get channelBreak;
+
+  /// Android notification channel description (spec §11.3).
+  ///
+  /// In en, this message translates to:
+  /// **'When a break reaches its end.'**
+  String get channelBreakAbout;
+
   /// Notification body on Android when content is hidden: a block.
   ///
   /// In en, this message translates to:

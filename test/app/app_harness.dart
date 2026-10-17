@@ -17,11 +17,15 @@ import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/testing.dart';
 
+import '../platform/fake_notifications.dart';
 import '../ui/kit_harness.dart';
 
 /// Opens the whole app, as `main()` does, on a database in memory: started
 /// by [startTomo], so it lands where a cold start would. With [onboarded] the
 /// pet already exists.
+///
+/// [before] runs on the database before start-up, as if Tomo had been used
+/// earlier.
 ///
 /// Returns the database, closed again when the test ends.
 Future<TomoDatabase> pumpTomo(
@@ -31,6 +35,10 @@ Future<TomoDatabase> pumpTomo(
   Size physicalSize = const Size(1080, 2400),
   double textScale = 1,
   ThemeName theme = ThemeName.light,
+  FakeScheduler? notifications,
+  FakePermission? permission,
+  Stream<String?> notificationTaps = const Stream.empty(),
+  Future<void> Function(TomoDatabase db)? before,
 }) async {
   await loadArkPixel();
   await _closeAll(tester);
@@ -51,6 +59,7 @@ Future<TomoDatabase> pumpTomo(
         defaultProjectName: 'Things',
       );
     }
+    await before?.call(db);
     return startTomo(
       database: db,
       keyValues: MemoryKeyValueStore(),
@@ -73,6 +82,13 @@ Future<TomoDatabase> pumpTomo(
     ProviderScope(
       overrides: [
         ...ready.overrides,
+        notificationSchedulerProvider.overrideWithValue(
+          notifications ?? FakeScheduler(),
+        ),
+        notificationPermissionProvider.overrideWithValue(
+          permission ?? FakePermission(),
+        ),
+        notificationTapsProvider.overrideWithValue(notificationTaps),
         speciesChangesProvider.overrideWithValue(const Stream.empty()),
         petChangesProvider.overrideWithValue(_petChanges.stream),
       ],

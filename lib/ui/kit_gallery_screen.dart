@@ -7,6 +7,7 @@ import 'package:tomo_core/tasks/task_status.dart';
 import '../app/tomo_look.dart';
 import '../pet/beats_screen.dart';
 import '../pet/pet_gallery_screen.dart';
+import '../platform/notification_check_screen.dart';
 import 'buttons.dart';
 import 'exp_bar.dart';
 import 'motion.dart';
@@ -242,6 +243,17 @@ class _KitGalleryScreenState extends State<KitGalleryScreen> {
               onPressed: () => Navigator.of(
                 context,
               ).push(PixelPageRoute<void>(builder: (_) => const BeatsScreen())),
+            ),
+            gap(4),
+            PixelButton(
+              label: 'Notification check',
+              kind: ButtonKind.secondary,
+              wide: true,
+              onPressed: () => Navigator.of(context).push(
+                PixelPageRoute<void>(
+                  builder: (_) => const NotificationCheckScreen(),
+                ),
+              ),
             ),
 
             section('Colours', [

@@ -66,6 +66,13 @@ Map<String, List<int>> appIconFiles([TomoEgg egg = tomoEgg]) {
       '$_res/drawable-$bucket/splash_egg.png': encodePng(
         _egg(rows, full, canvas: 60, inset: 12, dots: (4 * dots).round()),
       ),
+      // The notifications' status-bar icon: 24 dp, one colour, the crack cut
+      // out. Android paints it in the system's own colour. 24 dp is not a
+      // whole number of egg pixels at most densities, so each edge is
+      // rounded, as for the iPhone master.
+      '$_res/drawable-$bucket/ic_notification.png': encodePng(
+        _fitted(rows, tint, size: (24 * dots).round()),
+      ),
     },
     '$_res/values/icon_colors.xml': utf8.encode(_androidColours(groundLight)),
     '$_res/values-night/icon_colors.xml': utf8.encode(
@@ -131,6 +138,25 @@ Picture _egg(
     left: inset * dots,
     top: inset * dots,
     edge: (i) => i * dots,
+  );
+  return picture;
+}
+
+/// The egg filling a clear square [size] screen dots wide, each egg pixel's
+/// edges rounded to the nearest dot.
+Picture _fitted(
+  List<String> rows,
+  Map<String, int> colours, {
+  required int size,
+}) {
+  final picture = Picture(size, size)..fill(_clear);
+  _paint(
+    picture,
+    rows,
+    colours,
+    left: 0,
+    top: 0,
+    edge: (i) => (i * size / TomoEgg.size).round(),
   );
   return picture;
 }

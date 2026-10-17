@@ -28,8 +28,11 @@ Route<void> _onboardingRoute() => PixelPageRoute<void>(
   builder: (_) => const PickPetScreen(),
 );
 
+/// Focus's route name, which [FocusRouteObserver] looks for.
+const focusRouteName = '/focus';
+
 Route<void> _focusRoute() => PixelPageRoute<void>(
-  settings: const RouteSettings(name: '/focus'),
+  settings: const RouteSettings(name: focusRouteName),
   from: AxisDirection.down,
   builder: (_) => const FocusPlaceholder(),
 );

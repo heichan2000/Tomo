@@ -7,12 +7,16 @@ import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/diagnostic_log.dart';
 import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
+import 'package:tomo_core/notifications/notification_schedule.dart';
+import 'package:tomo_core/notifications/notification_sync.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
 import 'package:tomo_core/pet/beat_queue.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/stats/stats.dart';
 import 'package:tomo_core/tasks/task_service.dart';
+
+import '../platform/notifications.dart';
 
 // What every screen reads Tomo through: hand-written Riverpod providers, no
 // code generation (spec §15.2).
@@ -40,17 +44,87 @@ final deviceOnlyFileProvider = Provider<DeviceOnlyFile>(
   (ref) => _setAtStartUp(),
 );
 
+/// The phone's notifications (spec §11). Set by `main()`; a test sets a
+/// recorder.
+final notificationSchedulerProvider = Provider<NotificationScheduler>(
+  (ref) => _setAtStartUp(),
+);
+
+/// The phone's side of the notification permission (spec §11.4).
+final notificationPermissionProvider = Provider<NotificationPermission>(
+  (ref) => _setAtStartUp(),
+);
+
+/// The payload of each notification tapped while Tomo is running.
+final notificationTapsProvider = Provider<Stream<String?>>(
+  (ref) => const Stream.empty(),
+);
+
+/// Keeps the phone's pending notifications equal to the stored cycle
+/// (spec §11.2). Every cycle and task write runs it, and so does every
+/// lifecycle change.
+final notificationSyncProvider = Provider(
+  (ref) => NotificationSync(
+    ref.watch(databaseProvider),
+    ref.watch(notificationSchedulerProvider),
+    log: ref.watch(logProvider),
+    isForeground: appIsForeground,
+  ),
+);
+
 final focusCycleServiceProvider = Provider(
   (ref) => FocusCycleService(
     ref.watch(databaseProvider),
     log: ref.watch(logProvider),
+    afterWrite: ref.watch(notificationSyncProvider).sync,
   ),
 );
 
 final taskServiceProvider = Provider(
-  (ref) =>
-      TaskService(ref.watch(databaseProvider), log: ref.watch(logProvider)),
+  (ref) => TaskService(
+    ref.watch(databaseProvider),
+    log: ref.watch(logProvider),
+    afterWrite: ref.watch(notificationSyncProvider).sync,
+  ),
 );
+
+/// Whether Tomo may post notifications (spec §11.4). Read at the first look,
+/// and again on every resume, because the phone's settings can change it
+/// while Tomo is away.
+final notificationAccessProvider =
+    AsyncNotifierProvider<NotificationAccessNow, NotificationAccess>(
+      NotificationAccessNow.new,
+    );
+
+class NotificationAccessNow extends AsyncNotifier<NotificationAccess> {
+  @override
+  Future<NotificationAccess> build() => _read();
+
+  Future<NotificationAccess> _read() async => notificationAccess(
+    await ref.read(notificationPermissionProvider).read(),
+    asked: await ref.read(deviceOnlyFileProvider).notificationPermissionAsked(),
+  );
+
+  /// Reads the phone again. Called on every resume.
+  Future<void> refresh() async => state = await AsyncValue.guard(_read);
+
+  /// Shows the phone's dialog and returns once it has closed, whatever the
+  /// answer (spec §11.4): the first block anchors only then. An answer is
+  /// remembered on this phone; a dismissal is not, so the next start asks
+  /// again.
+  Future<void> ask() async {
+    final outcome = await ref.read(notificationPermissionProvider).ask();
+    if (outcome.answered) {
+      await ref.read(deviceOnlyFileProvider).setNotificationPermissionAsked();
+    }
+    await refresh();
+  }
+
+  /// The phone's notification settings for Tomo: the bell, and Settings →
+  /// Notifications.
+  Future<void> openSettings() =>
+      ref.read(notificationPermissionProvider).openSettings();
+}
 
 final onboardingProvider = Provider(
   (ref) => Onboarding(ref.watch(databaseProvider), log: ref.watch(logProvider)),
