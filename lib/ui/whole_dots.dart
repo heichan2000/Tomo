@@ -316,6 +316,126 @@ class RenderPixelGrid extends RenderBox {
   }
 }
 
+/// One block of pixels on a pixel-art grid: [width] by [height] pixels whose
+/// top left is pixel ([x], [y]), which may lie outside the grid.
+@immutable
+class GridBlock {
+  const GridBlock(
+    this.x,
+    this.y,
+    this.colour, {
+    this.width = 1,
+    this.height = 1,
+  });
+
+  final int x, y, width, height;
+  final Color colour;
+}
+
+/// Loose blocks of pixels on a pixel-art grid of [dots] screen dots per
+/// pixel, starting on a whole dot as [PixelGrid] does: the reward effects
+/// around the pet (ADR-0019). Laid out the size of a [gridSize]-pixel square
+/// grid, so it lines up with the grid it sits on; it paints wherever its
+/// blocks are, inside or outside, and is never smoothed.
+class PixelBlocks extends LeafRenderObjectWidget {
+  const PixelBlocks({
+    super.key,
+    required this.blocks,
+    required this.dots,
+    required this.gridSize,
+  });
+
+  final List<GridBlock> blocks;
+  final int dots;
+  final int gridSize;
+
+  @override
+  RenderPixelBlocks createRenderObject(BuildContext context) =>
+      RenderPixelBlocks(
+        blocks: blocks,
+        dots: dots,
+        gridSize: gridSize,
+        devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
+      );
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderPixelBlocks renderObject,
+  ) => renderObject
+    ..blocks = blocks
+    ..dots = dots
+    ..gridSize = gridSize
+    ..devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+}
+
+class RenderPixelBlocks extends RenderBox {
+  RenderPixelBlocks({
+    required this._blocks,
+    required this._dots,
+    required this._gridSize,
+    required this._devicePixelRatio,
+  });
+
+  List<GridBlock> _blocks;
+  set blocks(List<GridBlock> value) {
+    if (identical(value, _blocks)) return;
+    _blocks = value;
+    markNeedsPaint();
+  }
+
+  int _dots;
+  set dots(int value) {
+    if (value == _dots) return;
+    _dots = value;
+    markNeedsLayout();
+  }
+
+  int _gridSize;
+  set gridSize(int value) {
+    if (value == _gridSize) return;
+    _gridSize = value;
+    markNeedsLayout();
+  }
+
+  double _devicePixelRatio;
+  set devicePixelRatio(double value) {
+    if (value == _devicePixelRatio) return;
+    _devicePixelRatio = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void performLayout() {
+    size = constraints.constrain(
+      Size.square((_gridSize * _dots).toDouble()) / _devicePixelRatio,
+    );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final start = offset + _toWholeDot(this, _devicePixelRatio);
+    final canvas = context.canvas
+      ..save()
+      ..translate(start.dx, start.dy)
+      // From here on, one unit is one screen dot.
+      ..scale(1 / _devicePixelRatio);
+    final paint = Paint()..isAntiAlias = false;
+    for (final b in _blocks) {
+      canvas.drawRect(
+        Rect.fromLTWH(
+          (b.x * _dots).toDouble(),
+          (b.y * _dots).toDouble(),
+          (b.width * _dots).toDouble(),
+          (b.height * _dots).toDouble(),
+        ),
+        paint..color = b.colour,
+      );
+    }
+    canvas.restore();
+  }
+}
+
 /// The dither behind sheets, dialogs and Moments (spec §9.3, ADR-0017):
 /// every other screen dot in [colour], in a checkerboard that starts on whole
 /// dots. It fills its parent and lets everything under it show through the

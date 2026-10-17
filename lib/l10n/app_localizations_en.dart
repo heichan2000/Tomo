@@ -730,4 +730,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dismiss => 'Dismiss';
+
+  @override
+  String beatGain(int exp) {
+    return '+$exp EXP';
+  }
+
+  @override
+  String beatLevelPlate(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String get beatTaskPlate => 'Task done';
 }

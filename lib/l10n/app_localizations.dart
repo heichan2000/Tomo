@@ -707,6 +707,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dismiss'**
   String get dismiss;
+
+  /// Rises beside the pet as a block or a task's bonus is counted (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'+{exp} EXP'**
+  String beatGain(int exp);
+
+  /// The plate under the EXP bar at a level-up (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}'**
+  String beatLevelPlate(int level);
+
+  /// The plate under the EXP bar when a task is marked done on Focus (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Task done'**
+  String get beatTaskPlate;
 }
 
 class _AppLocalizationsDelegate

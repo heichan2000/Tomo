@@ -802,5 +802,27 @@
   "dismiss": "Dismiss",
   "@dismiss": {
     "description": "Screen reader. The close (×) on a notice, such as Home's clock notice (approved on Tomo Pixel Screens)."
+  },
+  "beatGain": "+{exp} EXP",
+  "@beatGain": {
+    "description": "Rises beside the pet as a block or a task's bonus is counted (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "exp": {
+        "type": "int"
+      }
+    }
+  },
+  "beatLevelPlate": "Level {level}",
+  "@beatLevelPlate": {
+    "description": "The plate under the EXP bar at a level-up (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "beatTaskPlate": "Task done",
+  "@beatTaskPlate": {
+    "description": "The plate under the EXP bar when a task is marked done on Focus (approved on Tomo Pixel Screens)."
   }
 }

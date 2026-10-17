@@ -614,6 +614,18 @@ the 0.6 s cross-fade; the egg's 1-pixel shake stays.
 Moments use the **dither** behind them, not a tint; they may run past #12's
 1.5–3 s Moment budget where the ladder says so.
 
+**Built** in [Reward effects](https://github.com/heichan2000/Tomo/issues/71).
+`RunScript` (`tomo_core/pet/run_script.dart`) says what a run shows at each
+moment: the pet, the sparkles, confetti and shell in pet pixels, "+EXP", the
+plate, the bar, the dither and when the choices (or the naming) step in. Its
+confetti uses the prototypes' own random numbers, so it falls as approved; its
+colours are in `pet/reward_colours.dart`. In the app, `RunPlayer` and
+`SkipRun` (`lib/pet/run_player.dart`) play a run, one reward tap per beat,
+and report it finished or skipped; `RewardPet`, `RewardBar` and `DitherOver`
+(`lib/pet/reward_view.dart`) paint a frame. Every run, pet, stage, theme and
+motion setting is on the debug **Beats** screen (kit gallery). Approved by the
+user on the emulator. Its calls: C84–C92.
+
 ### 7.6 Ambient life
 
 From [The pet's ambient life outside sessions](https://github.com/heichan2000/Tomo/issues/31).
@@ -1562,6 +1574,15 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C81 | Home to a screen reader | The pet is one item (`srPet`, or `srEgg`); the name, bar and EXP line under it are hidden behind that item, so they aren't read twice. The level chip reads "Level 13. Stats" (`srLevelChip`), the gear "Settings", the clock notice's close "Dismiss". The egg line is read as written. The chip's target is 48 pt, larger than the chip. |
 | C82 | Where Calm pet is read | Once at start-up, then kept in `calmPetProvider`, whose `set` changes the pet at once and writes the setting (for *Stats and Settings*). |
 | C83 | The task picker before its ticket | A stand-in sheet (`TaskPickerPlaceholder`) opened by `openTaskPicker`; *Focus: the task picker and Ready* replaces it. *Start focusing* opens Focus instead whenever the cycle projects to anything but `idle` (C3). |
+| C84 | Lengths the ladder gives only roughly | As Tomo Pixel Screens plays them: block done 1.3 s, level-up 2.2 s, task done 2.45 s, evolution 4 s (reduced 2.7 s), hatch 3.7 s to the naming (reduced 4.3 s). The dither holds from one Moment to the next and goes 100 ms before the choices. The choices step up 4 UI pixels over 280 ms (reduced: a 150 ms cross-fade). |
+| C85 | The evolution's last ring of closing-in sparkles ran 80 ms into the flicker on the prototype | Cut at 0.6 s, so the flicker plays alone (ADR-0019). |
+| C86 | The pet once the choices are in | The screen's own look again (Resting on Focus), while the last beat's confetti finishes falling. A skip lands where everything is still. |
+| C87 | Confetti colours and the face | Never the face's marks: `E` (eyes) and `F` (Geode's near-black mouth, Lily's nose), which read as specks of dirt. Chosen by the user ([#71](https://github.com/heichan2000/Tomo/issues/71)), as on Tomo Pixel Screens. |
+| C88 | The bar in a block or bonus that reaches a new level | It fills to the end; the level-up empties and refills it. A first block of an hour or more fills it too, then the takeover clears it (C25). |
+| C89 | Where the effects sit among the chrome | Drawn in front of the pet, over the header but under the bar, the pet line and the buttons below it; the dither covers the chrome only (`DitherOver`). The plate hangs centred 10 UI pixels below the bar and its caption; "+EXP" starts 3 pixels right of the picture and 2 down from its top, kept 8 UI pixels from the screen's edge. As on Tomo Pixel Screens. |
+| C90 | The phone's haptics | `SystemHaptics` (`lib/platform/haptics.dart`): Flutter's own `HapticFeedback`, light impact for the reward tap, vibrate for the timer buzz. Built here for the reward tap; *Notifications and haptics on the phone* uses it for the buzz. |
+| C91 | Who speaks a run's one line | Not the player: Focus composes it from `RunFacts` and announces it as it starts the run. |
+| C92 | The three words the effects show | `beatGain` ("+250 EXP"), `beatLevelPlate` ("Level 13"), `beatTaskPlate` ("Task done"), from Tomo Pixel Screens (C37). |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

@@ -35,6 +35,7 @@ class PetView extends StatefulWidget {
     required this.semanticLabel,
     this.cues,
     this.beat,
+    this.shift = 0,
     this.elapsed,
   });
 
@@ -52,6 +53,10 @@ class PetView extends StatefulWidget {
   /// The beat playing, if any. A new one starts the face's movement over, so
   /// the block-done beat bobs even over a running block's Pleased.
   final Object? beat;
+
+  /// Slides the egg sideways by whole pixels, over its own wobble: the shake
+  /// before the hatch.
+  final int shift;
 
   /// The time since the pet appeared. Only tests set it; the pet's own
   /// stopwatch is used otherwise, so it never reads the time of day.
@@ -151,7 +156,11 @@ class _PetViewState extends State<PetView> {
     final art = artOf(look.species);
     final now = _now;
     final rows = switch (look) {
-      EggLook() => _eggRows(art, look.picture, _motion.eggShift(now)),
+      EggLook() => _eggRows(
+        art,
+        look.picture,
+        _motion.eggShift(now) + widget.shift,
+      ),
       HatchedLook() => _petRows(art, look.stage, _motion.pose(now)),
     };
     return Semantics(
