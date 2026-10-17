@@ -10,6 +10,7 @@ import 'package:tomo_core/notifications/notification_sync.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_service.dart';
+import 'package:tomo_core/tasks/task_status.dart';
 import 'package:tomo_core/testing.dart';
 
 /// The schedule against the stored cycle and pet: what the app calls on every
@@ -178,6 +179,9 @@ void main() {
   });
 
   test('a refused write does not sync', () async {
+    await db
+        .update(db.tasks)
+        .write(const TasksCompanion(status: Value(TaskStatus.done)));
     var calls = 0;
     final refused =
         await FocusCycleService(
@@ -186,7 +190,7 @@ void main() {
           afterWrite: () async => calls++,
         ).startBlock(
           taskId: taskId,
-          lengths: const BlockLengths(focusMinutes: 5, breakMinutes: 5),
+          lengths: const BlockLengths(focusMinutes: 25, breakMinutes: 5),
           autoStart: false,
         );
     await pumpEventQueue();
