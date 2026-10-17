@@ -8,6 +8,7 @@ import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
 import 'package:tomo_core/focus/projection.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
+import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/result.dart';
 
 import 'providers.dart';
@@ -66,6 +67,7 @@ Future<TomoStart> startTomo({
     Appearance.system,
     log,
   );
+  final calmPet = await _orDefault(settings.calmPet(), false, log);
 
   if (await database.start() == StorageStart.failed) {
     return StartFailed(appearance: appearance);
@@ -94,6 +96,7 @@ Future<TomoStart> startTomo({
       clockNotice = standing.clockNotice;
     }
     final species = await watchHatchedSpecies(database).first;
+    final pet = await PetReader(database).read();
 
     return Started(
       first: first,
@@ -106,6 +109,8 @@ Future<TomoStart> startTomo({
         startingAppearanceProvider.overrideWithValue(appearance),
         startingSpeciesProvider.overrideWithValue(species),
         startingClockNoticeProvider.overrideWithValue(clockNotice),
+        startingCalmPetProvider.overrideWithValue(calmPet),
+        startingPetProvider.overrideWithValue(pet),
       ],
     );
   } catch (error, stackTrace) {

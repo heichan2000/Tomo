@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +13,7 @@ import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/look/palette.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
 import 'package:tomo_core/pet/personality.dart';
+import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/testing.dart';
 
@@ -71,6 +74,7 @@ Future<TomoDatabase> pumpTomo(
       overrides: [
         ...ready.overrides,
         speciesChangesProvider.overrideWithValue(const Stream.empty()),
+        petChangesProvider.overrideWithValue(_petChanges.stream),
       ],
       child: TomoApp(first: ready.first),
     ),
@@ -82,12 +86,25 @@ Future<TomoDatabase> pumpTomo(
 
 final _open = <TomoDatabase>[];
 
+var _petChanges = StreamController<PetStanding?>.broadcast();
+
+/// Tells the app the pet or the cycle changed, as watching the database
+/// would: reads [db] on the real clock and hands the pet to Home.
+Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
+  final pet = await tester.runAsync(() => PetReader(db).read());
+  _petChanges.add(pet);
+  // One frame to deliver it, one to show it.
+  await tester.pump();
+  await tester.pump();
+}
+
 /// A widget test of the whole app. When [body] ends, the app is taken down
 /// and its database closed, inside the test.
 ///
 /// The database's work runs on the real clock ([WidgetTester.runAsync]): its
 /// watched queries never finish on a widget test's pretend one. So the pet's
-/// species is handed to the app at start-up and not watched afterwards.
+/// species is handed to the app at start-up and not watched afterwards, and
+/// the pet Home shows changes only when a test calls [petChanged].
 void testTomo(String description, WidgetTesterCallback body) =>
     testWidgets(description, (tester) async {
       try {
@@ -106,6 +123,7 @@ Future<void> _closeAll(WidgetTester tester) async {
     await tester.runAsync(db.close);
   }
   _open.clear();
+  await _petChanges.close();
+  _petChanges = StreamController<PetStanding?>.broadcast();
   await tester.pump();
 }
-

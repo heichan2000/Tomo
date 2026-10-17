@@ -47,7 +47,7 @@ final class CycleLedger {
   /// still owed, and discards a cycle whose start is in the future.
   Future<CycleStanding> reconcile(DateTime now) async {
     final row = await _db.select(_db.focusCycle).getSingleOrNull();
-    var cycle = row == null ? null : _live(row);
+    var cycle = row == null ? null : liveCycleOf(row);
     var projection = project(cycle, now);
 
     if (projection.effects.contains(FocusEffect.clockNotice)) {
@@ -135,7 +135,8 @@ String _localDate(DateTime instant, Duration offset) {
       '${two(local.month)}-${two(local.day)}';
 }
 
-LiveCycle _live(FocusCycleRow row) => LiveCycle(
+/// The stored `focus_cycle` row as a plain value.
+LiveCycle liveCycleOf(FocusCycleRow row) => LiveCycle(
   taskId: row.taskId,
   startAt: utcFromMs(row.startAt),
   endAt: utcFromMs(row.endAt),

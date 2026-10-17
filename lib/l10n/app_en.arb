@@ -763,5 +763,44 @@
   "defaultProject": "My work",
   "@defaultProject": {
     "description": "The name of the one project onboarding makes when the user skips \"What are you working on?\" (chosen by the user, spec §17)."
+  },
+  "startFocusing": "Start focusing",
+  "@startFocusing": {
+    "description": "Home's primary button, and Focus Ready's (approved on Tomo Pixel Screens)."
+  },
+  "levelChip": "Lv {level}",
+  "@levelChip": {
+    "description": "Home, the level chip at the top left that opens Stats (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "srLevelChip": "Level {level}. Stats",
+  "@srLevelChip": {
+    "description": "Screen reader. Home's level chip, which opens Stats.",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "expLine": "{exp} / 600 EXP",
+  "@expLine": {
+    "description": "Under the EXP bar: EXP toward the next level (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "exp": {
+        "type": "int"
+      }
+    }
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Screen reader. Home's gear, which opens Settings."
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Screen reader. The close (×) on a notice, such as Home's clock notice (approved on Tomo Pixel Screens)."
   }
 }

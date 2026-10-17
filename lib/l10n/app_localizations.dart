@@ -671,6 +671,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My work'**
   String get defaultProject;
+
+  /// Home's primary button, and Focus Ready's (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Start focusing'**
+  String get startFocusing;
+
+  /// Home, the level chip at the top left that opens Stats (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Lv {level}'**
+  String levelChip(int level);
+
+  /// Screen reader. Home's level chip, which opens Stats.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}. Stats'**
+  String srLevelChip(int level);
+
+  /// Under the EXP bar: EXP toward the next level (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{exp} / 600 EXP'**
+  String expLine(int exp);
+
+  /// Screen reader. Home's gear, which opens Settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// Screen reader. The close (×) on a notice, such as Home's clock notice (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
 }
 
 class _AppLocalizationsDelegate

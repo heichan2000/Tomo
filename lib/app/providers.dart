@@ -9,6 +9,7 @@ import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
 import 'package:tomo_core/pet/beat_queue.dart';
+import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/stats/stats.dart';
 import 'package:tomo_core/tasks/task_service.dart';
@@ -133,3 +134,43 @@ class ClockNotice extends Notifier<bool> {
   void show() => state = true;
   void dismiss() => state = false;
 }
+
+/// Settings → Calm pet (spec §7.7), as read at start-up and changed since.
+final calmPetProvider = NotifierProvider<CalmPet, bool>(CalmPet.new);
+
+final startingCalmPetProvider = Provider<bool>((ref) => _setAtStartUp());
+
+class CalmPet extends Notifier<bool> {
+  @override
+  bool build() => ref.read(startingCalmPetProvider);
+
+  /// Stills the pet at once and remembers the choice.
+  Future<void> set(bool value) {
+    state = value;
+    return ref.read(settingsProvider).setCalmPet(value);
+  }
+}
+
+/// The pet as Home shows it (spec §8.3), or null before onboarding. Read at
+/// start-up, so the first frame has the pet, then kept up to date from the
+/// database.
+final petStandingProvider = NotifierProvider<PetStandingNow, PetStanding?>(
+  PetStandingNow.new,
+);
+
+final startingPetProvider = Provider<PetStanding?>((ref) => _setAtStartUp());
+
+class PetStandingNow extends Notifier<PetStanding?> {
+  @override
+  PetStanding? build() {
+    final changes = ref.watch(petChangesProvider).listen((pet) => state = pet);
+    ref.onDispose(changes.cancel);
+    return ref.read(startingPetProvider);
+  }
+}
+
+/// Where [PetStandingNow] hears of a change: the database. Widget tests of
+/// the whole app replace it, as with [speciesChangesProvider].
+final petChangesProvider = Provider<Stream<PetStanding?>>(
+  (ref) => PetReader(ref.watch(databaseProvider)).watch(),
+);

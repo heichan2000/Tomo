@@ -706,4 +706,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get defaultProject => 'My work';
+
+  @override
+  String get startFocusing => 'Start focusing';
+
+  @override
+  String levelChip(int level) {
+    return 'Lv $level';
+  }
+
+  @override
+  String srLevelChip(int level) {
+    return 'Level $level. Stats';
+  }
+
+  @override
+  String expLine(int exp) {
+    return '$exp / 600 EXP';
+  }
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get dismiss => 'Dismiss';
 }
