@@ -1224,6 +1224,15 @@ during a running block, ordinary UI, permission denial. No settings row; reduce
 motion and Calm pet don't affect haptics. **Nothing may rely on a haptic as its
 only channel.** No haptics package.
 
+**Built** in [Notifications and haptics on the phone](https://github.com/heichan2000/Tomo/issues/72):
+`NotificationSync` in core (`notifications/notification_sync.dart`), run by
+both services after every write and by `NotificationWatch`
+(`lib/app/notification_watch.dart`) on every lifecycle change;
+`PhoneNotifications` and `PhonePermission` in `lib/platform/notifications.dart`;
+`notificationAccessProvider` for Ready and the bell (`ask()`, `openSettings()`,
+re-read on resume). The timer buzz is `SystemHaptics` with `Haptic.timerBuzz`;
+Focus fires it, from `hapticFor`. Its calls: C93–C100.
+
 ---
 
 ## 12. Accessibility and localisation
@@ -1583,6 +1592,14 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C90 | The phone's haptics | `SystemHaptics` (`lib/platform/haptics.dart`): Flutter's own `HapticFeedback`, light impact for the reward tap, vibrate for the timer buzz. Built here for the reward tap; *Notifications and haptics on the phone* uses it for the buzz. |
 | C91 | Who speaks a run's one line | Not the player: Focus composes it from `RunFacts` and announces it as it starts the run. |
 | C92 | The three words the effects show | `beatGain` ("+250 EXP"), `beatLevelPlate` ("Level 13"), `beatTaskPlate` ("Task done"), from Tomo Pixel Screens (C37). |
+| C93 | What the sync reads, and when | `NotificationSync` (core) reads the stored cycle, its task and the pet, and never settles: whoever opens Tomo next does that. A cycle whose start is after now (the clock moved back) announces nothing, because the next open discards it. Both services take an `afterWrite` hook, run unawaited after every write that commits; the app passes the sync. Syncs run one at a time, so the last reflects the last write. A phone that refuses is recorded as `notificationSyncFailed`. |
+| C94 | What counts as "in the foreground" | Flutter's *resumed* and *inactive* (Tomo still in view, under the notification shade or beside another app), and the moment before the first frame. *Hidden*, *paused* and *detached* are the background. Opening Tomo syncs once, which clears what was delivered. |
+| C95 | Telling a dismissed permission dialog from a refusal on Android | Android's own rationale flag, true only after a real refusal, read through a `tomo/notifications` channel in `MainActivity` (which also gives the Android version). A refusal is remembered in the device-only file; a dismissal isn't, so the next start asks again. Android 12 and older never ask: notifications on is granted, off is denied. Accepted: notifications turned off in the phone's settings before Tomo ever asked look like a dismissal, so Ready keeps the framing line and Start shows no dialog. |
+| C96 | The status-bar icon | The Tomo egg in one colour with the crack cut out, filling 24 dp, edges rounded to whole dots at each density (`ic_notification`, written by `tool/app_icon.dart`). Android paints it in its own colour; Tomo sets none. |
+| C97 | The Android notification's other settings | Priority high (to match the channel on old Android), no category (so Do Not Disturb treats it as an ordinary notification, not an alarm), auto-cancel on tap, no colour, no actions. |
+| C98 | The channels' names in the copy file | `channelFocusBlock`, `channelFocusBlockAbout`, `channelBreak`, `channelBreakAbout`, with the spec's words. |
+| C99 | A tap while Tomo is running, and Focus already open | The tap brings the cycle up to now first, then opens Focus only if its cycle is still the live one and Focus isn't already in the stack (`FocusRouteObserver`). A tap that starts Tomo needs nothing: the cold start already opens Focus on a live cycle. |
+| C100 | Running the notification checks on a phone | Debug builds: kit gallery → *Notification check*. It shows the permission, whether alarms can be exact and what is pending, and starts blocks to leave running: 10 and 35 minutes through the service, and 1 minute written directly under the 10-minute floor (it credits the pet its minute). |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
