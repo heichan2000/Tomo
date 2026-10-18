@@ -139,7 +139,7 @@
       }
     }
   },
-  "taskDoneChattyTaskTotal": "{species, select, geode{{task} is done. {taskMinutesWords} minutes are in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes.} lily{You finished {task}, all {taskBlocks} blocks of it. Feels good, doesn't it?} other{}}",
+  "taskDoneChattyTaskTotal": "{species, select, geode{{task} is done. {taskMinutesWords} minutes are in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes.} lily{{taskBlocks, plural, =1{You finished {task} in just one block. Feels good, doesn't it?} other{You finished {task}, all {taskBlocks} blocks of it. Feels good, doesn't it?}}} other{}}",
   "@taskDoneChattyTaskTotal": {
     "description": "Pet voice, Chatty. Task done, when the task has focus time.",
     "placeholders": {
@@ -313,7 +313,7 @@
       }
     }
   },
-  "estimate": "{species, select, geode{Every planned block is here.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}.} lily{That's all {estimate} {estimate, plural, =1{block} other{blocks}} you planned for it.} other{}}",
+  "estimate": "{species, select, geode{Every planned block is here.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}.} lily{{estimate, plural, =1{That's the one block you planned for it.} other{That's all {estimate} blocks you planned for it.}}} other{}}",
   "@estimate": {
     "description": "Pet voice. The estimate card's fact line.",
     "placeholders": {
@@ -480,13 +480,25 @@
   },
   "delTask": "\"{task}\" and its notes go for good. The {minutes} minutes you focused on it stay in your stats.",
   "@delTask": {
-    "description": "Plain voice. Delete task sheet, with focus time.",
+    "description": "Plain voice. Delete task sheet, with under an hour of focus time.",
     "placeholders": {
       "task": {
         "type": "String"
       },
       "minutes": {
         "type": "int"
+      }
+    }
+  },
+  "delTaskLong": "\"{task}\" and its notes go for good. The {duration} you focused on it stays in your stats.",
+  "@delTaskLong": {
+    "description": "Plain voice. Delete task sheet, with an hour or more of focus time. {duration} is written as on Stats (\"6 h 40 min\").",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
       }
     }
   },
@@ -508,7 +520,7 @@
       }
     }
   },
-  "delProj": "{count, plural, =1{Its 1 task goes with it, for good.} other{Its {count} tasks go with it, for good.}} The {duration} you focused on them stays in your stats.",
+  "delProj": "{count, plural, =1{Its 1 task goes with it, for good. The {duration} you focused on it stays in your stats.} other{Its {count} tasks go with it, for good. The {duration} you focused on them stays in your stats.}}",
   "@delProj": {
     "description": "Plain voice. Delete project sheet, with tasks. {duration} is written as on Stats (\"6 h 40 min\").",
     "placeholders": {
@@ -517,6 +529,15 @@
       },
       "duration": {
         "type": "String"
+      }
+    }
+  },
+  "delProjNoFocus": "{count, plural, =1{Its 1 task goes with it, for good. It has no focus time, so your stats don't change.} other{Its {count} tasks go with it, for good. They have no focus time, so your stats don't change.}}",
+  "@delProjNoFocus": {
+    "description": "Plain voice. Delete project sheet, with tasks but no focus time.",
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
     }
   },
@@ -611,6 +632,39 @@
   "@customChip": {
     "description": "Plain voice. Length chip, while a custom pair is chosen.",
     "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "focusTimeMinutes": "{minutes} min",
+  "@focusTimeMinutes": {
+    "description": "Plain voice. Focus time under an hour, as on Stats (\"15 min\").",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "focusTimeHours": "{hours} h",
+  "@focusTimeHours": {
+    "description": "Plain voice. Focus time in whole hours (\"2 h\").",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "focusTimeHoursMinutes": "{hours} h {minutes} min",
+  "@focusTimeHoursMinutes": {
+    "description": "Plain voice. Focus time of an hour or more, as on Stats (\"26 h 40 min\").",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
       "minutes": {
         "type": "int"
       }

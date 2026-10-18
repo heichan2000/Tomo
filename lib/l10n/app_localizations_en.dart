@@ -158,15 +158,21 @@ class AppLocalizationsEn extends AppLocalizations {
       other: 'blocks',
       one: 'block',
     );
-    String _temp1 = intl.Intl.selectLogic(species, {
+    String _temp1 = intl.Intl.pluralLogic(
+      taskBlocks,
+      locale: localeName,
+      other:
+          'You finished $task, all $taskBlocks blocks of it. Feels good, doesn\'t it?',
+      one: 'You finished $task in just one block. Feels good, doesn\'t it?',
+    );
+    String _temp2 = intl.Intl.selectLogic(species, {
       'geode':
           '$task is done. $taskMinutesWords minutes are in it, and they stay.',
       'joe': 'Done: $task! $taskBlocks $_temp0, $taskMinutes minutes.',
-      'lily':
-          'You finished $task, all $taskBlocks blocks of it. Feels good, doesn\'t it?',
+      'lily': '$_temp1',
       'other': '',
     });
-    return '$_temp1';
+    return '$_temp2';
   }
 
   @override
@@ -378,13 +384,13 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp1 = intl.Intl.pluralLogic(
       estimate,
       locale: localeName,
-      other: 'blocks',
-      one: 'block',
+      other: 'That\'s all $estimate blocks you planned for it.',
+      one: 'That\'s the one block you planned for it.',
     );
     String _temp2 = intl.Intl.selectLogic(species, {
       'geode': 'Every planned block is here.',
       'joe': '$estimate of $estimate planned $_temp0.',
-      'lily': 'That\'s all $estimate $_temp1 you planned for it.',
+      'lily': '$_temp1',
       'other': '',
     });
     return '$_temp2';
@@ -543,6 +549,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String delTaskLong(String task, String duration) {
+    return '\"$task\" and its notes go for good. The $duration you focused on it stays in your stats.';
+  }
+
+  @override
   String delTaskNone(String task) {
     return '\"$task\" and its notes go for good. It has no focus time, so your stats don\'t change.';
   }
@@ -557,10 +568,24 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Its $count tasks go with it, for good.',
-      one: 'Its 1 task goes with it, for good.',
+      other:
+          'Its $count tasks go with it, for good. The $duration you focused on them stays in your stats.',
+      one:
+          'Its 1 task goes with it, for good. The $duration you focused on it stays in your stats.',
     );
-    return '$_temp0 The $duration you focused on them stays in your stats.';
+    return '$_temp0';
+  }
+
+  @override
+  String delProjNoFocus(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Its $count tasks go with it, for good. They have no focus time, so your stats don\'t change.',
+      one: 'Its 1 task goes with it, for good. It has no focus time, so your stats don\'t change.',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -634,6 +659,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String customChip(int minutes) {
     return 'Custom · $minutes min';
+  }
+
+  @override
+  String focusTimeMinutes(int minutes) {
+    final intl.NumberFormat minutesNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String minutesString = minutesNumberFormat.format(minutes);
+
+    return '$minutesString min';
+  }
+
+  @override
+  String focusTimeHours(int hours) {
+    final intl.NumberFormat hoursNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String hoursString = hoursNumberFormat.format(hours);
+
+    return '$hoursString h';
+  }
+
+  @override
+  String focusTimeHoursMinutes(int hours, int minutes) {
+    final intl.NumberFormat hoursNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String hoursString = hoursNumberFormat.format(hours);
+
+    return '$hoursString h $minutes min';
   }
 
   @override

@@ -247,6 +247,118 @@ void main() {
     );
   });
 
+  // The cases the script had no line for, worded by the user in
+  // https://github.com/heichan2000/Tomo/issues/85.
+  group('lines added after the script', () {
+    test('task done in one block: each pet counts it', () {
+      const oneBlock = TaskDoneMoment(
+        task: task,
+        taskBlocks: 1,
+        taskMinutes: 25,
+      );
+
+      expect(
+        chatty(oneBlock, lily),
+        "You finished Write the intro in just one block. Feels good, doesn't "
+        'it?',
+      );
+      expect(
+        chatty(oneBlock, joe),
+        'Done: Write the intro! 1 block, 25 minutes.',
+      );
+      expect(
+        chatty(oneBlock, geode),
+        'Write the intro is done. Twenty-five minutes are in it, and they '
+        'stay.',
+      );
+    });
+
+    test('the estimate card, when the plan was one block', () {
+      const one = EstimateMoment(estimate: 1);
+
+      expect(
+        [quiet(one, geode), quiet(one, joe), quiet(one, lily)],
+        [
+          'Every planned block is here.',
+          '1 of 1 planned block.',
+          "That's the one block you planned for it.",
+        ],
+      );
+    });
+
+    test('deleting a task: minutes under an hour, hours from an hour up', () {
+      String body(int minutes) =>
+          deleteTaskBody(l, task: 'Email Sam', minutes: minutes);
+
+      expect(
+        body(0),
+        '"Email Sam" and its notes go for good. It has no focus time, so '
+        "your stats don't change.",
+      );
+      expect(
+        body(25),
+        '"Email Sam" and its notes go for good. The 25 minutes you focused '
+        'on it stay in your stats.',
+      );
+      expect(
+        body(59),
+        '"Email Sam" and its notes go for good. The 59 minutes you focused '
+        'on it stay in your stats.',
+      );
+      expect(
+        body(60),
+        '"Email Sam" and its notes go for good. The 1 h you focused on it '
+        'stays in your stats.',
+      );
+      expect(
+        body(400),
+        '"Email Sam" and its notes go for good. The 6 h 40 min you focused '
+        'on it stays in your stats.',
+      );
+    });
+
+    test('deleting a project', () {
+      String body(int tasks, int minutes) =>
+          deleteProjectBody(l, tasks: tasks, minutes: minutes);
+
+      expect(body(0, 0), 'It has no tasks, so nothing else changes.');
+      expect(
+        body(7, 0),
+        'Its 7 tasks go with it, for good. They have no focus time, so your '
+        "stats don't change.",
+      );
+      expect(
+        body(1, 0),
+        'Its 1 task goes with it, for good. It has no focus time, so your '
+        "stats don't change.",
+      );
+      expect(
+        body(7, 400),
+        'Its 7 tasks go with it, for good. The 6 h 40 min you focused on '
+        'them stays in your stats.',
+      );
+      expect(
+        body(1, 25),
+        'Its 1 task goes with it, for good. The 25 min you focused on it '
+        'stays in your stats.',
+      );
+    });
+  });
+
+  group('focus time, written as on Stats', () {
+    test('minutes, whole hours, and hours with minutes', () {
+      expect(focusTime(l, 15), '15 min');
+      expect(focusTime(l, 59), '59 min');
+      expect(focusTime(l, 120), '2 h');
+      expect(focusTime(l, 1600), '26 h 40 min');
+      expect(focusTime(l, 61), '1 h 1 min');
+    });
+
+    test('long totals group their digits', () {
+      expect(focusTime(l, 1234 * 60 + 5), '1,234 h 5 min');
+    });
+  });
+
   group('Chatty falls back to Quiet when its detail is not true', () {
     test("block done on a task's first block", () {
       const first = BlockDoneMoment(
@@ -271,26 +383,6 @@ void main() {
       for (final species in Species.values) {
         expect(chatty(untouched, species), quiet(untouched, species));
       }
-    });
-
-    test('Lily cannot say "all 1 blocks of it"; the other two can count '
-        'one block', () {
-      const oneBlock = TaskDoneMoment(
-        task: task,
-        taskBlocks: 1,
-        taskMinutes: 25,
-      );
-
-      expect(chatty(oneBlock, lily), quiet(oneBlock, lily));
-      expect(
-        chatty(oneBlock, joe),
-        'Done: Write the intro! 1 block, 25 minutes.',
-      );
-      expect(
-        chatty(oneBlock, geode),
-        'Write the intro is done. Twenty-five minutes are in it, and they '
-        'stay.',
-      );
     });
 
     test('a break after midnight, with nothing finished yet today', () {
@@ -501,6 +593,22 @@ void main() {
       );
     });
 
+    test('the first block under auto-start still speaks of the hatch, and '
+        'not the break (#85)', () {
+      expect(
+        bodies(
+          NotificationKind.blockCompleteBreakBegun,
+          beforeHatch: true,
+          focusMinutes: 15,
+        ),
+        bodies(
+          NotificationKind.blockComplete,
+          beforeHatch: true,
+          focusMinutes: 15,
+        ),
+      );
+    });
+
     test("the title is the pet's name", () {
       expect(
         notificationText(l, notification(NotificationKind.blockComplete)).title,
@@ -581,14 +689,6 @@ void main() {
         'first.',
       );
       expect(l.customChip(15), 'Custom · 15 min');
-    });
-
-    test('a project with one task', () {
-      expect(
-        l.delProj(1, '25 min'),
-        'Its 1 task goes with it, for good. The 25 min you focused on them '
-        'stays in your stats.',
-      );
     });
 
     test('the lock lines end the same way', () {
@@ -737,6 +837,8 @@ void main() {
       'delProjTitle',
       'delProj',
       'delProjNone',
+      'delProjNoFocus',
+      'delTaskLong',
       'lockTask',
       'lockProject',
       'emptyProjectsTitle',

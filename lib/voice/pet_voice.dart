@@ -158,6 +158,41 @@ String petLine(
   return (title: title, body: body);
 }
 
+/// A length of focus time, written as Stats writes it (spec §8.9): "15 min"
+/// under an hour, then "2 h" or "26 h 40 min".
+String focusTime(AppLocalizations l, int minutes) {
+  final hours = minutes ~/ 60;
+  final rest = minutes % 60;
+  if (hours == 0) return l.focusTimeMinutes(minutes);
+  if (rest == 0) return l.focusTimeHours(hours);
+  return l.focusTimeHoursMinutes(hours, rest);
+}
+
+/// The delete-task sheet's body: what goes, and that focus time stays.
+/// Under an hour it counts minutes, as the script does; from an hour up it
+/// writes the time as Stats does (#85).
+String deleteTaskBody(
+  AppLocalizations l, {
+  required String task,
+  required int minutes,
+}) {
+  if (minutes == 0) return l.delTaskNone(task);
+  if (minutes < 60) return l.delTask(task, minutes);
+  return l.delTaskLong(task, focusTime(l, minutes));
+}
+
+/// The delete-project sheet's body. [tasks] counts every task in the project,
+/// done ones too; [minutes] is the focus time on them.
+String deleteProjectBody(
+  AppLocalizations l, {
+  required int tasks,
+  required int minutes,
+}) {
+  if (tasks == 0) return l.delProjNone;
+  if (minutes == 0) return l.delProjNoFocus(tasks);
+  return l.delProj(tasks, focusTime(l, minutes));
+}
+
 /// What a screen reader speaks once, at the start of a run (spec §10.4):
 /// plain facts first, then the pet's name and the line it shows.
 ///
