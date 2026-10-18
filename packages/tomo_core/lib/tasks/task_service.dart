@@ -83,6 +83,14 @@ abstract interface class TaskService {
 
   /// [watchProjects]'s list, read once, for the task picker.
   Future<List<Project>> projects();
+
+  /// The task the live cycle is on, and its project; null without a cycle.
+  Future<CycleTask?> cycleTask();
+
+  /// [cycleTask] now and each time the cycle, the task or its project
+  /// changes: a rename or a move while Focus is minimised shows on the
+  /// banner.
+  Stream<CycleTask?> watchCycleTask();
 }
 
 final class _DriftTaskService implements TaskService {
@@ -325,6 +333,23 @@ final class _DriftTaskService implements TaskService {
           (t) => OrderingTerm.desc(t.createdAt),
           (t) => OrderingTerm.desc(t.id),
         ]);
+
+  @override
+  Future<CycleTask?> cycleTask() => _cycleTask().getSingleOrNull();
+
+  @override
+  Stream<CycleTask?> watchCycleTask() => _cycleTask().watchSingleOrNull();
+
+  Selectable<CycleTask> _cycleTask() =>
+      (_db.select(_db.focusCycle).join([
+        innerJoin(_db.tasks, _db.tasks.id.equalsExp(_db.focusCycle.taskId)),
+        innerJoin(_db.projects, _db.projects.id.equalsExp(_db.tasks.projectId)),
+      ])).map(
+        (row) => CycleTask(
+          _task(row.readTable(_db.tasks)),
+          _project(row.readTable(_db.projects)),
+        ),
+      );
 
   @override
   Stream<Task?> watchTask(int id) =>

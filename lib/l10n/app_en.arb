@@ -956,5 +956,120 @@
   "statusDoing": "Doing",
   "@statusDoing": {
     "description": "The chip on a doing task's row (approved on Tomo Task Screens)."
+  },
+  "minimise": "Minimise",
+  "@minimise": {
+    "description": "Screen reader. The chevron at Focus's top left while a cycle is live: back to the app, with the banner (approved on Tomo Pixel Screens)."
+  },
+  "clockLeft": "about {minutes} min left",
+  "@clockLeft": {
+    "description": "Focus, a block running: the quiet clock, in rough minutes (ADR-0010, approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "clockUnderMinute": "under a minute left",
+  "@clockUnderMinute": {
+    "description": "Focus, a block's last minute: the quiet clock (ADR-0010). Also the banner's."
+  },
+  "restLeft": "about {minutes} min of rest left",
+  "@restLeft": {
+    "description": "Focus, a break running: the quiet clock (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "restUnderMinute": "under a minute of rest left",
+  "@restUnderMinute": {
+    "description": "Focus, a break's last minute: the quiet clock (spec §17 small call, after ADR-0010's 'under a minute left')."
+  },
+  "chipFocus": "Focus",
+  "@chipFocus": {
+    "description": "Focus, a block running: the accent chip under the progress line (approved on Tomo Pixel Screens)."
+  },
+  "chipBreak": "Break",
+  "@chipBreak": {
+    "description": "Focus, a break running: the muted chip under the progress line (approved on Tomo Pixel Screens)."
+  },
+  "stopEarly": "Stop early",
+  "@stopEarly": {
+    "description": "Focus, a block running: the quiet button at the bottom, and the destructive button on the Stop this block? sheet (approved on Tomo Pixel Screens)."
+  },
+  "keepGoing": "Keep going",
+  "@keepGoing": {
+    "description": "The Stop this block? sheet: the primary button, which closes it (approved on Tomo Pixel Screens)."
+  },
+  "skipBreak": "Skip break",
+  "@skipBreak": {
+    "description": "Focus, a break running: ends it now; lands on Break over (approved on Tomo Pixel Screens)."
+  },
+  "startNow": "Start now",
+  "@startNow": {
+    "description": "Focus, next block in 10: starts the block at once (approved on Tomo Pixel Screens)."
+  },
+  "notYet": "Not yet",
+  "@notYet": {
+    "description": "Focus, next block in 10: stops the countdown and stays on Break over (approved on Tomo Pixel Screens)."
+  },
+  "bannerLeft": "{minutes} min left",
+  "@bannerLeft": {
+    "description": "The running banner, under the task, while a block runs (ADR-0010, approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bannerBreak": "Break · about {minutes} min",
+  "@bannerBreak": {
+    "description": "The running banner, under the task, while a break runs (spec §8.4).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bannerBreakUnderMinute": "Break · under a minute",
+  "@bannerBreakUnderMinute": {
+    "description": "The running banner, a break's last minute (spec §17 small call)."
+  },
+  "bannerBlockDone": "Block done · {minutes} min counted",
+  "@bannerBlockDone": {
+    "description": "The finished banner: a block ended while Focus was minimised; its beat waits for the tap (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bannerBreakOver": "Break over",
+  "@bannerBreakOver": {
+    "description": "The finished banner: the break ended while Focus was minimised (spec §8.3)."
+  },
+  "srClockUnderMinute": "Under a minute left on {task}.",
+  "@srClockUnderMinute": {
+    "description": "Screen reader. The quiet clock in a block's last minute, read when touched (spec §17 small call, after srClock).",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "srRest": "About {minutes} {minutes, plural, =1{minute} other{minutes}} of rest left.",
+  "@srRest": {
+    "description": "Screen reader. The quiet clock during a break, read when touched (spec §17 small call, after srClock).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "srRestUnderMinute": "Under a minute of rest left.",
+  "@srRestUnderMinute": {
+    "description": "Screen reader. The quiet clock in a break's last minute (spec §17 small call)."
   }
 }

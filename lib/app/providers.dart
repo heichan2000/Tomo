@@ -15,6 +15,7 @@ import 'package:tomo_core/pet/beat_queue.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/stats/stats.dart';
+import 'package:tomo_core/tasks/task.dart';
 import 'package:tomo_core/tasks/task_service.dart';
 
 import '../platform/haptics.dart';
@@ -254,4 +255,32 @@ class PetStandingNow extends Notifier<PetStanding?> {
 /// the whole app replace it, as with [speciesChangesProvider].
 final petChangesProvider = Provider<Stream<PetStanding?>>(
   (ref) => PetReader(ref.watch(databaseProvider)).watch(),
+);
+
+/// The task the live cycle is on, and its project (Focus's header, the
+/// banner), or null with no cycle. Read at start-up, so a cold start onto
+/// Focus has its header, then kept up to date from the database.
+final cycleTaskProvider = NotifierProvider<CycleTaskNow, CycleTask?>(
+  CycleTaskNow.new,
+);
+
+final startingCycleTaskProvider = Provider<CycleTask?>(
+  (ref) => _setAtStartUp(),
+);
+
+class CycleTaskNow extends Notifier<CycleTask?> {
+  @override
+  CycleTask? build() {
+    final changes = ref
+        .watch(cycleTaskChangesProvider)
+        .listen((task) => state = task);
+    ref.onDispose(changes.cancel);
+    return ref.read(startingCycleTaskProvider);
+  }
+}
+
+/// Where [CycleTaskNow] hears of a change: the database. Widget tests of the
+/// whole app replace it, as with [speciesChangesProvider].
+final cycleTaskChangesProvider = Provider<Stream<CycleTask?>>(
+  (ref) => ref.watch(taskServiceProvider).watchCycleTask(),
 );

@@ -47,10 +47,8 @@ void finishOnboarding(BuildContext context) => Navigator.of(
 /// Opens Focus as a takeover above the shell, over the tab bar (spec §8.1,
 /// ADR-0003): on Ready with the task [ready], or on the live cycle. Minimise,
 /// *Leave*, *Close* and *Stop early* close it again.
-void openFocus(BuildContext context, {PickedTask? ready}) => Navigator.of(
-  context,
-  rootNavigator: true,
-).push(_focusRoute(ready: ready));
+void openFocus(BuildContext context, {PickedTask? ready}) =>
+    Navigator.of(context, rootNavigator: true).push(_focusRoute(ready: ready));
 
 /// Home's *Start focusing* with no cycle live: the task picker (spec §8.1),
 /// and Focus on Ready once a task is picked.

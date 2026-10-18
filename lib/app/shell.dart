@@ -16,6 +16,7 @@ import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
 import 'placeholder_screens.dart';
 import 'routes.dart';
+import 'running_banner.dart';
 
 /// The two tabs (spec §8.1).
 enum ShellTab { home, work }
@@ -132,16 +133,6 @@ class _TabStack extends StatelessWidget {
       ),
     ),
   );
-}
-
-/// Where the running-block banner docks, above the tab bar on every tab
-/// (spec §8.1, §8.3). Empty until *Focus: running, the break, Stop early and
-/// the banner* fills it.
-class RunningBannerSlot extends StatelessWidget {
-  const RunningBannerSlot({super.key});
-
-  @override
-  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 /// Lays the tabs' screens above the banner and the tab bar. When the

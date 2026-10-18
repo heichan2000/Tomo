@@ -50,16 +50,24 @@ class WorkPlaceholder extends StatelessWidget {
   );
 }
 
-/// Stands in for Focus's live states, a takeover over the tab bar, until
-/// *Focus: running, the break, Stop early and the banner* builds them.
-class FocusPlaceholder extends StatelessWidget {
-  const FocusPlaceholder({super.key});
+/// Stands in for what Focus shows when a block or a break ends, until
+/// *Focus: block done, break over and the choices* builds it: [title], and
+/// a button for each of [actions] (a null action is turned off).
+class FocusAfterPlaceholder extends StatelessWidget {
+  const FocusAfterPlaceholder({
+    super.key,
+    required this.title,
+    required this.header,
+    required this.actions,
+  });
+
+  final String title;
+  final Widget header;
+  final List<(String, VoidCallback?)> actions;
 
   @override
-  Widget build(BuildContext context) => _Placeholder(
-    title: 'Focus',
-    actions: [('Minimise', () => Navigator.of(context).pop())],
-  );
+  Widget build(BuildContext context) =>
+      _Placeholder(title: title, header: header, actions: actions);
 }
 
 class _Pushed extends StatelessWidget {
@@ -79,10 +87,11 @@ class _Pushed extends StatelessWidget {
 }
 
 class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.title, required this.actions});
+  const _Placeholder({required this.title, required this.actions, this.header});
 
   final String title;
-  final List<(String, VoidCallback)> actions;
+  final List<(String, VoidCallback?)> actions;
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +106,10 @@ class _Placeholder extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (header case final header?) ...[
+                header,
+                SizedBox(height: u(6)),
+              ],
               PixelText(title, step: TypeStep.title),
               SizedBox(height: u(2)),
               PixelText(

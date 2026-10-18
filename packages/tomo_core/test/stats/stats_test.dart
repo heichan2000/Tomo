@@ -212,4 +212,34 @@ void main() {
     expect(after.blocksFinished, before.blocksFinished);
     expect(after.daysFocused, before.daysFocused);
   });
+
+  group('the day so far, for the Chatty break lines', () {
+    test('the blocks and minutes that ended on the local day of now', () async {
+      await threeBlocks();
+
+      // 09:00 local on the 10th.
+      final tenth = await stats.dayOf(
+        DateTime.utc(2026, 10, 10, 1),
+        utcOffsetAt: (_) => eightHoursAhead,
+      );
+      expect((tenth.blocks, tenth.minutes), (2, 75));
+
+      // 23:00 UTC on the 10th is already the 11th locally.
+      final eleventh = await stats.dayOf(
+        DateTime.utc(2026, 10, 10, 23),
+        utcOffsetAt: (_) => eightHoursAhead,
+      );
+      expect((eleventh.blocks, eleventh.minutes), (1, 50));
+    });
+
+    test('nothing finished that day is nothing', () async {
+      await threeBlocks();
+
+      final day = await stats.dayOf(
+        DateTime.utc(2026, 10, 20, 1),
+        utcOffsetAt: (_) => eightHoursAhead,
+      );
+      expect((day.blocks, day.minutes), (0, 0));
+    });
+  });
 }

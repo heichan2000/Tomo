@@ -9,6 +9,9 @@ import 'projection.dart';
 /// The phone's UTC offset at [instant], for the local day a block ended in.
 typedef UtcOffsetAt = Duration Function(DateTime instant);
 
+/// The phone's own UTC offset at [instant].
+Duration phoneUtcOffsetAt(DateTime instant) => instant.toLocal().timeZoneOffset;
+
 /// Where the focus cycle stands after a command or a look.
 final class CycleStanding {
   const CycleStanding({
@@ -32,13 +35,10 @@ final class CycleStanding {
 /// go through it, so a finished block is settled the same way whoever notices.
 final class CycleLedger {
   CycleLedger(this._db, {UtcOffsetAt? utcOffsetAt})
-    : _utcOffsetAt = utcOffsetAt ?? _phoneUtcOffsetAt;
+    : _utcOffsetAt = utcOffsetAt ?? phoneUtcOffsetAt;
 
   final TomoDatabase _db;
   final UtcOffsetAt _utcOffsetAt;
-
-  static Duration _phoneUtcOffsetAt(DateTime instant) =>
-      instant.toLocal().timeZoneOffset;
 
   /// Ends the cycle: back to idle. An unseen beat run goes with it.
   Future<void> end() => _db.delete(_db.focusCycle).go();
@@ -85,7 +85,7 @@ final class CycleLedger {
             startedAt: epochMs(cycle.startAt),
             endedAt: epochMs(cycle.endAt),
             minutes: minutes,
-            localDate: _localDate(cycle.endAt, offset),
+            localDate: localDateAt(cycle.endAt, offset),
             utcOffsetMinutes: offset.inMinutes,
             expGranted: exp,
             petExpAfter: expAfter,
@@ -125,14 +125,6 @@ final class CycleLedger {
 
   Future<TaskRow> taskRow(int id) =>
       (_db.select(_db.tasks)..where((t) => t.id.equals(id))).getSingle();
-}
-
-/// The calendar day, `YYYY-MM-DD`, that [instant] falls on at [offset].
-String _localDate(DateTime instant, Duration offset) {
-  final local = instant.toUtc().add(offset);
-  String two(int n) => n.toString().padLeft(2, '0');
-  return '${local.year.toString().padLeft(4, '0')}-'
-      '${two(local.month)}-${two(local.day)}';
 }
 
 /// The stored `focus_cycle` row as a plain value.

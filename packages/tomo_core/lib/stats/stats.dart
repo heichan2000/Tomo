@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 
+import '../data/instants.dart';
 import '../data/tomo_database.dart';
+import '../focus/cycle_ledger.dart';
 import '../rewards/rewards.dart';
 
 /// The four all-time numbers on the Stats screen (spec §8.9, ADR-0026).
@@ -21,6 +23,14 @@ final class Stats {
   /// Local days with at least one finished block, by the day it ended. It
   /// only grows: there is no streak to lose.
   final int daysFocused;
+}
+
+/// The blocks finished on one local day, and their minutes.
+final class DayTotals {
+  const DayTotals({required this.blocks, required this.minutes});
+
+  final int blocks;
+  final int minutes;
 }
 
 /// Counts the Stats numbers fresh, every time, from the block records.
@@ -47,6 +57,28 @@ final class StatsReader {
       minutesFocused: totals.read(minutes) ?? 0,
       blocksFinished: totals.read(blocks) ?? 0,
       daysFocused: totals.read(days) ?? 0,
+    );
+  }
+
+  /// The blocks that ended on the local day [now] falls on, by the day each
+  /// block stored at its settle: what the pet's Chatty break lines call
+  /// today. Not a Stats number (ADR-0026).
+  Future<DayTotals> dayOf(
+    DateTime now, {
+    UtcOffsetAt utcOffsetAt = phoneUtcOffsetAt,
+  }) async {
+    final records = _db.blockRecords;
+    final minutes = records.minutes.sum();
+    final blocks = records.id.count();
+    final day = localDateAt(now, utcOffsetAt(now));
+    final totals =
+        await (_db.selectOnly(records)
+              ..addColumns([minutes, blocks])
+              ..where(records.localDate.equals(day)))
+            .getSingle();
+    return DayTotals(
+      blocks: totals.read(blocks) ?? 0,
+      minutes: totals.read(minutes) ?? 0,
     );
   }
 }

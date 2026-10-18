@@ -137,3 +137,12 @@ final class TaskPatch {
   final int? projectId;
   final TaskStatus? status;
 }
+
+/// The task the live focus cycle is on, with the project it is in now: what
+/// Focus's header and the running banner name.
+final class CycleTask {
+  const CycleTask(this.task, this.project);
+
+  final Task task;
+  final Project project;
+}

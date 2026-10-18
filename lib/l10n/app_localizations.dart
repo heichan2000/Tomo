@@ -857,6 +857,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Doing'**
   String get statusDoing;
+
+  /// Screen reader. The chevron at Focus's top left while a cycle is live: back to the app, with the banner (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Minimise'**
+  String get minimise;
+
+  /// Focus, a block running: the quiet clock, in rough minutes (ADR-0010, approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'about {minutes} min left'**
+  String clockLeft(int minutes);
+
+  /// Focus, a block's last minute: the quiet clock (ADR-0010). Also the banner's.
+  ///
+  /// In en, this message translates to:
+  /// **'under a minute left'**
+  String get clockUnderMinute;
+
+  /// Focus, a break running: the quiet clock (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'about {minutes} min of rest left'**
+  String restLeft(int minutes);
+
+  /// Focus, a break's last minute: the quiet clock (spec §17 small call, after ADR-0010's 'under a minute left').
+  ///
+  /// In en, this message translates to:
+  /// **'under a minute of rest left'**
+  String get restUnderMinute;
+
+  /// Focus, a block running: the accent chip under the progress line (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get chipFocus;
+
+  /// Focus, a break running: the muted chip under the progress line (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Break'**
+  String get chipBreak;
+
+  /// Focus, a block running: the quiet button at the bottom, and the destructive button on the Stop this block? sheet (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Stop early'**
+  String get stopEarly;
+
+  /// The Stop this block? sheet: the primary button, which closes it (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going'**
+  String get keepGoing;
+
+  /// Focus, a break running: ends it now; lands on Break over (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Skip break'**
+  String get skipBreak;
+
+  /// Focus, next block in 10: starts the block at once (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Start now'**
+  String get startNow;
+
+  /// Focus, next block in 10: stops the countdown and stays on Break over (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get notYet;
+
+  /// The running banner, under the task, while a block runs (ADR-0010, approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min left'**
+  String bannerLeft(int minutes);
+
+  /// The running banner, under the task, while a break runs (spec §8.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Break · about {minutes} min'**
+  String bannerBreak(int minutes);
+
+  /// The running banner, a break's last minute (spec §17 small call).
+  ///
+  /// In en, this message translates to:
+  /// **'Break · under a minute'**
+  String get bannerBreakUnderMinute;
+
+  /// The finished banner: a block ended while Focus was minimised; its beat waits for the tap (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Block done · {minutes} min counted'**
+  String bannerBlockDone(int minutes);
+
+  /// The finished banner: the break ended while Focus was minimised (spec §8.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Break over'**
+  String get bannerBreakOver;
+
+  /// Screen reader. The quiet clock in a block's last minute, read when touched (spec §17 small call, after srClock).
+  ///
+  /// In en, this message translates to:
+  /// **'Under a minute left on {task}.'**
+  String srClockUnderMinute(String task);
+
+  /// Screen reader. The quiet clock during a break, read when touched (spec §17 small call, after srClock).
+  ///
+  /// In en, this message translates to:
+  /// **'About {minutes} {minutes, plural, =1{minute} other{minutes}} of rest left.'**
+  String srRest(int minutes);
+
+  /// Screen reader. The quiet clock in a break's last minute (spec §17 small call).
+  ///
+  /// In en, this message translates to:
+  /// **'Under a minute of rest left.'**
+  String get srRestUnderMinute;
 }
 
 class _AppLocalizationsDelegate
