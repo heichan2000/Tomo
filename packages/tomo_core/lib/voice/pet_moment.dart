@@ -1,4 +1,6 @@
+import '../pet/beat.dart';
 import '../pet/species.dart';
+import '../rewards/rewards.dart';
 
 /// A moment the pet has a line for, with the facts that line is made from
 /// (spec §10, [#51](https://github.com/heichan2000/Tomo/issues/51)).
@@ -190,4 +192,57 @@ final class EstimateMoment extends PetMoment {
 
   @override
   bool chattyDetailHolds(Species species) => false;
+}
+
+/// The moment whose line a beat run shows, and speaks after its facts
+/// (spec §7.4, §10.4): its rarest beat's, by the reward ladder (§7.5). Hatch
+/// over evolution over task done over level-up over the block. So a block
+/// that levels up says the level-up line, and a task bonus that reaches a
+/// level keeps the task-done line (§17, C116).
+///
+/// [expBefore] is the pet's EXP before the run's first beat. The task's
+/// numbers are as they stand after the run was earned; [totalMinutes] is
+/// every finished block's minutes, added up.
+PetMoment runMoment(
+  List<Beat> run, {
+  required int expBefore,
+  required String taskTitle,
+  required int taskBlocks,
+  required int taskMinutes,
+  required int totalMinutes,
+}) {
+  int rank(Beat beat) => switch (beat) {
+    BlockCredited() => 0,
+    LevelUp() => 1,
+    TaskCompleted() => 2,
+    Evolution() => 3,
+    Hatch() => 4,
+  };
+  final shown = run.reduce((a, b) => rank(b) > rank(a) ? b : a);
+  return switch (shown) {
+    BlockCredited(:final minutes) => BlockDoneMoment(
+      minutes: minutes,
+      task: taskTitle,
+      taskBlocks: taskBlocks,
+      taskMinutes: taskMinutes,
+    ),
+    LevelUp(:final level) => LevelUpMoment(
+      level: level,
+      levelBefore: levelForExp(expBefore),
+      totalMinutes: totalMinutes,
+    ),
+    TaskCompleted() => TaskDoneMoment(
+      task: taskTitle,
+      taskBlocks: taskBlocks,
+      taskMinutes: taskMinutes,
+    ),
+    Evolution(:final to) => EvolutionMoment(
+      stage: to,
+      totalMinutes: totalMinutes,
+    ),
+    Hatch() => HatchMoment(
+      minutes: run.whereType<BlockCredited>().first.minutes,
+      task: taskTitle,
+    ),
+  };
 }
