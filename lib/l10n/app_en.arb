@@ -894,5 +894,67 @@
   "beatTaskPlate": "Task done",
   "@beatTaskPlate": {
     "description": "The plate under the EXP bar when a task is marked done on Focus (approved on Tomo Pixel Screens)."
+  },
+  "focusLeave": "Leave",
+  "@focusLeave": {
+    "description": "Screen reader. The close (×) at the top left of Focus Ready, which leaves Focus (approved on Tomo Pixel Screens)."
+  },
+  "bellOff": "Notifications are off",
+  "@bellOff": {
+    "description": "Screen reader. The bell-off at the top right of Focus, which opens the phone's settings (approved on Tomo Pixel Screens)."
+  },
+  "readyTask": "Task",
+  "@readyTask": {
+    "description": "Focus Ready, the caption over the task row, which opens the task picker (approved on Tomo Pixel Screens)."
+  },
+  "readyLength": "Length",
+  "@readyLength": {
+    "description": "Focus Ready, the caption over 25 min / 50 min / Custom (approved on Tomo Pixel Screens)."
+  },
+  "lengthMinutes": "{minutes} min",
+  "@lengthMinutes": {
+    "description": "A block or break length: the 25 min and 50 min choices on Focus Ready, and the Custom sheet's steppers (approved on Tomo Pixel Screens).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "lengthCustom": "Custom",
+  "@lengthCustom": {
+    "description": "Focus Ready, the third length choice while a preset is chosen (approved on Tomo Pixel Screens)."
+  },
+  "stepFewer": "Fewer",
+  "@stepFewer": {
+    "description": "Screen reader. The − of a stepper (approved on Tomo Task Screens)."
+  },
+  "stepMore": "More",
+  "@stepMore": {
+    "description": "Screen reader. The + of a stepper (approved on Tomo Task Screens)."
+  },
+  "pickerTitle": "Choose a task",
+  "@pickerTitle": {
+    "description": "The task picker's title."
+  },
+  "newTask": "New task",
+  "@newTask": {
+    "description": "The task picker, the field that adds a task and goes to Focus (spec §8.1)."
+  },
+  "srNewTaskProject": "Goes in {project}. Change project",
+  "@srNewTaskProject": {
+    "description": "Screen reader. The task picker's project chip, under New task.",
+    "placeholders": {
+      "project": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseProject": "Choose a project",
+  "@chooseProject": {
+    "description": "The sheet the task picker's project chip opens: the project New task goes in."
+  },
+  "statusDoing": "Doing",
+  "@statusDoing": {
+    "description": "The chip on a doing task's row (approved on Tomo Task Screens)."
   }
 }

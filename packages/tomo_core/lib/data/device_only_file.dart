@@ -10,8 +10,9 @@ abstract interface class DeviceFileStorage {
 }
 
 /// The few facts that belong to this phone and must not travel in a backup
-/// (spec §6.1, ADR-0028). Today there is one: whether the notification
-/// permission has been asked, so a restored phone asks again.
+/// (spec §6.1, ADR-0028): whether the notification permission has been
+/// asked, so a restored phone asks again, and whether Ready has shown the
+/// line that says it was turned down.
 ///
 /// It is a small JSON object. A file that is missing, unreadable or not
 /// understood reads as "not asked": asking twice is harmless, failing is not.
@@ -22,12 +23,23 @@ final class DeviceOnlyFile {
 
   static const _asked = 'notificationPermissionAsked';
 
+  static const _denialShown = 'notificationDenialShown';
+
   Future<bool> notificationPermissionAsked() async =>
       (await _readFields())[_asked] == true;
 
-  Future<void> setNotificationPermissionAsked() async {
+  Future<void> setNotificationPermissionAsked() => _setTrue(_asked);
+
+  /// Whether Ready has shown the denial line, which it shows once (spec
+  /// §11.4).
+  Future<bool> notificationDenialShown() async =>
+      (await _readFields())[_denialShown] == true;
+
+  Future<void> setNotificationDenialShown() => _setTrue(_denialShown);
+
+  Future<void> _setTrue(String key) async {
     final fields = await _readFields();
-    fields[_asked] = true;
+    fields[key] = true;
     await _storage.write(jsonEncode(fields));
   }
 

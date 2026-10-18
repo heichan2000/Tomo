@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/placeholder_screens.dart';
+import 'package:tomo/app/routes.dart';
 import 'package:tomo/home/home_screen.dart';
 import 'package:tomo/app/shell.dart';
 import 'package:tomo/ui/buttons.dart';
@@ -187,9 +188,8 @@ void main() {
   ) async {
     await pumpTomo(tester);
 
-    await tester.tap(find.words('Start focusing'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.words('A task'));
+    // Focus on a live cycle, as the banner opens it.
+    openFocus(tester.element(find.byType(HomeScreen)));
     await tester.pumpAndSettle();
 
     expect(find.byType(FocusPlaceholder).hitTestable(), findsOneWidget);

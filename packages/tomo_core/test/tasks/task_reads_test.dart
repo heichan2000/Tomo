@@ -10,7 +10,8 @@ import 'package:tomo_core/tasks/task_service.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 import 'package:tomo_core/testing.dart';
 
-/// The four watched reads and their orderings (spec §5.1).
+/// The four watched reads and their orderings (spec §5.1), and the two read
+/// once for the task picker.
 void main() {
   late TestClock clock;
   late TomoDatabase db;
@@ -198,6 +199,38 @@ void main() {
         'focused first',
         'never focused',
       ]);
+    });
+  });
+
+  group('read once', () {
+    test("the picker's tasks, in the order the picker watches", () async {
+      final a = await project('A');
+      final b = await project('B');
+      await task(a, 'todo in A');
+      final doing = await task(b, 'doing in B');
+      await setStatus(await task(a, 'done in A'), TaskStatus.done);
+      await setStatus(doing, TaskStatus.doing);
+
+      expect([for (final t in await tasks.pickerTasks()) t.title], [
+        'doing in B',
+        'todo in A',
+      ]);
+      expect(
+        await tasks.pickerTasks(),
+        await tasks.watchPickerTasks().first,
+      );
+    });
+
+    test('the projects, the most recently active first', () async {
+      final older = await project('Older');
+      await project('Newer');
+      await task(older, 'Something');
+
+      expect([for (final p in await tasks.projects()) p.name], [
+        'Older',
+        'Newer',
+      ]);
+      expect(await tasks.projects(), await tasks.watchProjects().first);
     });
   });
 

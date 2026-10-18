@@ -808,4 +808,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beatTaskPlate => 'Task done';
+
+  @override
+  String get focusLeave => 'Leave';
+
+  @override
+  String get bellOff => 'Notifications are off';
+
+  @override
+  String get readyTask => 'Task';
+
+  @override
+  String get readyLength => 'Length';
+
+  @override
+  String lengthMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get lengthCustom => 'Custom';
+
+  @override
+  String get stepFewer => 'Fewer';
+
+  @override
+  String get stepMore => 'More';
+
+  @override
+  String get pickerTitle => 'Choose a task';
+
+  @override
+  String get newTask => 'New task';
+
+  @override
+  String srNewTaskProject(String project) {
+    return 'Goes in $project. Change project';
+  }
+
+  @override
+  String get chooseProject => 'Choose a project';
+
+  @override
+  String get statusDoing => 'Doing';
 }

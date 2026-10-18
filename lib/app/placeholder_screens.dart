@@ -50,41 +50,8 @@ class WorkPlaceholder extends StatelessWidget {
   );
 }
 
-/// Stands in for the task picker, a sheet. *A task* closes it and opens
-/// Focus, as picking a task will.
-class TaskPickerPlaceholder extends StatelessWidget {
-  const TaskPickerPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final u = UiPixel.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const PixelText('Task picker', step: TypeStep.title),
-        SizedBox(height: u(2)),
-        PixelText(
-          'Placeholder until its own ticket builds it.',
-          step: TypeStep.caption,
-          colour: TomoTheme.of(context).muted,
-        ),
-        SizedBox(height: u(6)),
-        PixelButton(
-          label: 'A task',
-          kind: ButtonKind.secondary,
-          wide: true,
-          onPressed: () {
-            Navigator.of(context).pop();
-            openFocus(context);
-          },
-        ),
-      ],
-    );
-  }
-}
-
-/// Stands in for Focus, a takeover over the tab bar.
+/// Stands in for Focus's live states, a takeover over the tab bar, until
+/// *Focus: running, the break, Stop early and the banner* builds them.
 class FocusPlaceholder extends StatelessWidget {
   const FocusPlaceholder({super.key});
 

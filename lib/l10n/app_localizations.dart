@@ -779,6 +779,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Task done'**
   String get beatTaskPlate;
+
+  /// Screen reader. The close (×) at the top left of Focus Ready, which leaves Focus (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get focusLeave;
+
+  /// Screen reader. The bell-off at the top right of Focus, which opens the phone's settings (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off'**
+  String get bellOff;
+
+  /// Focus Ready, the caption over the task row, which opens the task picker (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get readyTask;
+
+  /// Focus Ready, the caption over 25 min / 50 min / Custom (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Length'**
+  String get readyLength;
+
+  /// A block or break length: the 25 min and 50 min choices on Focus Ready, and the Custom sheet's steppers (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String lengthMinutes(int minutes);
+
+  /// Focus Ready, the third length choice while a preset is chosen (approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get lengthCustom;
+
+  /// Screen reader. The − of a stepper (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Fewer'**
+  String get stepFewer;
+
+  /// Screen reader. The + of a stepper (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get stepMore;
+
+  /// The task picker's title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a task'**
+  String get pickerTitle;
+
+  /// The task picker, the field that adds a task and goes to Focus (spec §8.1).
+  ///
+  /// In en, this message translates to:
+  /// **'New task'**
+  String get newTask;
+
+  /// Screen reader. The task picker's project chip, under New task.
+  ///
+  /// In en, this message translates to:
+  /// **'Goes in {project}. Change project'**
+  String srNewTaskProject(String project);
+
+  /// The sheet the task picker's project chip opens: the project New task goes in.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a project'**
+  String get chooseProject;
+
+  /// The chip on a doing task's row (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Doing'**
+  String get statusDoing;
 }
 
 class _AppLocalizationsDelegate
