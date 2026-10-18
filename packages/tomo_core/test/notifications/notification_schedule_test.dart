@@ -150,6 +150,53 @@ void main() {
     });
   });
 
+  group('when the timer runs out', () {
+    // The same moments the notifications fire at; Tomo open, they buzz.
+    List<TimerEnd> ends(LiveCycle live, DateTime after) =>
+        timerEnds(cycle: live, after: after);
+
+    test('a running block runs out at its end', () {
+      expect(ends(cycle(), at(9, 10)), [
+        (slot: NotificationSlot.blockEnd, at: end),
+      ]);
+    });
+
+    test('with auto-start, the break that begins by itself runs out too', () {
+      expect(ends(cycle(autoStart: true), at(9, 10)), [
+        (slot: NotificationSlot.blockEnd, at: end),
+        (slot: NotificationSlot.breakEnd, at: at(9, 30)),
+      ]);
+    });
+
+    test('a taken break runs out when its minutes are up', () {
+      expect(ends(cycle(blockRecordId: 7, breakStartAt: at(9, 27)), end), [
+        (slot: NotificationSlot.breakEnd, at: at(9, 32)),
+      ]);
+    });
+
+    test('only what is still ahead: the moment itself has passed', () {
+      expect(ends(cycle(), end), isEmpty);
+      expect(ends(cycle(autoStart: true), end), [
+        (slot: NotificationSlot.breakEnd, at: at(9, 30)),
+      ]);
+    });
+
+    test('nothing runs out after a skipped break, or with none taken', () {
+      expect(
+        ends(
+          cycle(
+            blockRecordId: 7,
+            breakStartAt: at(9, 27),
+            breakSkippedAt: at(9, 28),
+          ),
+          at(9, 28),
+        ),
+        isEmpty,
+      );
+      expect(ends(cycle(blockRecordId: 7), at(9, 26)), isEmpty);
+    });
+  });
+
   group('what a notification says, as data', () {
     test('the pet by name, the task and the minutes', () {
       final content = desired(cycle(), at(9, 10)).single.content;

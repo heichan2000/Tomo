@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 
 import '../data/tomo_database.dart';
@@ -22,13 +24,21 @@ export 'cycle_ledger.dart' show CycleStanding, UtcOffsetAt;
 /// finished block is always settled before anything else happens to it. Each
 /// runs in one transaction and never throws: a database failure comes back as
 /// [StorageFailed], with a diagnostic entry written.
+///
+/// [afterWrite] runs, unawaited, after each write that commits: the app
+/// syncs the notifications there (spec §11.2).
 final class FocusCycleService {
-  FocusCycleService(this._db, {required this._log, UtcOffsetAt? utcOffsetAt})
-    : _ledger = CycleLedger(_db, utcOffsetAt: utcOffsetAt);
+  FocusCycleService(
+    this._db, {
+    required this._log,
+    UtcOffsetAt? utcOffsetAt,
+    this._afterWrite,
+  }) : _ledger = CycleLedger(_db, utcOffsetAt: utcOffsetAt);
 
   final TomoDatabase _db;
   final Log _log;
   final CycleLedger _ledger;
+  final Future<void> Function()? _afterWrite;
 
   /// Brings the stored cycle up to now and says where it stands.
   ///
@@ -201,7 +211,9 @@ final class FocusCycleService {
     Future<Result<T>> Function(DateTime now) body,
   ) async {
     try {
-      return await _db.transaction(() => body(_db.clock().toUtc()));
+      final result = await _db.transaction(() => body(_db.clock().toUtc()));
+      if (result is Success) unawaited(_afterWrite?.call());
+      return result;
     } on AssertionError {
       // An illegal command: a programming error, loud in debug and tests.
       rethrow;

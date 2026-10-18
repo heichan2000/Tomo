@@ -19,6 +19,10 @@ Tick each box on both phones, and note the phone and date at the bottom.
 - [ ] Nothing is posted while Tomo is open; leaving Tomo schedules, coming back
       clears.
 - [ ] The first block's notification is titled **Your egg**.
+- [ ] Tapping the alert with Focus minimised brings Focus forward.
+
+Debug builds make these quick: kit gallery → *Notification check* (spec §17,
+C100).
 
 ## Backup and restore (promise 36)
 

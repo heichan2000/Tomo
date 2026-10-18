@@ -398,6 +398,22 @@
       }
     }
   },
+  "channelFocusBlock": "Focus block finished",
+  "@channelFocusBlock": {
+    "description": "Android notification channel name (spec §11.3), shown in the phone's settings."
+  },
+  "channelFocusBlockAbout": "When a focus block you started reaches its end.",
+  "@channelFocusBlockAbout": {
+    "description": "Android notification channel description (spec §11.3)."
+  },
+  "channelBreak": "Break finished",
+  "@channelBreak": {
+    "description": "Android notification channel name (spec §11.3), shown in the phone's settings."
+  },
+  "channelBreakAbout": "When a break reaches its end.",
+  "@channelBreakAbout": {
+    "description": "Android notification channel description (spec §11.3)."
+  },
   "notifHiddenBlock": "A focus block counted.",
   "@notifHiddenBlock": {
     "description": "Notification body on Android when content is hidden: a block."

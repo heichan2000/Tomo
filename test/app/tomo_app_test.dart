@@ -60,9 +60,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final words = AppLocalizations.of(
-        tester.element(find.byType(ErrorBlock)),
-      ).error;
+      final words = AppLocalizations.of(tester.element(find.byType(ErrorBlock)))
+          .error;
       expect(words, contains('Settings > About > Share diagnostics'));
     });
 

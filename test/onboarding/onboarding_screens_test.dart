@@ -68,10 +68,7 @@ void main() {
         isFocusable: true,
       ),
     );
-    expect(
-      tester.getSemantics(tile('Joe')),
-      isSemantics(isSelected: false),
-    );
+    expect(tester.getSemantics(tile('Joe')), isSemantics(isSelected: false));
     expect(find.words('I am Geode. I keep every minute.'), findsOneWidget);
     expect(find.words('Personality'), findsOneWidget);
     expect(
@@ -86,14 +83,8 @@ void main() {
     await pumpTomo(tester, onboarded: false);
 
     await tap(tester, tile('Joe'));
-    expect(
-      tester.getSemantics(tile('Joe')),
-      isSemantics(isSelected: true),
-    );
-    expect(
-      tester.getSemantics(tile('Geode')),
-      isSemantics(isSelected: false),
-    );
+    expect(tester.getSemantics(tile('Joe')), isSemantics(isSelected: true));
+    expect(tester.getSemantics(tile('Geode')), isSemantics(isSelected: false));
     expect(find.words('Joe. 1 paper bird. I count.'), findsOneWidget);
 
     await tap(tester, find.words('Chatty'));
@@ -125,10 +116,7 @@ void main() {
 
     await tap(tester, find.bySemanticsLabel('Back'));
     expect(find.words('Choose your pet'), findsOneWidget);
-    expect(
-      tester.getSemantics(tile('Lily')),
-      isSemantics(isSelected: true),
-    );
+    expect(tester.getSemantics(tile('Lily')), isSemantics(isSelected: true));
     expect(find.words('Chatty'), findsOneWidget);
   });
 

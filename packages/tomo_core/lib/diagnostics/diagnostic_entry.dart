@@ -16,6 +16,10 @@ enum DiagnosticCode {
   /// Finishing onboarding failed and was rolled back (spec §8.2).
   onboardingWriteFailed,
 
+  /// The phone refused to schedule or cancel a timer notification
+  /// (spec §11.2). The block still counts; only the alert is lost.
+  notificationSyncFailed,
+
   /// An error Flutter caught while building, laying out or painting.
   uncaughtFlutterError,
 

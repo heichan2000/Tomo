@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,11 +13,14 @@ import 'package:tomo_core/diagnostics/log.dart';
 
 import 'app/error_block.dart';
 import 'app/error_handlers.dart';
+import 'app/providers.dart';
 import 'app/start_up.dart';
 import 'app/tomo_app.dart';
 import 'platform/device_facts.dart';
 import 'platform/diagnostic_log_file.dart';
+import 'platform/notifications.dart';
 import 'platform/stores.dart';
+import 'l10n/app_localizations.dart';
 import 'ui/font_licence.dart';
 
 Future<void> main() async {
@@ -46,9 +51,25 @@ Future<void> main() async {
     diagnostics: diagnostics,
   );
 
+  final taps = StreamController<String?>.broadcast();
+  final notifications = await PhoneNotifications.open(
+    words: lookupAppLocalizations(
+      basicLocaleListResolution(
+        PlatformDispatcher.instance.locales,
+        AppLocalizations.supportedLocales,
+      ),
+    ),
+    onTap: taps.add,
+  );
+
   runApp(switch (start) {
     Started(:final overrides, :final first) => ProviderScope(
-      overrides: overrides,
+      overrides: [
+        ...overrides,
+        notificationSchedulerProvider.overrideWithValue(notifications),
+        notificationPermissionProvider.overrideWithValue(PhonePermission()),
+        notificationTapsProvider.overrideWithValue(taps.stream),
+      ],
       child: TomoApp(first: first),
     ),
     StartFailed(:final appearance) => StartFailedApp(appearance: appearance),
