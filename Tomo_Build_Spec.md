@@ -820,6 +820,15 @@ is the header every state shares; `chooseCustomLengths` opens the Custom
 sheet (`length_sheet.dart`). Approved by the user on the emulator. Its calls:
 C106–C109.
 
+**Running, the break, Stop early and the banner are built** in [Focus: running, the break, Stop early and the banner](https://github.com/heichan2000/Tomo/issues/96):
+`LiveFocus` (`lib/focus/live_focus.dart`) is Focus once a cycle is live: the
+running block, the break, the countdown and the *Stop this block?* sheet,
+with Android back minimising (or *Leave* from a finished state). The quiet
+clock and its line are `QuietClock` (`clock_view.dart`); the banner is
+`RunningBannerSlot` (`lib/app/running_banner.dart`). What a finished block
+or break shows is still a stand-in (`FocusAfterPlaceholder`). Approved by the
+user on the emulator. Its calls: C110–C115.
+
 ### 8.5 The choices
 
 *(The task-done sets are consolidation's, following the user's call in §17 R22.)*
@@ -1639,6 +1648,12 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C107 | When the chosen length is remembered (§4.7) | When a block starts with it, not when it is chosen: a length picked and then left with *Close* is not kept. |
 | C108 | Ready's header against the approved screen, which had only × at the top | The spec's header, title and project beside ×, though the task row repeats the title: every Focus state keeps the same header. Kept by the user ([#95](https://github.com/heichan2000/Tomo/issues/95)). |
 | C109 | Parts Ready needed from the kit | `ScreenBody` takes a `middle` that sits halfway down the room between the top and the buttons (the approved screens' two "grow"s); `PixelStepper` (−/+ squares, the value between, turned off at a limit), for the Custom sheet and later Planned blocks; `PixelRow(selected:)` for lists to choose from. The words not in the script (*Task*, *Length*, *Custom*, *Leave*, *Notifications are off*, *Fewer*, *More*, *Doing*) are the approved screens'. |
+| C110 | How "about N min" rounds (ADR-0010 says rough minutes) | To the nearest minute, a half minute already reading the lower number (4:30 left is *about 4*), so the words change at each half-minute mark. A minute or less reads *under a minute left*. The exact time is `mm:ss` with the seconds rounded up (`25:00` as a block starts, never `00:00` before it ends), three digits of minutes past 99. `quiet_clock.dart` in core. |
+| C111 | Words for a break's last minute and the clock's screen-reader lines, which the script lacks | *under a minute of rest left*; the banner's *Break · under a minute*; spoken, *About 4 minutes of rest left.*, *Under a minute of rest left.* and *Under a minute left on {task}.* The clock's label stays in rough minutes while the exact time shows. Approved by the user ([#96](https://github.com/heichan2000/Tomo/issues/96)). |
+| C112 | When the next block counts down (§4.8), and what it starts | Only when Focus sees the break run out (within 2 s, the app in front), auto-start on, the break not skipped and the task not done. The screen keeps the pet's break-over line above the countdown line, as the approved screen does. The block it starts has the cycle's own lengths and auto-start as it is set now, and sets `lastProjectId`. |
+| C113 | Reads Focus and the banner needed | `TaskService.cycleTask()` / `watchCycleTask()`: the live cycle's task and its project (`CycleTask`), read at start-up and watched as `cycleTaskProvider`, so a rename on Work shows on the banner. `StatsReader.dayOf(now)`: the day's blocks and minutes for the Chatty break lines, by each block's stored `local_date`. Widget tests of the whole app feed both through `petChanged`. |
+| C114 | Who settles a block that ends while Focus is minimised | The banner, as it sees the block end (`reconcile`), so under auto-start the break starts on time and the banner moves on with it. Focus also reconciles as it opens and as the clock moves its state. |
+| C115 | Focus's running and break layout against the approved screen's three "grow"s | `ScreenBody`'s `middle` holds the pet, the line, the clock, the progress line and the chip as one group, halfway between the header and the one button. Kit parts added: `PixelChip(big:)` (body text, for *Focus* / *Break*), `ProgressLine` (2 UI pixels, grows in whole UI pixels), `PixelText.cut` (one line ending in "…", the running banner's task). |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
