@@ -1117,6 +1117,22 @@ It is not copied here so it has one home. *(Written: `lib/l10n/app_en.arb`. A
 test holds every line to the script's wording, and `lib/voice/pet_voice.dart`
 picks the line.)*
 
+**Added after the script** by the user in
+[Five lines the script doesn't cover](https://github.com/heichan2000/Tomo/issues/85),
+and recorded with the script in #51:
+
+| Case | Line |
+|---|---|
+| Lily, Chatty, a task done in one block (`taskDoneChattyTaskTotal`) | You finished {task} in just one block. Feels good, doesn't it? |
+| Lily, the estimate card, a plan of one block (`estimate`) | That's the one block you planned for it. |
+| Delete project, tasks but no focus time (`delProjNoFocus`) | Its {count} tasks go with it, for good. They have no focus time, so your stats don't change. *(One task: Its 1 task goes with it, for good. It has no focus time, so your stats don't change.)* |
+| Delete project, one task (`delProj`) | Its 1 task goes with it, for good. The {duration} you focused on **it** stays in your stats. |
+| Delete task, an hour or more of focus time (`delTaskLong`) | "{task}" and its notes go for good. The {duration} you focused on it stays in your stats. *(Under an hour, the script's `delTask` with minutes.)* |
+| The first block ever, under auto-start | No new line: the first-block notification, which doesn't mention the break. |
+
+`deleteTaskBody` and `deleteProjectBody` in `pet_voice.dart` pick the delete
+sheets' lines; `focusTime` writes a length as Stats does.
+
 ### 10.3 Lines written at consolidation
 
 New surfaces from §4.7 and §8.5, in plain voice:
@@ -1535,8 +1551,8 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C31 | The diagnostic log's byte ceiling, file and shape were not fixed | `diagnostics.log` in application-support: one JSON line per entry, at most 200 entries and 512 KiB, the oldest dropped first, a stack trace kept to its first 30 frames. *Share diagnostics* gets it rendered as plain text. Device facts (app version and build, OS version, device class, locale) are stamped on each entry. |
 | C32 | Debug builds and Flutter's own error report | In debug, an error Flutter caught is still printed by Flutter's own console report (with its message), as well as recorded. Release prints nothing. |
 | C33 | The script's key `break` is a word Dart keeps for itself | The copy file calls it `onBreak` (and `onBreakChattyToday`). |
-| C34 | The script shows each line with sample numbers; other numbers need "1 block", "1 hour", "1 minute" | Only the noun changes with the number. No other word of an approved line is touched. Five cases where that is not enough are with the user in [#85](https://github.com/heichan2000/Tomo/issues/85). |
-| C35 | When a Chatty detail "isn't true" | Block done: the task's first block. Level-up and evolution: under one (or two) whole hours focused. Task done: no focus time (and for Lily, one block). Break and break over: nothing finished yet today. |
+| C34 | The script shows each line with sample numbers; other numbers need "1 block", "1 hour", "1 minute" | Only the noun changes with the number. No other word of an approved line is touched. Where that was not enough, the user wrote the line ([#85](https://github.com/heichan2000/Tomo/issues/85), §10.2). |
+| C35 | When a Chatty detail "isn't true" | Block done: the task's first block. Level-up and evolution: under one (or two) whole hours focused. Task done: no focus time. Break and break over: nothing finished yet today. |
 | C36 | How Geode says numbers above one hundred | American style, no "and": "one hundred twenty", "four hundred twenty-five". |
 | C37 | Screen labels that are not in the script (buttons, tab names, Stats row labels) | Not typed in here: the approved prototypes are private to the owner. Each screen ticket adds its labels to the copy file. |
 | C38 | Icons and the sparkle are coloured at run time, so they have no colour key for the fingerprint | They fingerprint `paint <char> <role>` lines instead (icon `#` = `icon`; sparkle `#` = `arms`, `o` and `x` = `centre`). The Tomo egg has its own colour key. Ids are `icon.<name>`, `sparkle` and `tomo.egg`. Written out in `pixel_art.dart`. |
@@ -1603,6 +1619,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C99 | A tap while Tomo is running, and Focus already open | The tap brings the cycle up to now first, then opens Focus only if its cycle is still the live one and Focus isn't already in the stack (`FocusRouteObserver`). A tap that starts Tomo needs nothing: the cold start already opens Focus on a live cycle. |
 | C100 | Running the notification checks on a phone | Debug builds: kit gallery → *Notification check*. It shows the permission, whether alarms can be exact and what is pending, and starts blocks to leave running: 10 and 35 minutes through the service, and 1 minute written directly under the 10-minute floor (it credits the pet its minute). |
 | C101 | Who fires the timer buzz | `TimerBuzz`, around the whole app, not Focus: a block can run out while the Work tab is showing. While Tomo is open it waits for each moment `timerEnds` gives (the block's end, then under auto-start the break's) and plays `hapticFor`; a block that runs out with Focus open gets nothing from it, because Focus's beat run fires the reward tap. Checked on a Galaxy S23 Ultra: it fires on time on the Work tab, but `vibrate()` is Android's long-press feedback and feels like a short bump ([#107](https://github.com/heichan2000/Tomo/issues/107) asks whether to make it a real buzz). |
+| C102 | Stats writes `26 h 40 min` and `15 min`, but not a whole number of hours | `2 h`, with no `0 min`. Hours group their digits as the phone's language does (`1,234 h 5 min`). `focusTime` writes it for Stats and both delete sheets. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

@@ -171,7 +171,7 @@ abstract class AppLocalizations {
   /// Pet voice, Chatty. Task done, when the task has focus time.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{task} is done. {taskMinutesWords} minutes are in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes.} lily{You finished {task}, all {taskBlocks} blocks of it. Feels good, doesn\'t it?} other{}}'**
+  /// **'{species, select, geode{{task} is done. {taskMinutesWords} minutes are in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes.} lily{{taskBlocks, plural, =1{You finished {task} in just one block. Feels good, doesn\'t it?} other{You finished {task}, all {taskBlocks} blocks of it. Feels good, doesn\'t it?}}} other{}}'**
   String taskDoneChattyTaskTotal(
     String species,
     String task,
@@ -269,7 +269,7 @@ abstract class AppLocalizations {
   /// Pet voice. The estimate card's fact line.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{Every planned block is here.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}.} lily{That\'s all {estimate} {estimate, plural, =1{block} other{blocks}} you planned for it.} other{}}'**
+  /// **'{species, select, geode{Every planned block is here.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}.} lily{{estimate, plural, =1{That\'s the one block you planned for it.} other{That\'s all {estimate} blocks you planned for it.}}} other{}}'**
   String estimate(String species, int estimate);
 
   /// A notification's title before the hatch.
@@ -438,11 +438,17 @@ abstract class AppLocalizations {
   /// **'Delete this task?'**
   String get delTaskTitle;
 
-  /// Plain voice. Delete task sheet, with focus time.
+  /// Plain voice. Delete task sheet, with under an hour of focus time.
   ///
   /// In en, this message translates to:
   /// **'\"{task}\" and its notes go for good. The {minutes} minutes you focused on it stay in your stats.'**
   String delTask(String task, int minutes);
+
+  /// Plain voice. Delete task sheet, with an hour or more of focus time. {duration} is written as on Stats ("6 h 40 min").
+  ///
+  /// In en, this message translates to:
+  /// **'\"{task}\" and its notes go for good. The {duration} you focused on it stays in your stats.'**
+  String delTaskLong(String task, String duration);
 
   /// Plain voice. Delete task sheet, no focus time.
   ///
@@ -459,8 +465,14 @@ abstract class AppLocalizations {
   /// Plain voice. Delete project sheet, with tasks. {duration} is written as on Stats ("6 h 40 min").
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{Its 1 task goes with it, for good.} other{Its {count} tasks go with it, for good.}} The {duration} you focused on them stays in your stats.'**
+  /// **'{count, plural, =1{Its 1 task goes with it, for good. The {duration} you focused on it stays in your stats.} other{Its {count} tasks go with it, for good. The {duration} you focused on them stays in your stats.}}'**
   String delProj(int count, String duration);
+
+  /// Plain voice. Delete project sheet, with tasks but no focus time.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Its 1 task goes with it, for good. It has no focus time, so your stats don\'t change.} other{Its {count} tasks go with it, for good. They have no focus time, so your stats don\'t change.}}'**
+  String delProjNoFocus(int count);
 
   /// Plain voice. Delete project sheet, no tasks.
   ///
@@ -575,6 +587,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom · {minutes} min'**
   String customChip(int minutes);
+
+  /// Plain voice. Focus time under an hour, as on Stats ("15 min").
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String focusTimeMinutes(int minutes);
+
+  /// Plain voice. Focus time in whole hours ("2 h").
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h'**
+  String focusTimeHours(int hours);
+
+  /// Plain voice. Focus time of an hour or more, as on Stats ("26 h 40 min").
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h {minutes} min'**
+  String focusTimeHoursMinutes(int hours, int minutes);
 
   /// Plain voice. Choice after a finished block or break.
   ///

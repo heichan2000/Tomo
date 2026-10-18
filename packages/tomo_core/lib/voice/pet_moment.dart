@@ -86,11 +86,9 @@ final class TaskDoneMoment extends PetMoment {
   final int taskBlocks;
   final int taskMinutes;
 
-  /// "When the task has focus time." Lily's detail is "all N blocks of it",
-  /// which needs more than one block to be said.
+  /// "When the task has focus time."
   @override
-  bool chattyDetailHolds(Species species) =>
-      taskMinutes > 0 && (species != Species.lily || taskBlocks >= 2);
+  bool chattyDetailHolds(Species species) => taskMinutes > 0;
 }
 
 /// A break is running.
