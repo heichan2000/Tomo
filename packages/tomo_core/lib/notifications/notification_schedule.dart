@@ -136,16 +136,32 @@ List<TimerNotification> desiredNotifications({
     breakMinutes: cycle.breakMinutes,
   );
   final payload = '${epochMs(cycle.startAt)}';
-  TimerNotification notification(NotificationKind kind, DateTime fireAt) =>
+  return [
+    for (final end in timerEnds(cycle: cycle, after: now))
       TimerNotification(
-        kind: kind,
-        fireAt: fireAt,
+        kind: switch (end.slot) {
+          NotificationSlot.blockEnd =>
+            cycle.autoStart
+                ? NotificationKind.blockCompleteBreakBegun
+                : NotificationKind.blockComplete,
+          NotificationSlot.breakEnd => NotificationKind.breakComplete,
+        },
+        fireAt: end.at,
         content: content,
         payload: payload,
-      );
+      ),
+  ];
+}
 
+/// A moment the timer runs out: the block's end, or the break's.
+typedef TimerEnd = ({NotificationSlot slot, DateTime at});
+
+/// When [cycle]'s block and break run out after [after], in order. The
+/// notifications fire at these moments while Tomo is away, and the timer
+/// buzz while it is open (spec §11.5).
+List<TimerEnd> timerEnds({required LiveCycle cycle, required DateTime after}) {
   // Under auto-start the break begins at the block's end even if nobody is
-  // there to settle it, so its end can be announced ahead of time.
+  // there to settle it, so its end is known ahead of time.
   final breakStartAt =
       cycle.breakStartAt ?? (cycle.autoStart ? cycle.endAt : null);
   final breakEndAt = cycle.breakSkippedAt != null
@@ -153,15 +169,9 @@ List<TimerNotification> desiredNotifications({
       : breakStartAt?.add(Duration(minutes: cycle.breakMinutes));
 
   return [
-    notification(
-      cycle.autoStart
-          ? NotificationKind.blockCompleteBreakBegun
-          : NotificationKind.blockComplete,
-      cycle.endAt,
-    ),
-    if (breakEndAt != null)
-      notification(NotificationKind.breakComplete, breakEndAt),
-  ].where((n) => n.fireAt.isAfter(now)).toList();
+    (slot: NotificationSlot.blockEnd, at: cycle.endAt),
+    if (breakEndAt != null) (slot: NotificationSlot.breakEnd, at: breakEndAt),
+  ].where((end) => end.at.isAfter(after)).toList();
 }
 
 /// What the app implements in `lib/platform/` to reach the phone's

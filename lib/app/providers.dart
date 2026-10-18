@@ -7,6 +7,7 @@ import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/diagnostic_log.dart';
 import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
+import 'package:tomo_core/notifications/haptics.dart';
 import 'package:tomo_core/notifications/notification_schedule.dart';
 import 'package:tomo_core/notifications/notification_sync.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
@@ -16,6 +17,7 @@ import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/stats/stats.dart';
 import 'package:tomo_core/tasks/task_service.dart';
 
+import '../platform/haptics.dart';
 import '../platform/notifications.dart';
 
 // What every screen reads Tomo through: hand-written Riverpod providers, no
@@ -53,6 +55,11 @@ final notificationSchedulerProvider = Provider<NotificationScheduler>(
 /// The phone's side of the notification permission (spec §11.4).
 final notificationPermissionProvider = Provider<NotificationPermission>(
   (ref) => _setAtStartUp(),
+);
+
+/// The phone's haptics (spec §11.5). A test sets a recorder.
+final hapticPlayerProvider = Provider<HapticPlayer>(
+  (ref) => const SystemHaptics(),
 );
 
 /// The payload of each notification tapped while Tomo is running.

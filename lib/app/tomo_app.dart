@@ -7,12 +7,13 @@ import 'phone_column.dart';
 import 'providers.dart';
 import 'routes.dart';
 import 'start_up.dart';
+import 'timer_buzz.dart';
 import 'tomo_look.dart';
 
 /// The root of the app, once [startTomo] has opened everything. It wears the
 /// theme Settings asks for, around the pet's accent once it has hatched, and
 /// opens on [first]. It keeps the phone's notifications in step
-/// ([NotificationWatch]).
+/// ([NotificationWatch]) and buzzes when the timer runs out ([TimerBuzz]).
 class TomoApp extends ConsumerStatefulWidget {
   const TomoApp({super.key, required this.first});
 
@@ -33,21 +34,24 @@ class _TomoAppState extends ConsumerState<TomoApp> {
     return NotificationWatch(
       navigator: _navigator,
       focusRoutes: _focusRoutes,
-      child: MaterialApp(
-        navigatorKey: _navigator,
-        navigatorObservers: [_focusRoutes],
-        onGenerateTitle: (context) => AppLocalizations.of(context).appName,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        scrollBehavior: const TomoScrollBehavior(),
-        builder: (context, child) => TomoLook(
-          appearance: appearance,
-          species: species,
-          child: PhoneColumn(child: child!),
+      child: TimerBuzz(
+        focusRoutes: _focusRoutes,
+        child: MaterialApp(
+          navigatorKey: _navigator,
+          navigatorObservers: [_focusRoutes],
+          onGenerateTitle: (context) => AppLocalizations.of(context).appName,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          scrollBehavior: const TomoScrollBehavior(),
+          builder: (context, child) => TomoLook(
+            appearance: appearance,
+            species: species,
+            child: PhoneColumn(child: child!),
+          ),
+          onGenerateInitialRoutes: (_) => firstRoutes(widget.first),
+          // Every other screen is pushed as a route object, never by name.
+          onGenerateRoute: (_) => null,
         ),
-        onGenerateInitialRoutes: (_) => firstRoutes(widget.first),
-        // Every other screen is pushed as a route object, never by name.
-        onGenerateRoute: (_) => null,
       ),
     );
   }

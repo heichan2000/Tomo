@@ -1230,8 +1230,10 @@ both services after every write and by `NotificationWatch`
 (`lib/app/notification_watch.dart`) on every lifecycle change;
 `PhoneNotifications` and `PhonePermission` in `lib/platform/notifications.dart`;
 `notificationAccessProvider` for Ready and the bell (`ask()`, `openSettings()`,
-re-read on resume). The timer buzz is `SystemHaptics` with `Haptic.timerBuzz`;
-Focus fires it, from `hapticFor`. Its calls: C93–C100.
+re-read on resume). The timer buzz is `TimerBuzz` (`lib/app/timer_buzz.dart`),
+around the whole app: it fires `SystemHaptics` from `hapticFor` at the moments
+`timerEnds` gives, the same ones the notifications use. Focus fires only the
+reward tap, through its beat run. Its calls: C93–C101.
 
 ---
 
@@ -1600,6 +1602,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C98 | The channels' names in the copy file | `channelFocusBlock`, `channelFocusBlockAbout`, `channelBreak`, `channelBreakAbout`, with the spec's words. |
 | C99 | A tap while Tomo is running, and Focus already open | The tap brings the cycle up to now first, then opens Focus only if its cycle is still the live one and Focus isn't already in the stack (`FocusRouteObserver`). A tap that starts Tomo needs nothing: the cold start already opens Focus on a live cycle. |
 | C100 | Running the notification checks on a phone | Debug builds: kit gallery → *Notification check*. It shows the permission, whether alarms can be exact and what is pending, and starts blocks to leave running: 10 and 35 minutes through the service, and 1 minute written directly under the 10-minute floor (it credits the pet its minute). |
+| C101 | Who fires the timer buzz | `TimerBuzz`, around the whole app, not Focus: a block can run out while the Work tab is showing. While Tomo is open it waits for each moment `timerEnds` gives (the block's end, then under auto-start the break's) and plays `hapticFor`; a block that runs out with Focus open gets nothing from it, because Focus's beat run fires the reward tap. Checked on a Galaxy S23 Ultra: it fires on time on the Work tab, but `vibrate()` is Android's long-press feedback and feels like a short bump ([#107](https://github.com/heichan2000/Tomo/issues/107) asks whether to make it a real buzz). |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
