@@ -348,7 +348,7 @@ void main() {
       await tap(tester, button('Skip break'));
 
       expect(find.words('Skip break'), findsNothing);
-      expect(find.words('Break over'), findsOneWidget);
+      expect(find.words('Start another block'), findsOneWidget);
     });
 
     testTomo('started by auto-start, the note says why', (tester) async {
@@ -411,7 +411,7 @@ void main() {
       await tap(tester, button('Not yet'));
       await passTo(tester, 31);
 
-      expect(find.words('Break over'), findsOneWidget);
+      expect(find.words('Start another block'), findsOneWidget);
       expect(find.textContaining('next block'), findsNothing);
       expect((await cycleRows()).single.startAt, nine.millisecondsSinceEpoch);
     });
@@ -421,7 +421,7 @@ void main() {
 
       await passTo(tester, 32);
 
-      expect(find.words('Break over'), findsOneWidget);
+      expect(find.words('Start another block'), findsOneWidget);
       expect(find.words('Start now'), findsNothing);
     });
 
@@ -431,7 +431,7 @@ void main() {
       await tap(tester, button('Skip break'));
       await passTo(tester, 27);
 
-      expect(find.words('Break over'), findsOneWidget);
+      expect(find.words('Start another block'), findsOneWidget);
       expect(find.words('Start now'), findsNothing);
     });
 

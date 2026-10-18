@@ -125,6 +125,26 @@ class _NotificationCheckScreenState
     await _read();
   }
 
+  /// Plans the task the next block will be on at one more block than it
+  /// has, so Focus's estimate card shows when that block ends (spec §4.9).
+  /// The card shows once per task, ever: a fresh task shows it again.
+  Future<void> _planOneMore() async {
+    final taskId = await _taskId();
+    if (taskId == null) return;
+    final task = await (_db.select(
+      _db.tasks,
+    )..where((t) => t.id.equals(taskId))).getSingle();
+    await _db.customStatement(
+      'UPDATE tasks SET estimated_pomodoros = ? WHERE id = ?',
+      [task.actualPomodoros + 1, taskId],
+    );
+    setState(
+      () => _status = task.estimatePromptedAt == null
+          ? 'Planned "${task.title}" at ${task.actualPomodoros + 1} blocks.'
+          : '"${task.title}" has had its card already: add a fresh task.',
+    );
+  }
+
   Future<void> _end() async {
     await _db.delete(_db.focusCycle).go();
     await ref.read(notificationSyncProvider).sync();
@@ -168,6 +188,7 @@ class _NotificationCheckScreenState
           button('Start a 1-minute block', _startOneMinute),
           button('Start a 10-minute block', () => _start(10)),
           button('Start a 35-minute block (dozing)', () => _start(35)),
+          button('Plan the task to end with its next block', _planOneMore),
           button('End the cycle', _end),
         ],
         bottom: [

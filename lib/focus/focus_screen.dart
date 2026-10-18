@@ -27,7 +27,8 @@ import 'task_picker.dart';
 /// Focus (spec §8.4), a takeover above the shell with the tab bar hidden.
 ///
 /// With [ready], a task picked and no cycle yet, it is **Ready**. Once a
-/// block starts, or when it opens on a live cycle, it is [LiveFocus].
+/// block starts, or when it opens on a live cycle, it is [LiveFocus], until
+/// *Start another task* brings it back to Ready on the task picked.
 class FocusScreen extends StatefulWidget {
   const FocusScreen({super.key, this.ready});
 
@@ -38,13 +39,23 @@ class FocusScreen extends StatefulWidget {
 }
 
 class _FocusScreenState extends State<FocusScreen> {
+  late var _ready = widget.ready;
   var _started = false;
 
   @override
   Widget build(BuildContext context) {
-    final ready = widget.ready;
-    if (ready == null || _started) return const LiveFocus();
+    final ready = _ready;
+    if (ready == null || _started) {
+      // *Start another task* ends the cycle and comes back to Ready.
+      return LiveFocus(
+        onReady: (picked) => setState(() {
+          _ready = picked;
+          _started = false;
+        }),
+      );
+    }
     return ReadyScreen(
+      key: ObjectKey(ready),
       picked: ready,
       onStarted: () => setState(() => _started = true),
     );

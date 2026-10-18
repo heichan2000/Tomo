@@ -924,7 +924,7 @@ abstract class AppLocalizations {
   /// **'Start now'**
   String get startNow;
 
-  /// Focus, next block in 10: stops the countdown and stays on Break over (approved on Tomo Pixel Screens).
+  /// Focus, next block in 10: stops the countdown and stays on Break over; and the estimate card's secondary button, which puts the card away (approved on Tomo Pixel Screens).
   ///
   /// In en, this message translates to:
   /// **'Not yet'**
@@ -977,6 +977,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Under a minute of rest left.'**
   String get srRestUnderMinute;
+
+  /// Focus, after a block: the primary choice, with the cycle's own break length (spec §8.5; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Take a {minutes}-min break'**
+  String choiceBreak(int minutes);
+
+  /// Focus, after a block: another block on the same task, with the cycle's own focus length (spec §8.5; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Another {minutes}-min block'**
+  String choiceAnotherBlock(int minutes);
+
+  /// Focus, break over: another block on the same task (spec §8.5; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Start another block'**
+  String get startAnotherBlock;
+
+  /// Focus, after a block or a break: marks the cycle's task done (spec §8.5; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Mark task done'**
+  String get markTaskDone;
+
+  /// Focus, after a block or a break: ends the cycle (Leave) and closes Focus (spec §8.5; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Done for now'**
+  String get doneForNow;
+
+  /// Focus, the estimate card's title, above the pet's fact line (spec §8.4; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Is this task done?'**
+  String get estimateTitle;
+
+  /// Focus, the estimate card's primary button: marks the task done (spec §8.4; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Mark done'**
+  String get estimateMarkDone;
 }
 
 class _AppLocalizationsDelegate

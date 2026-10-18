@@ -825,9 +825,17 @@ C106–C109.
 running block, the break, the countdown and the *Stop this block?* sheet,
 with Android back minimising (or *Leave* from a finished state). The quiet
 clock and its line are `QuietClock` (`clock_view.dart`); the banner is
-`RunningBannerSlot` (`lib/app/running_banner.dart`). What a finished block
-or break shows is still a stand-in (`FocusAfterPlaceholder`). Approved by the
+`RunningBannerSlot` (`lib/app/running_banner.dart`). Approved by the
 user on the emulator. Its calls: C110–C115.
+
+**Block done, Break over, the choices and the estimate card are built** in [Focus: block done, break over and the choices](https://github.com/heichan2000/Tomo/issues/97):
+`LiveFocus` plays the owed run (and *Task done* when the task is marked done
+there), speaks it once, and marks it seen; `AfterBlock`
+(`lib/focus/after_block.dart`) lays out the notes, the pet, its line, the bar,
+`EstimateCard` and the choices. Which choices show is `choicesAfter`
+(`tomo_core/focus/choices.dart`); which line a run shows is `runMoment`
+(`tomo_core/voice/pet_moment.dart`). The hatch is a stand-in
+(`HatchStandIn`) until *The hatch takeover*. Its calls: C116–C123.
 
 ### 8.5 The choices
 
@@ -1654,6 +1662,14 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C113 | Reads Focus and the banner needed | `TaskService.cycleTask()` / `watchCycleTask()`: the live cycle's task and its project (`CycleTask`), read at start-up and watched as `cycleTaskProvider`, so a rename on Work shows on the banner. `StatsReader.dayOf(now)`: the day's blocks and minutes for the Chatty break lines, by each block's stored `local_date`. Widget tests of the whole app feed both through `petChanged`. |
 | C114 | Who settles a block that ends while Focus is minimised | The banner, as it sees the block end (`reconcile`), so under auto-start the break starts on time and the banner moves on with it. Focus also reconciles as it opens and as the clock moves its state. |
 | C115 | Focus's running and break layout against the approved screen's three "grow"s | `ScreenBody`'s `middle` holds the pet, the line, the clock, the progress line and the chip as one group, halfway between the header and the one button. Kit parts added: `PixelChip(big:)` (body text, for *Focus* / *Break*), `ProgressLine` (2 UI pixels, grows in whole UI pixels), `PixelText.cut` (one line ending in "…", the running banner's task). |
+| C116 | Which line a run shows (and speaks after its facts) when it has several beats | Its rarest beat's, by the reward ladder: hatch, then evolution, then task done, then level-up, then the block. So a block that levels up shows the level-up line, and a task bonus that reaches a level keeps the task-done line (`runMoment`). |
+| C117 | When Focus says *while you were away* | When it opens on a block that ended unseen (its run still owed). The note sits under the header on every Focus state, the break included, until a choice is picked, and it opens the spoken run in place of "Block done: …". The time is the phone's own format. |
+| C118 | What *Start another task* does with the cycle | Opens the picker; a pick ends the cycle (as *Leave*) and Focus goes to Ready on the picked task, so its length can be chosen. Closing the picker changes nothing. |
+| C119 | The line after a run, and on coming back later | The run's line stays until a choice is picked. Opened later on a finished block whose run was seen, Focus shows the block-done line; Break over shows its break-over line. |
+| C120 | When the estimate card is asked for | When a block's run ends (finished or skipped) on `focusComplete`: `takeEstimatePrompt` marks the task as prompted then. Under auto-start the settle starts the break, so there is no `focusComplete` and no card until a later block ends without it. The card is held in memory: minimised and back, it has gone. |
+| C121 | *Mark task done* on a task whose bonus was already paid (done, reopened, done again) | *Task done* still plays, gaining 0 EXP: finishing the real task is the point. |
+| C122 | Minimise while a run plays | The run counts as seen (spec §7.4, walked away from), so it doesn't play again. During the hatch, Android back does nothing until the naming, where it acts as *Done*. |
+| C123 | Words for the choices and the card | `choiceBreak`, `choiceAnotherBlock`, `startAnotherBlock`, `markTaskDone`, `doneForNow`, `estimateTitle`, `estimateMarkDone`, and the countdown's `notYet`, from Tomo Pixel Screens. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

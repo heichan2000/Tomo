@@ -931,4 +931,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get srRestUnderMinute => 'Under a minute of rest left.';
+
+  @override
+  String choiceBreak(int minutes) {
+    return 'Take a $minutes-min break';
+  }
+
+  @override
+  String choiceAnotherBlock(int minutes) {
+    return 'Another $minutes-min block';
+  }
+
+  @override
+  String get startAnotherBlock => 'Start another block';
+
+  @override
+  String get markTaskDone => 'Mark task done';
+
+  @override
+  String get doneForNow => 'Done for now';
+
+  @override
+  String get estimateTitle => 'Is this task done?';
+
+  @override
+  String get estimateMarkDone => 'Mark done';
 }
