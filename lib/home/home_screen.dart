@@ -13,6 +13,7 @@ import '../app/placeholder_screens.dart';
 import '../app/providers.dart';
 import '../app/routes.dart';
 import '../l10n/app_localizations.dart';
+import '../pet/pet_label.dart';
 import '../pet/pet_view.dart';
 import '../ui/buttons.dart';
 import '../ui/exp_bar.dart';
@@ -90,7 +91,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final live = project(pet?.cycle, _now()).state != FocusState.idle;
     // While a cycle is live, *Start focusing* opens Focus, like the banner
     // (§17, C3).
-    live ? openFocus(context) : openTaskPicker(context);
+    if (live) {
+      openFocus(context);
+    } else {
+      unawaited(openTaskPicker(context));
+    }
   }
 
   @override
@@ -131,16 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 look: look,
                 spot: PetSpot.home,
                 cues: _cues,
-                semanticLabel: switch (look) {
-                  HatchedLook(:final stage) => words.srPet(
-                    name,
-                    pet!.level,
-                    pet.exp % expPerLevel,
-                    pet.level + 1,
-                    stage,
-                  ),
-                  EggLook() => words.srEgg(speciesName),
-                },
+                semanticLabel: petLabel(words, pet!, look),
               ),
             ),
           if (hatched)

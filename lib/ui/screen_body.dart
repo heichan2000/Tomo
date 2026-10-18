@@ -9,9 +9,10 @@ import 'ui_pixel.dart';
 /// the top, 12 from each side, 10 from the bottom, with 6 between parts.
 ///
 /// [content] runs down from the top and [bottom] (the screen's buttons) sits
-/// at the foot, with at least 16 UI pixels between them. When it all doesn't
-/// fit, as at large text, the whole screen scrolls, buttons included, rather
-/// than clip (spec §12).
+/// at the foot, with at least 16 UI pixels between them. [middle], if any,
+/// sits halfway down the room between the two, as the pet does on Focus.
+/// When it all doesn't fit, as at large text, the whole screen scrolls,
+/// buttons included, rather than clip (spec §12).
 ///
 /// It keeps clear of the status bar, the phone's gesture bar (outside the
 /// shell, which already does), and the keyboard when one is up.
@@ -19,11 +20,13 @@ class ScreenBody extends StatelessWidget {
   const ScreenBody({
     super.key,
     required this.content,
+    this.middle = const [],
     this.bottom = const [],
     this.bottomGap = 6,
   });
 
   final List<Widget> content;
+  final List<Widget> middle;
   final List<Widget> bottom;
 
   /// UI pixels between the parts of [bottom].
@@ -65,7 +68,11 @@ class ScreenBody extends StatelessWidget {
               gap: u(16),
               // Inside the padding, the screen is that much shorter.
               minHeight: math.max(0, viewport.maxHeight - padding.vertical),
-              children: [column(content, 6), column(bottom, bottomGap)],
+              children: [
+                column(content, 6),
+                column(middle, 6),
+                column(bottom, bottomGap),
+              ],
             ),
           ),
         ),
@@ -74,8 +81,9 @@ class ScreenBody extends StatelessWidget {
   }
 }
 
-/// Two children: the first at the top, the second at the foot of at least
-/// [minHeight], and at least [gap] apart.
+/// Three children: the first at the top, the last at the foot of at least
+/// [minHeight], and the middle one halfway down the room between them; each
+/// at least [gap] from the next. An empty child takes no room and no gap.
 class _ContentAndFoot extends MultiChildRenderObjectWidget {
   const _ContentAndFoot({
     required this.gap,
@@ -130,18 +138,24 @@ class _RenderContentAndFoot extends RenderBox
   void performLayout() {
     final width = BoxConstraints.tightFor(width: constraints.maxWidth);
     final content = firstChild!..layout(width, parentUsesSize: true);
-    final foot = childAfter(content)!..layout(width, parentUsesSize: true);
-    final hasFoot = foot.size.height > 0;
+    final middle = childAfter(content)!..layout(width, parentUsesSize: true);
+    final foot = childAfter(middle)!..layout(width, parentUsesSize: true);
+    double room(RenderBox child) =>
+        child.size.height > 0 ? _gap + child.size.height : 0;
     final height = math.max(
       _minHeight,
-      content.size.height + (hasFoot ? _gap + foot.size.height : 0),
+      content.size.height + room(middle) + room(foot),
     );
     size = constraints.constrain(Size(constraints.maxWidth, height));
     (content.parentData! as _Slot).offset = Offset.zero;
-    (foot.parentData! as _Slot).offset = Offset(
+    final footTop = size.height - foot.size.height;
+    // Halfway, but never nearer either neighbour than the gap.
+    final free = footTop - content.size.height - middle.size.height;
+    (middle.parentData! as _Slot).offset = Offset(
       0,
-      size.height - foot.size.height,
+      content.size.height + math.max(_gap, free / 2),
     );
+    (foot.parentData! as _Slot).offset = Offset(0, footTop);
   }
 
   @override

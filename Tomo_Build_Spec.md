@@ -723,6 +723,11 @@ hand out the database, the services, the logs and the stores; `TomoShell`
 built are stand-ins in `placeholder_screens.dart`. Approved by the user on the
 emulator. Its calls: C64–C72.
 
+The task picker is **built** in [Focus: the task picker and Ready](https://github.com/heichan2000/Tomo/issues/95),
+in `lib/focus/task_picker.dart`: `pickTask` opens it and gives back a
+`PickedTask` (the task and its project); Home's `openTaskPicker` opens
+Focus on Ready with it. Its calls: C103–C105.
+
 ### 8.2 Onboarding
 
 From [Onboarding & hatch flow design](https://github.com/heichan2000/Tomo/issues/18)
@@ -772,7 +777,7 @@ through `ScreenBody` (`lib/ui/screen_body.dart`). Its calls: C73–C77.
 `petStandingProvider`, which reads `PetReader` (`tomo_core/pet/pet_standing.dart`):
 the pet, the live cycle and the owed run, so the look is `PetStanding.lookAt`.
 The level chip and the gear push the Stats and Settings stand-ins; *Start
-focusing* opens the task-picker stand-in (`openTaskPicker`). Its calls:
+focusing* opens the task picker (`openTaskPicker`). Its calls:
 C78–C83.
 
 ### 8.4 Focus
@@ -807,6 +812,13 @@ right once notifications are denied (opens the phone's settings). Notes
   *while you were away* note at the top ("Finished at 2:25 PM…", device time
   format), the **full beat plays**, then the choices; the note stays until a
   choice is picked.
+
+**Ready is built** in [Focus: the task picker and Ready](https://github.com/heichan2000/Tomo/issues/95),
+in `lib/focus/`: `FocusScreen` shows `ReadyScreen` while a task is picked and
+no block has started, and the live states' stand-in otherwise; `FocusHeader`
+is the header every state shares; `chooseCustomLengths` opens the Custom
+sheet (`length_sheet.dart`). Approved by the user on the emulator. Its calls:
+C106–C109.
 
 ### 8.5 The choices
 
@@ -1620,6 +1632,13 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C100 | Running the notification checks on a phone | Debug builds: kit gallery → *Notification check*. It shows the permission, whether alarms can be exact and what is pending, and starts blocks to leave running: 10 and 35 minutes through the service, and 1 minute written directly under the 10-minute floor (it credits the pet its minute). |
 | C101 | Who fires the timer buzz | `TimerBuzz`, around the whole app, not Focus: a block can run out while the Work tab is showing. While Tomo is open it waits for each moment `timerEnds` gives (the block's end, then under auto-start the break's) and plays `hapticFor`; a block that runs out with Focus open gets nothing from it, because Focus's beat run fires the reward tap. Checked on a Galaxy S23 Ultra: it fires on time on the Work tab, but `vibrate()` is Android's long-press feedback and feels like a short bump ([#107](https://github.com/heichan2000/Tomo/issues/107) asks whether to make it a real buzz). |
 | C102 | Stats writes `26 h 40 min` and `15 min`, but not a whole number of hours | `2 h`, with no `0 min`. Hours group their digits as the phone's language does (`1,234 h 5 min`). `focusTime` writes it for Stats and both delete sheets. |
+| C103 | How the picker reads, given that watched queries can't run in whole-app widget tests (C72) | Once, as it opens: `TaskService.pickerTasks()` and `projects()`, the same lists `watchPickerTasks()` and `watchProjects()` give. It is a sheet over everything, so nothing else writes while it is open. |
+| C104 | What "last-used project" means for *New task* (§6.3) | `lastProjectId`, set when a block starts (to its task's project) and when *New task* adds a task; absent or deleted → the most recently active project (`newTaskProject`). *New task* sits at the top of the picker with that project as a chip under it; the chip opens **Choose a project**, every project as a row with the chosen one checked. The picker's title is **Choose a task**. Both words chosen by the user ([#95](https://github.com/heichan2000/Tomo/issues/95)). |
+| C105 | *New task* with no project left (every project deleted on Work) | It makes **My work** (`defaultProject`, as onboarding's skip does) and adds the task there. |
+| C106 | How the denial line shows "once" (§11.4) | On the first Ready to open after the refusal (the refusal itself is followed at once by the block starting). Remembered in the device-only file as `notificationDenialShown`, so a restored phone, which asks again, can show it again. The bell shows on every Ready while notifications are off. |
+| C107 | When the chosen length is remembered (§4.7) | When a block starts with it, not when it is chosen: a length picked and then left with *Close* is not kept. |
+| C108 | Ready's header against the approved screen, which had only × at the top | The spec's header, title and project beside ×, though the task row repeats the title: every Focus state keeps the same header. Kept by the user ([#95](https://github.com/heichan2000/Tomo/issues/95)). |
+| C109 | Parts Ready needed from the kit | `ScreenBody` takes a `middle` that sits halfway down the room between the top and the buttons (the approved screens' two "grow"s); `PixelStepper` (−/+ squares, the value between, turned off at a limit), for the Custom sheet and later Planned blocks; `PixelRow(selected:)` for lists to choose from. The words not in the script (*Task*, *Length*, *Custom*, *Leave*, *Notifications are off*, *Fewer*, *More*, *Doing*) are the approved screens'. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

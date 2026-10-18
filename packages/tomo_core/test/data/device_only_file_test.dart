@@ -52,6 +52,36 @@ void main() {
     expect(await file.notificationPermissionAsked(), isFalse);
   });
 
+  group('the denial line (spec §11.4)', () {
+    test('on a new phone, it has not been shown', () async {
+      expect(await file.notificationDenialShown(), isFalse);
+    });
+
+    test('once shown, it stays shown, and asking stays as it was', () async {
+      await file.setNotificationDenialShown();
+
+      expect(await DeviceOnlyFile(storage).notificationDenialShown(), isTrue);
+      expect(await file.notificationPermissionAsked(), isFalse);
+    });
+
+    test('the two facts are kept side by side', () async {
+      await file.setNotificationPermissionAsked();
+      await file.setNotificationDenialShown();
+
+      expect(
+        storage.contents,
+        '{"notificationPermissionAsked":true,'
+        '"notificationDenialShown":true}',
+      );
+    });
+
+    test('a file that cannot be understood reads as not shown', () async {
+      storage.contents = '{"notificationDenialShown":1}';
+
+      expect(await file.notificationDenialShown(), isFalse);
+    });
+  });
+
   test('other fields in the file are kept when it is rewritten', () async {
     storage.contents = '{"somethingLater":42}';
 

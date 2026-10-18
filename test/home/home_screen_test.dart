@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/app/providers.dart';
+import 'package:tomo/focus/task_picker.dart';
 import 'package:tomo/home/home_screen.dart';
 import 'package:tomo/pet/pet_view.dart';
 import 'package:tomo/ui/buttons.dart';
@@ -173,14 +174,14 @@ void main() {
 
     await tester.tap(find.words('Start focusing'));
     await tester.pumpAndSettle();
-    expect(find.byType(TaskPickerPlaceholder), findsOneWidget);
+    expect(find.byType(TaskPickerSheet), findsOneWidget);
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     await startABlock(tester, db);
     await tester.tap(find.words('Start focusing'));
     await tester.pumpAndSettle();
-    expect(find.byType(TaskPickerPlaceholder), findsNothing);
+    expect(find.byType(TaskPickerSheet), findsNothing);
     expect(find.byType(FocusPlaceholder), findsOneWidget);
   });
 

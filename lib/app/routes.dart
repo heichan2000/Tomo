@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import '../focus/focus_screen.dart';
+import '../focus/task_picker.dart';
 import '../onboarding/onboarding_screens.dart';
 import '../ui/kit_gallery_screen.dart';
 import '../ui/motion.dart';
-import '../ui/sheet.dart';
-import 'placeholder_screens.dart';
 import 'shell.dart';
 import 'start_up.dart';
 
@@ -31,10 +31,10 @@ Route<void> _onboardingRoute() => PixelPageRoute<void>(
 /// Focus's route name, which [FocusRouteObserver] looks for.
 const focusRouteName = '/focus';
 
-Route<void> _focusRoute() => PixelPageRoute<void>(
+Route<void> _focusRoute({PickedTask? ready}) => PixelPageRoute<void>(
   settings: const RouteSettings(name: focusRouteName),
   from: AxisDirection.down,
-  builder: (_) => const FocusPlaceholder(),
+  builder: (_) => FocusScreen(ready: ready),
 );
 
 /// Onboarding is finished: the shell takes the place of both its screens,
@@ -45,14 +45,19 @@ void finishOnboarding(BuildContext context) => Navigator.of(
 ).pushAndRemoveUntil(shellRoute(), (_) => false);
 
 /// Opens Focus as a takeover above the shell, over the tab bar (spec §8.1,
-/// ADR-0003). Minimise, *Leave*, *Close* and *Stop early* close it again.
-void openFocus(BuildContext context) =>
-    Navigator.of(context, rootNavigator: true).push(_focusRoute());
+/// ADR-0003): on Ready with the task [ready], or on the live cycle. Minimise,
+/// *Leave*, *Close* and *Stop early* close it again.
+void openFocus(BuildContext context, {PickedTask? ready}) => Navigator.of(
+  context,
+  rootNavigator: true,
+).push(_focusRoute(ready: ready));
 
-/// Opens the task picker (spec §8.1), a sheet over the whole app. Picking
-/// a task opens Focus on Ready.
-void openTaskPicker(BuildContext context) =>
-    showPixelSheet<void>(context, (_) => const TaskPickerPlaceholder());
+/// Home's *Start focusing* with no cycle live: the task picker (spec §8.1),
+/// and Focus on Ready once a task is picked.
+Future<void> openTaskPicker(BuildContext context) async {
+  final picked = await pickTask(context);
+  if (picked != null && context.mounted) openFocus(context, ready: picked);
+}
 
 /// Pushes [screen] onto the current tab's own stack (spec §8.1): Project,
 /// Task detail, Stats and Settings. The tab bar stays.

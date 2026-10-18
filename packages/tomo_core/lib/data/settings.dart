@@ -65,7 +65,9 @@ final class Settings {
     await _store.write('lastBreakMinutes', breakMinutes);
   }
 
-  /// The project Work last showed. Null means "the most recently active one".
+  /// The last-used project (spec §6.3): where the task picker's *New task*
+  /// goes. Set when a block starts, to its task's project, and when *New
+  /// task* adds a task. Null means "the most recently active one".
   Future<int?> lastProjectId() async {
     final stored = await _store.read('lastProjectId');
     return stored is int ? stored : null;

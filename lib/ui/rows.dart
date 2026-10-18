@@ -21,6 +21,7 @@ class PixelRow extends StatelessWidget {
     this.mutedTitle = false,
     this.onTap,
     this.onLongPress,
+    this.selected,
     this.held = HeldState.live,
   });
 
@@ -38,6 +39,10 @@ class PixelRow extends StatelessWidget {
 
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+
+  /// For a row in a list to choose from: whether it is the chosen one.
+  final bool? selected;
+
   final HeldState held;
 
   @override
@@ -91,6 +96,7 @@ class PixelRow extends StatelessWidget {
     return Pressable(
       onPressed: onTap,
       onLongPress: onLongPress,
+      selected: selected,
       held: held,
       builder: (context, pressed, ring) => row(pressed, ring),
     );
