@@ -7,14 +7,20 @@ import 'package:tomo/app/providers.dart';
 import 'package:tomo/app/start_up.dart';
 import 'package:tomo/app/tomo_app.dart';
 import 'package:tomo/app/tomo_look.dart';
+import 'package:tomo_core/clock.dart';
 import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/diagnostic_log.dart';
 import 'package:tomo_core/diagnostics/log.dart';
+import 'package:tomo_core/focus/block_lengths.dart';
+import 'package:tomo_core/focus/focus_cycle_service.dart';
 import 'package:tomo_core/look/palette.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
 import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
+import 'package:tomo_core/result.dart';
+import 'package:tomo_core/tasks/task.dart';
+import 'package:tomo_core/tasks/task_service.dart';
 import 'package:tomo_core/testing.dart';
 
 import '../platform/fake_notifications.dart';
@@ -25,7 +31,8 @@ import '../ui/kit_harness.dart';
 /// pet already exists.
 ///
 /// [before] runs on the database before start-up, as if Tomo had been used
-/// earlier.
+/// earlier. With [clock] the database tells that time; without, the real
+/// time.
 ///
 /// Returns the database, closed again when the test ends.
 Future<TomoDatabase> pumpTomo(
@@ -39,6 +46,7 @@ Future<TomoDatabase> pumpTomo(
   FakePermission? permission,
   Stream<String?> notificationTaps = const Stream.empty(),
   Future<void> Function(TomoDatabase db)? before,
+  Clock? clock,
 }) async {
   await loadArkPixel();
   await _closeAll(tester);
@@ -50,7 +58,7 @@ Future<TomoDatabase> pumpTomo(
   addTearDown(() => lookOverride.value = const LookOverride());
 
   final log = Log(sinks: const []);
-  final db = openTestDatabase(log: log);
+  final db = openTestDatabase(clock: clock, log: log);
   final started = await tester.runAsync(() async {
     if (onboarded) {
       await Onboarding(db, log: log).complete(
@@ -91,6 +99,7 @@ Future<TomoDatabase> pumpTomo(
         notificationTapsProvider.overrideWithValue(notificationTaps),
         speciesChangesProvider.overrideWithValue(const Stream.empty()),
         petChangesProvider.overrideWithValue(_petChanges.stream),
+        cycleTaskChangesProvider.overrideWithValue(_cycleTaskChanges.stream),
       ],
       child: TomoApp(first: ready.first),
     ),
@@ -102,13 +111,44 @@ Future<TomoDatabase> pumpTomo(
 
 final _open = <TomoDatabase>[];
 
+/// For [pumpTomo]'s `before`: a task called [title] in the first project,
+/// and a block started on it now. Gives back the task's id.
+Future<int> startBlockOn(
+  TomoDatabase db, {
+  String title = 'Write the intro',
+  BlockLengths lengths = BlockLengths.preset25,
+  bool autoStart = false,
+}) async {
+  final log = Log(sinks: const []);
+  final tasks = TaskService(db, log: log);
+  final project = (await tasks.projects()).first;
+  final task = (await tasks.createTask(
+    projectId: project.id,
+    title: title,
+  ) as Success<Task>).value;
+  final started = await FocusCycleService(
+    db,
+    log: log,
+  ).startBlock(taskId: task.id, lengths: lengths, autoStart: autoStart);
+  expect(started, isA<Success<CycleStanding>>());
+  return task.id;
+}
+
 var _petChanges = StreamController<PetStanding?>.broadcast();
+var _cycleTaskChanges = StreamController<CycleTask?>.broadcast();
 
 /// Tells the app the pet or the cycle changed, as watching the database
-/// would: reads [db] on the real clock and hands the pet to Home.
+/// would: reads [db] on the real clock and hands the pet, and the cycle's
+/// task, to the screens.
 Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
-  final pet = await tester.runAsync(() => PetReader(db).read());
+  final (pet, task) = (await tester.runAsync(
+    () async => (
+      await PetReader(db).read(),
+      await TaskService(db, log: Log(sinks: const [])).cycleTask(),
+    ),
+  ))!;
   _petChanges.add(pet);
+  _cycleTaskChanges.add(task);
   // One frame to deliver it, one to show it.
   await tester.pump();
   await tester.pump();
@@ -141,5 +181,7 @@ Future<void> _closeAll(WidgetTester tester) async {
   _open.clear();
   await _petChanges.close();
   _petChanges = StreamController<PetStanding?>.broadcast();
+  await _cycleTaskChanges.close();
+  _cycleTaskChanges = StreamController<CycleTask?>.broadcast();
   await tester.pump();
 }

@@ -118,10 +118,18 @@ enum ChipTone {
 /// A small label in a box (spec §9.3), in caption text. Never a target on
 /// its own.
 class PixelChip extends StatelessWidget {
-  const PixelChip(this.label, {super.key, this.tone = ChipTone.plain});
+  const PixelChip(
+    this.label, {
+    super.key,
+    this.tone = ChipTone.plain,
+    this.big = false,
+  });
 
   final String label;
   final ChipTone tone;
+
+  /// Body text, with more room around it: Focus's *Focus* and *Break*.
+  final bool big;
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +143,14 @@ class PixelChip extends StatelessWidget {
     return PixelBox(
       fill: fill,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: u(4), vertical: u(1)),
-        child: PixelText(label, step: TypeStep.caption, colour: ink),
+        padding: big
+            ? EdgeInsets.symmetric(horizontal: u(6), vertical: u(2))
+            : EdgeInsets.symmetric(horizontal: u(4), vertical: u(1)),
+        child: PixelText(
+          label,
+          step: big ? TypeStep.body : TypeStep.caption,
+          colour: ink,
+        ),
       ),
     );
   }

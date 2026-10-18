@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tomo/focus/live_focus.dart';
 import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/app/providers.dart';
 import 'package:tomo/focus/task_picker.dart';
@@ -182,7 +183,7 @@ void main() {
     await tester.tap(find.words('Start focusing'));
     await tester.pumpAndSettle();
     expect(find.byType(TaskPickerSheet), findsNothing);
-    expect(find.byType(FocusPlaceholder), findsOneWidget);
+    expect(find.byType(LiveFocus), findsOneWidget);
   });
 
   testTomo('a running block cracks the egg on Home, and it holds still', (

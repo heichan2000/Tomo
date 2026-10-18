@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tomo/app/placeholder_screens.dart';
+import 'package:tomo/focus/live_focus.dart';
 import 'package:tomo/app/providers.dart';
 import 'package:tomo/app/tomo_app.dart';
 import 'package:tomo/platform/notifications.dart';
@@ -184,17 +184,14 @@ void main() {
         startAt = (await db.select(db.focusCycle).getSingle()).startAt;
       });
       // Minimised: the cold start opened Focus over the shell.
-      Navigator.of(tester.element(find.byType(FocusPlaceholder))).pop();
+      Navigator.of(tester.element(find.byType(LiveFocus))).pop();
       await tester.pumpAndSettle();
-      expect(find.byType(FocusPlaceholder), findsNothing);
+      expect(find.byType(LiveFocus), findsNothing);
 
       taps.add('$startAt');
-      await until(
-        tester,
-        () => find.byType(FocusPlaceholder).evaluate().isNotEmpty,
-      );
+      await until(tester, () => find.byType(LiveFocus).evaluate().isNotEmpty);
       await tester.pumpAndSettle();
-      expect(find.byType(FocusPlaceholder), findsOneWidget);
+      expect(find.byType(LiveFocus), findsOneWidget);
 
       // Tapped again with Focus already open: still one.
       taps.add('$startAt');
@@ -202,7 +199,7 @@ void main() {
         () => Future<void>.delayed(const Duration(milliseconds: 100)),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(FocusPlaceholder), findsOneWidget);
+      expect(find.byType(LiveFocus), findsOneWidget);
     });
 
     testTomo('for a cycle that has gone does nothing', (tester) async {
@@ -215,7 +212,7 @@ void main() {
         () => Future<void>.delayed(const Duration(milliseconds: 100)),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(FocusPlaceholder), findsNothing);
+      expect(find.byType(LiveFocus), findsNothing);
     });
   });
 }

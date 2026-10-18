@@ -7,7 +7,6 @@ import 'package:tomo_core/art/pixel_art.dart';
 import 'package:tomo_core/focus/block_lengths.dart';
 import 'package:tomo_core/result.dart';
 
-import '../app/placeholder_screens.dart';
 import '../app/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../pet/pet_label.dart';
@@ -22,13 +21,13 @@ import '../ui/sharp_text.dart';
 import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
 import 'length_sheet.dart';
+import 'live_focus.dart';
 import 'task_picker.dart';
 
 /// Focus (spec §8.4), a takeover above the shell with the tab bar hidden.
 ///
 /// With [ready], a task picked and no cycle yet, it is **Ready**. Once a
-/// block starts, or when it opens on a live cycle, it shows the stand-in
-/// that *Focus: running, the break, Stop early and the banner* replaces.
+/// block starts, or when it opens on a live cycle, it is [LiveFocus].
 class FocusScreen extends StatefulWidget {
   const FocusScreen({super.key, this.ready});
 
@@ -44,7 +43,7 @@ class _FocusScreenState extends State<FocusScreen> {
   @override
   Widget build(BuildContext context) {
     final ready = widget.ready;
-    if (ready == null || _started) return const FocusPlaceholder();
+    if (ready == null || _started) return const LiveFocus();
     return ReadyScreen(
       picked: ready,
       onStarted: () => setState(() => _started = true),

@@ -10,6 +10,7 @@ import 'package:tomo_core/focus/projection.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/result.dart';
+import 'package:tomo_core/tasks/task_service.dart';
 
 import 'providers.dart';
 
@@ -97,6 +98,7 @@ Future<TomoStart> startTomo({
     }
     final species = await watchHatchedSpecies(database).first;
     final pet = await PetReader(database).read();
+    final cycleTask = await TaskService(database, log: log).cycleTask();
 
     return Started(
       first: first,
@@ -111,6 +113,7 @@ Future<TomoStart> startTomo({
         startingClockNoticeProvider.overrideWithValue(clockNotice),
         startingCalmPetProvider.overrideWithValue(calmPet),
         startingPetProvider.overrideWithValue(pet),
+        startingCycleTaskProvider.overrideWithValue(cycleTask),
       ],
     );
   } catch (error, stackTrace) {

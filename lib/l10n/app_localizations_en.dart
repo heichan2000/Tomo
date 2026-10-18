@@ -851,4 +851,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusDoing => 'Doing';
+
+  @override
+  String get minimise => 'Minimise';
+
+  @override
+  String clockLeft(int minutes) {
+    return 'about $minutes min left';
+  }
+
+  @override
+  String get clockUnderMinute => 'under a minute left';
+
+  @override
+  String restLeft(int minutes) {
+    return 'about $minutes min of rest left';
+  }
+
+  @override
+  String get restUnderMinute => 'under a minute of rest left';
+
+  @override
+  String get chipFocus => 'Focus';
+
+  @override
+  String get chipBreak => 'Break';
+
+  @override
+  String get stopEarly => 'Stop early';
+
+  @override
+  String get keepGoing => 'Keep going';
+
+  @override
+  String get skipBreak => 'Skip break';
+
+  @override
+  String get startNow => 'Start now';
+
+  @override
+  String get notYet => 'Not yet';
+
+  @override
+  String bannerLeft(int minutes) {
+    return '$minutes min left';
+  }
+
+  @override
+  String bannerBreak(int minutes) {
+    return 'Break · about $minutes min';
+  }
+
+  @override
+  String get bannerBreakUnderMinute => 'Break · under a minute';
+
+  @override
+  String bannerBlockDone(int minutes) {
+    return 'Block done · $minutes min counted';
+  }
+
+  @override
+  String get bannerBreakOver => 'Break over';
+
+  @override
+  String srClockUnderMinute(String task) {
+    return 'Under a minute left on $task.';
+  }
+
+  @override
+  String srRest(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'minutes',
+      one: 'minute',
+    );
+    return 'About $minutes $_temp0 of rest left.';
+  }
+
+  @override
+  String get srRestUnderMinute => 'Under a minute of rest left.';
 }

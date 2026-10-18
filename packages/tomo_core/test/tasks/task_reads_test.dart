@@ -211,14 +211,11 @@ void main() {
       await setStatus(await task(a, 'done in A'), TaskStatus.done);
       await setStatus(doing, TaskStatus.doing);
 
-      expect([for (final t in await tasks.pickerTasks()) t.title], [
-        'doing in B',
-        'todo in A',
-      ]);
       expect(
-        await tasks.pickerTasks(),
-        await tasks.watchPickerTasks().first,
+        [for (final t in await tasks.pickerTasks()) t.title],
+        ['doing in B', 'todo in A'],
       );
+      expect(await tasks.pickerTasks(), await tasks.watchPickerTasks().first);
     });
 
     test('the projects, the most recently active first', () async {
@@ -226,10 +223,10 @@ void main() {
       await project('Newer');
       await task(older, 'Something');
 
-      expect([for (final p in await tasks.projects()) p.name], [
-        'Older',
-        'Newer',
-      ]);
+      expect(
+        [for (final p in await tasks.projects()) p.name],
+        ['Older', 'Newer'],
+      );
       expect(await tasks.projects(), await tasks.watchProjects().first);
     });
   });
@@ -269,5 +266,70 @@ void main() {
         ['First'],
       ]);
     });
+  });
+
+  group("the live cycle's task", () {
+    Future<void> startOn(Task task) async => ok(
+      await focus.startBlock(
+        taskId: task.id,
+        lengths: BlockLengths.preset25,
+        autoStart: false,
+      ),
+    );
+
+    test('the task the cycle is on, and its project', () async {
+      final thesis = await project('Thesis');
+      final outline = await task(thesis, 'Outline');
+      await startOn(outline);
+
+      final live = await tasks.cycleTask();
+
+      expect((live?.task.title, live?.project.name), ('Outline', 'Thesis'));
+    });
+
+    test('none without a cycle', () async {
+      final thesis = await project('Thesis');
+      await task(thesis, 'Outline');
+
+      expect(await tasks.cycleTask(), isNull);
+    });
+
+    test(
+      'watched, it follows a rename, a move and the end of the cycle',
+      () async {
+        final thesis = await project('Thesis');
+        final moving = await project('Moving');
+        final outline = await task(thesis, 'Outline');
+        final seen = <(String, String)?>[];
+        final subscription = tasks.watchCycleTask().listen(
+          (live) => seen.add(
+            live == null ? null : (live.task.title, live.project.name),
+          ),
+        );
+        addTearDown(subscription.cancel);
+        await pumpEventQueue();
+
+        await startOn(outline);
+        await pumpEventQueue();
+        ok(await tasks.updateTask(outline.id, const TaskPatch(title: 'Draft')));
+        await pumpEventQueue();
+        ok(await tasks.updateTask(outline.id, TaskPatch(projectId: moving.id)));
+        await pumpEventQueue();
+        ok(await tasks.renameProject(moving.id, 'Move'));
+        await pumpEventQueue();
+        clock.advance(const Duration(minutes: 25));
+        ok(await focus.leave());
+        await pumpEventQueue();
+
+        expect(seen, [
+          null,
+          ('Outline', 'Thesis'),
+          ('Draft', 'Thesis'),
+          ('Draft', 'Moving'),
+          ('Draft', 'Move'),
+          null,
+        ]);
+      },
+    );
   });
 }

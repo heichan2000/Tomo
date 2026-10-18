@@ -171,7 +171,20 @@ class PixelText extends StatelessWidget {
     this.step = TypeStep.body,
     this.colour,
     this.textAlign = TextAlign.start,
-  }) : _oneLine = step == TypeStep.petName;
+  }) : _oneLine = step == TypeStep.petName,
+       _cut = false;
+
+  /// Words on one line that end in "…" when they don't fit, growing with the
+  /// phone's text setting as body text does: the running banner's task,
+  /// whose time under it carries the news. Start-aligned.
+  const PixelText.cut(
+    this.words, {
+    super.key,
+    this.step = TypeStep.body,
+    this.colour,
+  }) : textAlign = TextAlign.start,
+       _oneLine = false,
+       _cut = true;
 
   /// A number or a time (spec §9.2): it stops growing at 130% of the phone's
   /// text setting, never wraps, and steps down to the largest sharp size that
@@ -182,13 +195,15 @@ class PixelText extends StatelessWidget {
     this.step = TypeStep.body,
     this.colour,
     this.textAlign = TextAlign.start,
-  }) : _oneLine = true;
+  }) : _oneLine = true,
+       _cut = false;
 
   final String words;
   final TypeStep step;
   final Color? colour;
   final TextAlign textAlign;
   final bool _oneLine;
+  final bool _cut;
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +211,18 @@ class PixelText extends StatelessWidget {
     final scaler = SharpText.of(context);
     final n = (_oneLine ? scaler.capped() : scaler).dotsFor(step.dots(dpr));
     final style = step.style(dpr, colour ?? TomoTheme.of(context).ink);
+    if (_cut) {
+      return InDots(
+        child: Text(
+          words,
+          style: style.copyWith(fontSize: _em * n.toDouble()),
+          textScaler: TextScaler.noScaling,
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
     if (!_oneLine) return InDots(child: _lines(style, n));
     return LayoutBuilder(
       builder: (context, constraints) {

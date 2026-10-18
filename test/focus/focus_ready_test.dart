@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tomo/app/placeholder_screens.dart';
+import 'package:tomo/focus/live_focus.dart';
 import 'package:tomo/app/providers.dart';
 import 'package:tomo/app/tomo_app.dart';
 import 'package:tomo/focus/focus_screen.dart';
@@ -77,7 +77,10 @@ void main() {
       await tasks.createTask(projectId: moving.id, title: 'Pack books'),
     );
     ok(
-      await tasks.updateTask(pack.id, const TaskPatch(status: TaskStatus.doing)),
+      await tasks.updateTask(
+        pack.id,
+        const TaskPatch(status: TaskStatus.doing),
+      ),
     );
   }
 
@@ -416,7 +419,7 @@ void main() {
       expect(await tester.runAsync(settings.lastBreakMinutes), 10);
       expect(await tester.runAsync(settings.lastProjectId), task.projectId);
       // Running is a stand-in until its own ticket.
-      expect(find.byType(FocusPlaceholder), findsOneWidget);
+      expect(find.byType(LiveFocus), findsOneWidget);
     });
   });
 
@@ -452,7 +455,7 @@ void main() {
 
       // As if the block had been left.
       await tester.runAsync(() => db.delete(db.focusCycle).go());
-      Navigator.of(tester.element(find.byType(FocusPlaceholder))).pop();
+      Navigator.of(tester.element(find.byType(LiveFocus))).pop();
       await settle(tester);
 
       const denial =

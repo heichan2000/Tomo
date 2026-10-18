@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tomo/app/running_banner.dart';
+import 'package:tomo/focus/live_focus.dart';
 import 'package:tomo/app/placeholder_screens.dart';
-import 'package:tomo/app/routes.dart';
 import 'package:tomo/home/home_screen.dart';
 import 'package:tomo/app/shell.dart';
 import 'package:tomo/ui/buttons.dart';
@@ -186,16 +187,18 @@ void main() {
   testTomo('Focus opens over the tab bar, and minimising returns', (
     tester,
   ) async {
-    await pumpTomo(tester);
+    // A cold start onto a live cycle opens Focus.
+    await pumpTomo(tester, before: startBlockOn);
 
-    // Focus on a live cycle, as the banner opens it.
-    openFocus(tester.element(find.byType(HomeScreen)));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(FocusPlaceholder).hitTestable(), findsOneWidget);
+    expect(find.byType(LiveFocus).hitTestable(), findsOneWidget);
     expect(tabBarShown(), findsNothing);
 
-    await tester.tap(find.words('Minimise'));
+    await tester.tap(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is PixelIconButton && widget.semanticLabel == 'Minimise',
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(tabBarShown(), findsOneWidget);
