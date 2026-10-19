@@ -834,8 +834,7 @@ there), speaks it once, and marks it seen; `AfterBlock`
 (`lib/focus/after_block.dart`) lays out the notes, the pet, its line, the bar,
 `EstimateCard` and the choices. Which choices show is `choicesAfter`
 (`tomo_core/focus/choices.dart`); which line a run shows is `runMoment`
-(`tomo_core/voice/pet_moment.dart`). The hatch is a stand-in
-(`HatchStandIn`) until *The hatch takeover*. Its calls: C116–C123.
+(`tomo_core/voice/pet_moment.dart`). The hatch is §8.7's. Its calls: C116–C123.
 
 ### 8.5 The choices
 
@@ -875,6 +874,14 @@ as *Done* on the naming step. *(The egg during the beat and back behaviour are
 consolidation calls, §17 C5–C6.)*
 
 A user who never finishes a block never meets a pet. Accepted (ADR-0012).
+
+**Built** in [The hatch takeover](https://github.com/heichan2000/Tomo/issues/98):
+`LiveFocus` plays the first block's run with Focus around it until the hatch
+beat, then shows `HatchTakeover` (`lib/focus/hatch.dart`): the pet at 192 pt,
+the hatch line, the **Name** field and *Done*. *Done* (or the keyboard's done
+key, or Android back on the naming) writes the name through `PetService.rename`
+(`tomo_core/pet/pet_service.dart`), which Settings → Rename pet will use too.
+Its calls: C124–C129.
 
 ### 8.8 Work
 
@@ -1670,6 +1677,12 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C121 | *Mark task done* on a task whose bonus was already paid (done, reopened, done again) | *Task done* still plays, gaining 0 EXP: finishing the real task is the point. |
 | C122 | Minimise while a run plays | The run counts as seen (spec §7.4, walked away from), so it doesn't play again. During the hatch, Android back does nothing until the naming, where it acts as *Done*. |
 | C123 | Words for the choices and the card | `choiceBreak`, `choiceAnotherBlock`, `startAnotherBlock`, `markTaskDone`, `doneForNow`, `estimateTitle`, `estimateMarkDone`, and the countdown's `notYet`, from Tomo Pixel Screens. |
+| C124 | How long a pet's name may be | 20 characters, counted as the reader sees them (an emoji or an accented letter is one); the field stops taking more. About what fits on one line in Home's name size. Approved by the user ([#98](https://github.com/heichan2000/Tomo/issues/98)). |
+| C125 | A name cleared away, then *Done* | The pet keeps its species name: the name is never blank (C30). The name is trimmed before it is stored. Approved by the user ([#98](https://github.com/heichan2000/Tomo/issues/98)). |
+| C126 | The pre-filled name and the keyboard | The keyboard does not open by itself, so it never covers the pet at the hatch; *Done* alone keeps the species name. The first tap on the field selects the whole name, so typing replaces it. Approved by the user ([#98](https://github.com/heichan2000/Tomo/issues/98)). |
+| C127 | The name fails to write | The plain error line shows above *Done* and the naming stays; *Done* tries again. The old name (none) stays, logged as `petWriteFailed`. |
+| C128 | Words for the naming | `hatchName` (*Name*, the caption and the field's screen-reader label) and `hatchDone` (*Done*), from Tomo Pixel Screens. `PixelTextField` gained `label:` for this. |
+| C129 | The accent in widget tests of the whole app | The harness feeds the hatched species through `petChanged`, as it feeds the pet (C113), so a test sees the grey turn to the species colour. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

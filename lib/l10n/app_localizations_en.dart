@@ -956,4 +956,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get estimateMarkDone => 'Mark done';
+
+  @override
+  String get hatchName => 'Name';
+
+  @override
+  String get hatchDone => 'Done';
 }

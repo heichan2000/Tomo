@@ -22,6 +22,7 @@ class PixelTextField extends StatefulWidget {
     required this.controller,
     this.focusNode,
     this.hint,
+    this.label,
     this.autofocus = false,
     this.textInputAction = TextInputAction.done,
     this.onChanged,
@@ -35,6 +36,9 @@ class PixelTextField extends StatefulWidget {
 
   /// Shown, muted, while the field is empty.
   final String? hint;
+
+  /// What a screen reader calls the field, when a label over it says so.
+  final String? label;
 
   final bool autofocus;
   final TextInputAction textInputAction;
@@ -178,7 +182,11 @@ class _PixelTextFieldState extends State<PixelTextField>
                 ExcludeSemantics(
                   child: PixelText(widget.hint!, colour: colours.muted),
                 ),
-              Semantics(hint: widget.hint, child: editable),
+              Semantics(
+                label: widget.label,
+                hint: widget.hint,
+                child: editable,
+              ),
             ],
           ),
         ),

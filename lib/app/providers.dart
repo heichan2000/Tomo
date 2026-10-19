@@ -12,6 +12,7 @@ import 'package:tomo_core/notifications/notification_schedule.dart';
 import 'package:tomo_core/notifications/notification_sync.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
 import 'package:tomo_core/pet/beat_queue.dart';
+import 'package:tomo_core/pet/pet_service.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/stats/stats.dart';
@@ -90,6 +91,14 @@ final focusCycleServiceProvider = Provider(
 
 final taskServiceProvider = Provider(
   (ref) => TaskService(
+    ref.watch(databaseProvider),
+    log: ref.watch(logProvider),
+    afterWrite: ref.watch(notificationSyncProvider).sync,
+  ),
+);
+
+final petServiceProvider = Provider(
+  (ref) => PetService(
     ref.watch(databaseProvider),
     log: ref.watch(logProvider),
     afterWrite: ref.watch(notificationSyncProvider).sync,

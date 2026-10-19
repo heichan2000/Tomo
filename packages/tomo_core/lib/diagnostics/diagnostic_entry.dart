@@ -16,6 +16,9 @@ enum DiagnosticCode {
   /// Finishing onboarding failed and was rolled back (spec §8.2).
   onboardingWriteFailed,
 
+  /// Naming the pet failed (spec §8.7); the old name stays.
+  petWriteFailed,
+
   /// The phone refused to schedule or cancel a timer notification
   /// (spec §11.2). The block still counts; only the alert is lost.
   notificationSyncFailed,

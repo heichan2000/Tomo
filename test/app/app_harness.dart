@@ -97,7 +97,7 @@ Future<TomoDatabase> pumpTomo(
           permission ?? FakePermission(),
         ),
         notificationTapsProvider.overrideWithValue(notificationTaps),
-        speciesChangesProvider.overrideWithValue(const Stream.empty()),
+        speciesChangesProvider.overrideWithValue(_speciesChanges.stream),
         petChangesProvider.overrideWithValue(_petChanges.stream),
         cycleTaskChangesProvider.overrideWithValue(_cycleTaskChanges.stream),
       ],
@@ -135,11 +135,12 @@ Future<int> startBlockOn(
 }
 
 var _petChanges = StreamController<PetStanding?>.broadcast();
+var _speciesChanges = StreamController<Species?>.broadcast();
 var _cycleTaskChanges = StreamController<CycleTask?>.broadcast();
 
 /// Tells the app the pet or the cycle changed, as watching the database
-/// would: reads [db] on the real clock and hands the pet, and the cycle's
-/// task, to the screens.
+/// would: reads [db] on the real clock and hands the pet, its species once
+/// hatched (the accent), and the cycle's task, to the screens.
 Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
   final (pet, task) = (await tester.runAsync(
     () async => (
@@ -148,6 +149,7 @@ Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
     ),
   ))!;
   _petChanges.add(pet);
+  _speciesChanges.add(pet != null && pet.hatched ? pet.species : null);
   _cycleTaskChanges.add(task);
   // One frame to deliver it, one to show it.
   await tester.pump();
@@ -158,9 +160,9 @@ Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
 /// and its database closed, inside the test.
 ///
 /// The database's work runs on the real clock ([WidgetTester.runAsync]): its
-/// watched queries never finish on a widget test's pretend one. So the pet's
-/// species is handed to the app at start-up and not watched afterwards, and
-/// the pet Home shows changes only when a test calls [petChanged].
+/// watched queries never finish on a widget test's pretend one. So the pet,
+/// and the species the accent comes from, change on screen only when a test
+/// calls [petChanged].
 void testTomo(String description, WidgetTesterCallback body) =>
     testWidgets(description, (tester) async {
       try {
@@ -181,6 +183,8 @@ Future<void> _closeAll(WidgetTester tester) async {
   _open.clear();
   await _petChanges.close();
   _petChanges = StreamController<PetStanding?>.broadcast();
+  await _speciesChanges.close();
+  _speciesChanges = StreamController<Species?>.broadcast();
   await _cycleTaskChanges.close();
   _cycleTaskChanges = StreamController<CycleTask?>.broadcast();
   await tester.pump();

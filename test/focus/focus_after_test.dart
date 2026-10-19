@@ -448,7 +448,7 @@ void main() {
     await open(tester, before: startBlockOn, minute: 24);
 
     await passTo(tester, 25);
-    // The hatch takeover's own ticket builds its naming; until then, Done.
+    // The naming's Done (focus_hatch_test.dart has the rest of it).
     await tap(tester, find.words('Done'));
 
     expect(button('Take a 5-min break'), findsOneWidget);
