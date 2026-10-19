@@ -18,7 +18,8 @@ Tick each box on both phones, and note the phone and date at the bottom.
 - [ ] Restart the phone mid-block: the alert still arrives after the restart.
 - [ ] Nothing is posted while Tomo is open; leaving Tomo schedules, coming back
       clears.
-- [ ] The first block's notification is titled **Your egg**.
+- [ ] The first block's notification is titled **Your stone egg** (or *paper*
+      / *spotted*), and nothing in it names the pet.
 - [ ] Tapping the alert with Focus minimised brings Focus forward.
 
 Debug builds make these quick: kit gallery → *Notification check* (spec §17,

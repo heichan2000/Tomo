@@ -167,8 +167,12 @@ and the user names the pet there. It happens **once ever**, which makes it the
 rarest celebratory beat in the product.
 
 **Egg** — what the user holds between onboarding and the hatch. It is that
-species' egg: the species is chosen at setup, so **pre-hatch** means *no name
-and no pet yet*, never *no species*. The egg occupies the pet's slot on Home and
+species' egg: the species is chosen at setup by choosing its egg, but it stays
+**hidden** until the hatch, so **pre-hatch** means *no name and no pet yet*, and
+nothing the user sees names the species
+([ADR-0031](docs/adr/0031-choose-the-pet-by-its-egg.md)). Each egg has a
+**name** that describes it (*Stone egg*, *Paper egg*, *Spotted egg*), never its
+pet's kind. The egg occupies the pet's slot on Home and
 Focus, and splits progressively across a running block — derived from the
 cycle's elapsed minutes, stored nowhere. The crack is part of the egg's
 *drawing*: the egg is drawn whole, then once per **crack step** (Geode's egg has
@@ -404,8 +408,9 @@ _Avoid_: consent screen, disclaimer, data-use gate
 
 **Pet voice** — words the pet says, written to its species' voice rule (Geode:
 present tense, no future; Joe: exact numbers; Lily: says *you*, asks
-questions). Reward and Focus lines, timer notifications, the hatch line, the
-egg line and the setup descriptions are in pet voice. (Chat replies and the
+questions). Reward and Focus lines, timer notifications after the hatch and
+the hatch line are in pet voice. Nothing before the hatch is: the egg's lines
+are plain, so the pet stays a surprise. (Chat replies and the
 "chat isn't set up" explainer are parked with the AI layer.) See issues #30 and
 #51.
 

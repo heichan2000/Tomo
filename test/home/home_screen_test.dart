@@ -89,13 +89,11 @@ void main() {
     expect(pet(tester).spot, PetSpot.home);
     expect(
       pet(tester).semanticLabel,
-      'Geode egg. It hatches when you finish '
+      'Stone egg. It hatches when you finish '
       'a focus block.',
     );
     expect(
-      find.words(
-        'I am in here, waiting calmly. A finished focus block opens me.',
-      ),
+      find.words('Your stone egg hatches when you finish a focus block.'),
       findsOneWidget,
     );
     expect(levelChip(), findsNothing);
@@ -125,9 +123,7 @@ void main() {
     expect(find.words('480 / 600 EXP'), findsOneWidget);
     expect(tester.widget<ExpBar>(find.byType(ExpBar)).lit, 16);
     expect(
-      find.words(
-        'I am in here, waiting calmly. A finished focus block opens me.',
-      ),
+      find.words('Your stone egg hatches when you finish a focus block.'),
       findsNothing,
     );
   });

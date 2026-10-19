@@ -30,7 +30,7 @@ These decisions change what gets built:
 | Optional AI pet-agent, bring-your-own key | **No AI in MVP, and Tomo never goes online.** No chat, no key, no `INTERNET` permission, no `http`. Parked for a future version. | ADR-0029 |
 | Coins and cosmetics | **None.** EXP is the only reward number. | ADR-0007 |
 | Name the pet and watch it hatch on first launch | **The egg hatches at the end of the first finished focus block.** | ADR-0012 |
-| One pet | **Three starters** (Geode, Joe, Lily); the user picks one at setup and keeps it forever. Not a collection. | [#9](https://github.com/heichan2000/Tomo/issues/9) |
+| One pet | **Three starters** (Geode, Joe, Lily); the user picks one at setup, by its egg, and keeps it forever. What hatched is a surprise until the hatch (ADR-0031). Not a collection. | [#9](https://github.com/heichan2000/Tomo/issues/9) |
 | Vector pet, Rive rigs | **Pixel art**, painted from text grids in the Dart code, moved by sliding six parts in whole pixels. | ADR-0014, ADR-0018, ADR-0020 |
 | (unspecified) | **Light and true-black dark themes**, accent copied from the pet. | ADR-0015 |
 | "Current streak" on Stats | **No streak.** *Days focused*, which only grows. | ADR-0026 |
@@ -47,8 +47,8 @@ These decisions change what gets built:
 - Projects → tasks (title, notes, status, planned blocks), managed by tapping.
 - A timestamp-anchored focus timer: blocks of 10–120 minutes, breaks, optional
   auto-start, three timer notifications.
-- One pet, picked at setup from three starters, hatched by the first finished
-  block, growing through four stages on EXP earned by finished blocks.
+- One pet, picked by its egg at setup from three starters, hatched by the
+  first finished block, growing through four stages on EXP earned by finished blocks.
 - A lightweight Stats screen (four all-time numbers).
 - Settings: rename pet, Calm pet, auto-start, notifications,
   appearance, About with *Share diagnostics*.
@@ -734,10 +734,14 @@ From [Onboarding & hatch flow design](https://github.com/heichan2000/Tomo/issues
 [Redraw Home, Focus and Onboarding](https://github.com/heichan2000/Tomo/issues/45).
 Neutral grey chrome throughout. No account, no permissions, nothing taught.
 
-1. **Choose your pet.** Title and one line; the three starters as tiles at
-   stage 1 (96 pt), the chosen one a sunken shade with a check before its name.
-   Below: the chosen pet's description line (**the pet speaking**, in its own
-   character, ADR-0030), *Next*. There is no personality to choose.
+1. **Choose your egg.** Title and one line; the three starters' **eggs** as
+   tiles, whole (96 pt), each with its egg's name (*Stone egg*, *Paper egg*,
+   *Spotted egg*); the chosen one a sunken shade with a check in its top
+   corner, so a long name stays on one line and no tile grows.
+   Below: the chosen egg's **hint**, in the plain voice, *Next*. Nothing names
+   the pet: it is a surprise until the hatch
+   ([ADR-0031](docs/adr/0031-choose-the-pet-by-its-egg.md), #114). There is no
+   personality to choose (ADR-0030).
 2. **What are you working on?** Back; title and one line; one text field;
    *Done* (primary), *Skip* (quiet, muted). The line becomes **both the seeded
    project's name and the first task**. Skipped → one plain default project and
@@ -762,7 +766,8 @@ through `ScreenBody` (`lib/ui/screen_body.dart`). Its calls: C73–C77.
   the **20-block EXP bar** with "480 / 600 EXP" (one block = 30 EXP); *Start
   focusing*; the tab bar.
 - **Before the hatch:** no chip, no name, no bar. The species egg (wobbling), and
-  the pet-voice **egg line** under it.
+  the plain **egg line** under it, naming only the egg ("Your stone egg hatches
+  when you finish a focus block.", ADR-0031).
 - **Clock notice:** a sunken strip above the pet with a close (×), in plain
   voice; never a dialog. Held in memory until dismissed or the app process ends.
   *(Lifetime is a consolidation call, §17 C2.)*
@@ -865,7 +870,9 @@ screen. After the first block's ordinary beat (the egg, at its last crack
 picture, holds still in the pet's place while "+150 EXP" rises and the bar
 lights), chrome and buttons go; the egg (192 pt) shakes and breaks; **the accent
 changes from grey to the species colour** with the burst; then the pet's hatch
-line, a **Name** field **pre-filled with the species name**, and *Done*. *Done*
+line, a **Name your Geode** (*Joe*, *Lily*) field **pre-filled with the species
+name**, and *Done*. The label says what hatched, since the egg kept it a
+surprise (ADR-0031). *Done*
 returns to Focus's choices. There is no minimise during the takeover and the
 banner never shows it; Android back does nothing during the animation and acts
 as *Done* on the naming step. *(The egg during the beat and back behaviour are
@@ -1127,7 +1134,10 @@ fails if they differ. No launcher-icon or splash packages. The script is
 [Give each pet its own personality](https://github.com/heichan2000/Tomo/issues/115).
 
 - **Pet voice keeps good news only**: reward and Focus lines, the hatch line,
-  the egg line, timer notifications, setup descriptions.
+  timer notifications after the hatch.
+- **Nothing before the hatch is in pet voice** (ADR-0031): the pick's egg
+  names and hints, the egg line on Home, the egg's screen-reader label and
+  the notifications before the hatch are plain, and name only the egg.
 - **Plain voice** for all bad news and anything that explains a setting: the
   clock notice, notifications denied and the permission framing, the auto-start
   note, lock refusals, stop early, deletes, empty states, About, the error block.
@@ -1192,7 +1202,7 @@ The other labels in §8.5 already exist in the script and the approved screens.
 ### 10.4 Screen reader
 
 The pet is one node: "Geode, level 7. 480 of 600 EXP toward level 8. Stage 1 of
-4." The egg: "Geode egg. It hatches when you finish a focus block." The clock:
+4." The egg: "Stone egg. It hatches when you finish a focus block." The clock:
 "About 19 minutes left on Write the intro." A run speaks **once, at its start**:
 "Block done: 25 minutes on Write the intro. Geode gained 250 EXP and reached
 level 8. Geode: Level eight. Another hour in me." Full set in #51.
@@ -1215,8 +1225,10 @@ level 8. Geode: Level eight. Another hour in me." Full set in #51.
 **Nothing else, ever:** no reminders, re-engagement, streak nudges, ongoing
 countdown, foreground service or Live Activity.
 
-- **Title** is the pet's name, or **"Your egg"** before the hatch (the first
-  block's body hints at the hatch). **Bodies** are facts that stay true when read
+- **Title** is the pet's name, or the egg's (**"Your stone egg"**) before the
+  hatch. The first block's body is plain and hints at the hatch: "15 minutes of
+  Write the intro, counted. Your stone egg is cracking!"; a break that ends
+  before the hatch is seen says "Your break is over." (ADR-0031). **Bodies** are facts that stay true when read
   hours late: the task and minutes counted; never EXP, level, imperatives or
   time words. Copy in #51.
 - **Lock-screen privacy is the OS's:** Android `VISIBILITY_PRIVATE` with a public
@@ -1531,7 +1543,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | R9 | Evolution cross-fade (#16, #29), six/seven swaps (#37), flickering hatch (#37, #39) vs ADR-0019 | Five-swap flicker for evolution only; the hatch shakes and breaks. |
 | R10 | Hatch naming at 4.8 s (#39, #45 notes) vs #39's amendment | Shell breaks at 2.5 s, naming at 3.7 s. |
 | R11 | Moment budget 1.5–3 s (#12) vs evolution ≈ 4 s and hatch ≈ 5 s (ADR-0019) | The ladder's lengths win for those two beats. |
-| R12 | Home egg sentence in plain words (#18, #45) vs #51 | Pet-voice `egg` line. |
+| R12 | Home egg sentence in plain words (#18, #45) vs #51 | Pet-voice `egg` line. **Replaced by ADR-0031 (#114):** plain words, "Your stone egg hatches when you finish a focus block." |
 | R13 | A Stats zero state (#5) vs #21 | None can occur. |
 | R14 | Personality chosen at the hatch, permanent (#9) vs #18, #30 | Chosen at setup, Quiet default, changeable. **Replaced by ADR-0030 (#115):** no choice at all; each pet has its own character. |
 | R15 | Fallback pet (#16) vs ADR-0020 | Retired. |
@@ -1633,7 +1645,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C72 | Widget tests of the whole app and the database's watched queries | Drift's watched queries never finish on a widget test's pretend clock. Whole-app tests use `pumpTomo` / `testTomo` (`test/app/app_harness.dart`): database work runs on the real clock, and watched streams are replaced (`speciesChangesProvider`, and `petChangesProvider`, which a test feeds with `petChanged`). Screen tickets that watch the database in widget tests need the same care. |
 | C73 | The project made when *What are you working on?* is skipped | **My work** (`defaultProject`). Chosen by the user ([#93](https://github.com/heichan2000/Tomo/issues/93)). |
 | C74 | *Done* with nothing typed | Turned off until the field holds more than spaces; *Skip* is right under it. The keyboard's Done key finishes only once a line is typed. Chosen by the user ([#93](https://github.com/heichan2000/Tomo/issues/93)). The field takes at most 60 characters (C24). |
-| C75 | The setup tiles' pets | The chosen pet is alive (Resting: breath, blink, idle moves); the other two hold still (Still), as on the approved screen. A tile is one button to a screen reader, named by its pet, with its selected state; the pet itself is not a separate item and doesn't hop on tap. |
+| C75 | The setup tiles' eggs | The chosen egg sways now and then, as an egg waiting on Home does; the other two hold still. Its check sits in the tile's top corner, not before the name (the user's choice, #114): "✓ Spotted egg" didn't fit on one line, so the chosen tile grew. A tile is one button to a screen reader, named by its egg (*Stone egg*), with its selected state; the egg itself is not a separate item and doesn't sway on tap. (Pets until #114.) |
 | C76 | Onboarding's write fails | Nothing is written (one transaction), so the screen stays, shows the plain `error` line in a sunken strip under the field, and both buttons try again. |
 | C77 | How a screen fits its buttons and large text | `ScreenBody`: the approved padding (6 top, 12 sides, 10 bottom UI pixels, 6 between parts), the buttons at the foot at least 16 UI pixels below the content, and the whole screen, buttons included, scrolling once it doesn't fit. It keeps clear of the status bar, the gesture bar outside the shell, and the keyboard. Back on Onboarding 2 (and Android back) returns to screen 1 with the choices kept. |
 | C78 | When the hello plays | On a cold start that lands on Home, and when the app comes back from the background (Flutter's *shown*, not a mere pause such as the notification shade) while Home is the screen showing: its tab chosen and nothing over it. Not after Onboarding, not on returning from Stats or Settings or Focus, not on a tab change. |
@@ -1686,9 +1698,11 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C125 | A name cleared away, then *Done* | The pet keeps its species name: the name is never blank (C30). The name is trimmed before it is stored. Approved by the user ([#98](https://github.com/heichan2000/Tomo/issues/98)). |
 | C126 | The pre-filled name and the keyboard | The keyboard does not open by itself, so it never covers the pet at the hatch; *Done* alone keeps the species name. The first tap on the field selects the whole name, so typing replaces it. Approved by the user ([#98](https://github.com/heichan2000/Tomo/issues/98)). |
 | C127 | The name fails to write | The plain error line shows above *Done* and the naming stays; *Done* tries again. The old name (none) stays, logged as `petWriteFailed`. |
-| C128 | Words for the naming | `hatchName` (*Name*, the caption and the field's screen-reader label) and `hatchDone` (*Done*), from Tomo Pixel Screens. `PixelTextField` gained `label:` for this. |
+| C128 | Words for the naming | `hatchName` (*Name your Geode* since #114, the caption and the field's screen-reader label) and `hatchDone` (*Done*), from Tomo Pixel Screens. `PixelTextField` gained `label:` for this. |
 | C129 | The accent in widget tests of the whole app | The harness feeds the hatched species through `petChanged`, as it feeds the pet (C113), so a test sees the grey turn to the species colour. |
 | C130 | Dropping `pets.personality` (#115) | The version-1 schema changed in place and its snapshot was made again: nothing has shipped, so there is no one to migrate. `drift_dev make-migrations` refuses a changed v1, so the old `drift_schema_v1.json` was deleted first. |
+| C131 | An egg's name inside a sentence (#114) | Lower case: "Your stone egg hatches…", "Your paper egg". `eggName` is the tile's *Stone egg*; `eggInLine` is the same name for use inside a line. |
+| C132 | The egg's lines, now plain (#114) | `SetupMoment` and `EggMoment` are gone from `PetMoment`, since the pet no longer speaks before the hatch; the pick reads `eggHint`, Home reads `egg`. The run that hatches the egg is unchanged: its screen-reader announcement says "Your egg hatched." and then the pet's name and hatch line, at the reveal. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

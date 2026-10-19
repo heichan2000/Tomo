@@ -13,8 +13,8 @@ import '../ui/kit_harness.dart';
 
 /// The hatch takeover (spec §8.7, ADR-0012, §17 C5–C6): the first block's
 /// ordinary beat, then the screen cleared for the egg to break, then the
-/// pet's hatch line, the **Name** field pre-filled with the species name,
-/// and *Done*, back to Focus's choices.
+/// pet's hatch line, the **Name your …** field pre-filled with the species
+/// name, and *Done*, back to Focus's choices.
 void main() {
   // The first block starts at nine and runs to 9:25.
   final nine = DateTime.utc(2026, 10, 18, 9);
@@ -119,7 +119,7 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(find.words(hatchLine), findsOneWidget);
-    expect(find.words('Name'), findsOneWidget);
+    expect(find.words('Name your Geode'), findsOneWidget);
     expect(button('Done'), findsOneWidget);
   });
 
@@ -254,12 +254,14 @@ void main() {
     expect((await petRow()).name, 'Geode');
   });
 
-  testTomo('a screen reader hears the field as Name', (tester) async {
+  testTomo('a screen reader hears the field as Name your Geode', (
+    tester,
+  ) async {
     final semantics = tester.ensureSemantics();
     await open(tester);
     await toNaming(tester);
 
-    expect(find.bySemanticsLabel('Name'), findsOneWidget);
+    expect(find.bySemanticsLabel('Name your Geode'), findsOneWidget);
     semantics.dispose();
   });
 

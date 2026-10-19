@@ -133,16 +133,6 @@ final class HatchMoment extends PetMoment {
   final String task;
 }
 
-/// The pet describing itself on onboarding's first screen.
-final class SetupMoment extends PetMoment {
-  const SetupMoment();
-}
-
-/// The egg's line on Home.
-final class EggMoment extends PetMoment {
-  const EggMoment();
-}
-
 /// A block finished while the user was away.
 final class AwayNoteMoment extends PetMoment {
   const AwayNoteMoment({required this.time, required this.minutes});
