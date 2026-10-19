@@ -301,26 +301,42 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String setup(String species) {
+  String eggName(String species) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'I am Geode. ROCK.',
-      'joe': 'Joe. 1 paper bird. Everything counted, folded and filed.',
-      'lily': 'I\'m Lily! I\'ll cheer for every block you finish. You\'d like that, wouldn\'t you?',
+      'geode': 'Stone egg',
+      'joe': 'Paper egg',
+      'lily': 'Spotted egg',
       'other': '',
     });
     return '$_temp0';
   }
 
   @override
-  String egg(String species) {
+  String eggInLine(String species) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'I am in here, waiting calmly. A finished focus block opens me.',
-      'joe': '1 egg. 1 focus block to hatch. Neatly, please.',
-      'lily':
-          'I hatch when you finish a focus block. You can do it, can\'t you?',
+      'geode': 'stone egg',
+      'joe': 'paper egg',
+      'lily': 'spotted egg',
       'other': '',
     });
     return '$_temp0';
+  }
+
+  @override
+  String eggHint(String species) {
+    String _temp0 = intl.Intl.selectLogic(species, {
+      'geode': 'Cool, heavy and very still. Something patient is inside.',
+      'joe':
+          'It rustles, neatly folded at every edge. Something tidy is inside.',
+      'lily': 'It wiggles when you look at it. Something cheerful is inside.',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String egg(String egg) {
+    return 'Your $egg hatches when you finish a focus block.';
   }
 
   @override
@@ -379,7 +395,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notifTitleEgg => 'Your egg';
+  String notifTitleEgg(String egg) {
+    return 'Your $egg';
+  }
 
   @override
   String notifBlockDone(
@@ -442,23 +460,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String notifFirstBlock(
-    String species,
-    String task,
-    int minutes,
-    String minutesWords,
-  ) {
-    String _temp0 = intl.Intl.selectLogic(species, {
-      'geode':
-          '$minutesWords minutes of $task, counted. My shell is cracking, slowly, gently.',
-      'joe':
-          '$task: $minutes of $minutes minutes, counted. My shell: 5 cracks, evenly spaced.',
-      'lily':
-          'You gave $task $minutes minutes, and my shell is cracking! Who\'s in here, I wonder?',
-      'other': '',
-    });
-    return '$_temp0';
+  String notifFirstBlock(int minutes, String task, String egg) {
+    return '$minutes minutes of $task, counted. Your $egg is cracking!';
   }
+
+  @override
+  String get notifBreakOverEgg => 'Your break is over.';
 
   @override
   String get channelFocusBlock => 'Focus block finished';
@@ -483,11 +490,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifPreviewsOff => 'Something you started has finished.';
 
   @override
-  String get pickTitle => 'Choose your pet';
+  String get pickTitle => 'Choose your egg';
 
   @override
   String get pickLine =>
-      'You keep this one. It hatches from an egg when you finish your first focus block.';
+      'Whatever is inside is yours to keep. It hatches when you finish your first focus block.';
 
   @override
   String get taskTitle => 'What are you working on?';
@@ -675,8 +682,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String srEgg(String speciesName) {
-    return '$speciesName egg. It hatches when you finish a focus block.';
+  String srEgg(String eggName) {
+    return '$eggName. It hatches when you finish a focus block.';
   }
 
   @override
@@ -930,7 +937,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get estimateMarkDone => 'Mark done';
 
   @override
-  String get hatchName => 'Name';
+  String hatchName(String speciesName) {
+    return 'Name your $speciesName';
+  }
 
   @override
   String get hatchDone => 'Done';

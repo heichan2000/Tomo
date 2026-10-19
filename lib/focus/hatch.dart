@@ -17,8 +17,8 @@ import 'after_block.dart';
 
 /// The hatch takeover (spec §8.7, ADR-0012): the only thing in Tomo that
 /// clears the screen. No header, no minimise, no buttons while the egg
-/// shakes and breaks; then the pet's hatch line, the **Name** field and
-/// *Done* step in together.
+/// shakes and breaks; then the pet's hatch line, the **Name your Geode**
+/// field (it says what hatched, ADR-0031) and *Done* step in together.
 ///
 /// [name] holds the name, pre-filled with the species name; the first time
 /// the field is touched it is all selected, so typing replaces it. [onDone]
@@ -91,6 +91,7 @@ class _HatchTakeoverState extends State<HatchTakeover> {
   @override
   Widget build(BuildContext context) {
     final words = AppLocalizations.of(context);
+    final label = words.hatchName(words.speciesName(widget.rest.species.name));
     final colours = TomoTheme.of(context);
     final u = UiPixel.of(context);
     final payload = widget.frame.payload;
@@ -121,7 +122,7 @@ class _HatchTakeoverState extends State<HatchTakeover> {
                 padding: EdgeInsetsDirectional.only(start: u(1)),
                 child: ExcludeSemantics(
                   child: PixelText(
-                    words.hatchName,
+                    label,
                     step: TypeStep.caption,
                     colour: colours.muted,
                   ),
@@ -131,7 +132,7 @@ class _HatchTakeoverState extends State<HatchTakeover> {
               PixelTextField(
                 controller: widget.name,
                 focusNode: _focus,
-                label: words.hatchName,
+                label: label,
                 maxLines: 1,
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(maxPetNameLength),

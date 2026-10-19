@@ -2,18 +2,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/shell.dart';
 import 'package:tomo/onboarding/onboarding_screens.dart';
+import 'package:tomo/pet/pet_view.dart';
 import 'package:tomo/ui/buttons.dart';
+import 'package:tomo/ui/pixel_icon.dart';
+import 'package:tomo_core/art/pixel_art.dart';
 import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/look/palette.dart';
+import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 
 import '../app/app_harness.dart';
 import '../ui/kit_harness.dart';
 
-/// Onboarding (spec §8.2): choose a pet, say what you are working on,
-/// and nothing is written until the end. Each pet has its own character, so
-/// there is no personality to choose (ADR-0030).
+/// Onboarding (spec §8.2): choose an egg, say what you are working on,
+/// and nothing is written until the end. The pet is a surprise until the
+/// hatch (ADR-0031), and there is no personality to choose (ADR-0030).
 void main() {
   Finder tile(String name) => find
       .ancestor(of: find.words(name), matching: find.byType(Pressable))
@@ -44,18 +48,18 @@ void main() {
     Future<List<T>> Function() read,
   ) async => (await tester.runAsync(read))!;
 
-  testTomo('it opens on Choose your pet, Geode chosen', (tester) async {
+  testTomo('it opens on Choose your egg, the stone egg chosen', (tester) async {
     final semantics = tester.ensureSemantics();
     await pumpTomo(tester, onboarded: false);
 
-    expect(find.words('Choose your pet'), findsOneWidget);
-    for (final name in ['Geode', 'Joe', 'Lily']) {
+    expect(find.words('Choose your egg'), findsOneWidget);
+    for (final name in ['Stone egg', 'Paper egg', 'Spotted egg']) {
       expect(find.words(name), findsOneWidget);
     }
     expect(
-      tester.getSemantics(tile('Geode')),
+      tester.getSemantics(tile('Stone egg')),
       isSemantics(
-        label: 'Geode',
+        label: 'Stone egg',
         isButton: true,
         isSelected: true,
         hasSelectedState: true,
@@ -66,36 +70,97 @@ void main() {
         isFocusable: true,
       ),
     );
-    expect(tester.getSemantics(tile('Joe')), isSemantics(isSelected: false));
-    expect(find.words('I am Geode. ROCK.'), findsOneWidget);
+    expect(
+      tester.getSemantics(tile('Paper egg')),
+      isSemantics(isSelected: false),
+    );
+    expect(
+      find.words('Cool, heavy and very still. Something patient is inside.'),
+      findsOneWidget,
+    );
+    expect(find.byType(PetView), findsNWidgets(3));
+    for (final view in tester.widgetList<PetView>(find.byType(PetView))) {
+      expect(view.look, isA<EggLook>().having((l) => l.picture, 'whole', 0));
+    }
     expect(find.words('Personality'), findsNothing);
     expect(find.words('Chatty'), findsNothing);
     semantics.dispose();
   });
 
-  testTomo('the chosen pet describes itself, in its own character', (
-    tester,
-  ) async {
+  testTomo('the chosen egg has its hint, and no pet is named', (tester) async {
     final semantics = tester.ensureSemantics();
     await pumpTomo(tester, onboarded: false);
 
-    await tap(tester, tile('Joe'));
-    expect(tester.getSemantics(tile('Joe')), isSemantics(isSelected: true));
-    expect(tester.getSemantics(tile('Geode')), isSemantics(isSelected: false));
+    await tap(tester, tile('Paper egg'));
     expect(
-      find.words('Joe. 1 paper bird. Everything counted, folded and filed.'),
-      findsOneWidget,
+      tester.getSemantics(tile('Paper egg')),
+      isSemantics(isSelected: true),
     );
-
-    await tap(tester, tile('Lily'));
+    expect(
+      tester.getSemantics(tile('Stone egg')),
+      isSemantics(isSelected: false),
+    );
     expect(
       find.words(
-        "I'm Lily! I'll cheer for every block you finish. You'd like that, "
-        "wouldn't you?",
+        'It rustles, neatly folded at every edge. Something tidy is inside.',
       ),
       findsOneWidget,
     );
+
+    await tap(tester, tile('Spotted egg'));
+    expect(
+      find.words(
+        'It wiggles when you look at it. Something cheerful is inside.',
+      ),
+      findsOneWidget,
+    );
+    for (final name in ['Geode', 'Joe', 'Lily']) {
+      expect(find.textContaining(name), findsNothing);
+    }
     semantics.dispose();
+  });
+
+  testTomo("the check sits in the chosen tile's corner, so no tile grows", (
+    tester,
+  ) async {
+    await pumpTomo(tester, onboarded: false);
+    final heights = [
+      for (final name in ['Stone egg', 'Paper egg', 'Spotted egg'])
+        tester.getSize(tile(name)).height,
+    ];
+
+    await tap(tester, tile('Spotted egg'));
+
+    for (final (i, name) in ['Stone egg', 'Paper egg', 'Spotted egg'].indexed) {
+      expect(tester.getSize(tile(name)).height, heights[i], reason: name);
+    }
+    final check = find.byWidgetPredicate(
+      (w) => w is PixelIcon && w.name == IconName.check,
+    );
+    expect(check, findsOneWidget);
+    expect(
+      find.descendant(of: tile('Spotted egg'), matching: check),
+      findsOneWidget,
+    );
+    final corner = tester.getTopLeft(check);
+    final box = tester.getRect(tile('Spotted egg'));
+    expect(
+      corner.dy,
+      lessThan(tester.getTopLeft(find.byType(PetView).last).dy),
+    );
+    expect(corner.dx - box.left, lessThan(box.width / 4));
+  });
+
+  testTomo('only the chosen egg sways', (tester) async {
+    await pumpTomo(tester, onboarded: false);
+    await tap(tester, tile('Paper egg'));
+
+    final looks = [
+      for (final view in tester.widgetList<PetView>(find.byType(PetView)))
+        view.look as EggLook,
+    ];
+    expect([for (final look in looks) look.species], Species.values);
+    expect([for (final look in looks) look.mayWobble], [false, true, false]);
   });
 
   testTomo('Back keeps the chosen pet; nothing is written before the end', (
@@ -103,7 +168,7 @@ void main() {
   ) async {
     final db = await pumpTomo(tester, onboarded: false);
 
-    await tap(tester, tile('Lily'));
+    await tap(tester, tile('Spotted egg'));
     await tap(tester, button('Next'));
 
     expect(find.words('What are you working on?'), findsOneWidget);
@@ -111,8 +176,11 @@ void main() {
     expect(await all(tester, db, db.select(db.projects).get), isEmpty);
 
     await tap(tester, find.bySemanticsLabel('Back'));
-    expect(find.words('Choose your pet'), findsOneWidget);
-    expect(tester.getSemantics(tile('Lily')), isSemantics(isSelected: true));
+    expect(find.words('Choose your egg'), findsOneWidget);
+    expect(
+      tester.getSemantics(tile('Spotted egg')),
+      isSemantics(isSelected: true),
+    );
   });
 
   testTomo('Android back on the second screen goes to the first', (
@@ -124,7 +192,7 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
-    expect(find.words('Choose your pet'), findsOneWidget);
+    expect(find.words('Choose your egg'), findsOneWidget);
   });
 
   testTomo('Done stays off until a line is typed', (tester) async {
@@ -160,7 +228,7 @@ void main() {
     tester,
   ) async {
     final db = await pumpTomo(tester, onboarded: false);
-    await tap(tester, tile('Joe'));
+    await tap(tester, tile('Paper egg'));
     await tap(tester, button('Next'));
 
     await tester.enterText(find.byType(EditableText), '  Write the intro ');

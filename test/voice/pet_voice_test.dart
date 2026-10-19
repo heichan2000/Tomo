@@ -15,7 +15,9 @@ import 'package:tomo_core/voice/pet_moment.dart';
 /// https://github.com/heichan2000/Tomo/issues/115#issuecomment-6258694999
 /// (each pet in its own character, ADR-0030), with this test's own sample (a
 /// 25-minute block on "Write the intro", 3 blocks and 75 minutes so far,
-/// level 8, stage 2, a 15-minute first block).
+/// level 8, stage 2, a 15-minute first block). The egg's lines are in the
+/// plain voice, so nothing names the pet before the hatch; they are copied
+/// from https://github.com/heichan2000/Tomo/issues/114.
 void main() {
   final l = lookupAppLocalizations(const Locale('en'));
   const task = 'Write the intro';
@@ -165,17 +167,6 @@ void main() {
           'filed!',
       'Oh! You did it! 15 minutes on Write the intro, and here I am. That was '
           "you, wasn't it?",
-    ]);
-    row('setup description', const SetupMoment(), [
-      'I am Geode. ROCK.',
-      'Joe. 1 paper bird. Everything counted, folded and filed.',
-      "I'm Lily! I'll cheer for every block you finish. You'd like that, "
-          "wouldn't you?",
-    ]);
-    row('the egg line', const EggMoment(), [
-      'I am in here, waiting calmly. A finished focus block opens me.',
-      '1 egg. 1 focus block to hatch. Neatly, please.',
-      "I hatch when you finish a focus block. You can do it, can't you?",
     ]);
     row('while you were away', away, [
       '2:25 PM: the block is whole, quietly, on its own. Twenty-five '
@@ -370,8 +361,6 @@ void main() {
       breakOver,
       newDayBreakOver,
       hatch,
-      const SetupMoment(),
-      const EggMoment(),
       // The time of day is the phone's own; it is not the pet's wording.
       const AwayNoteMoment(time: 'TIME', minutes: 50),
       countdown,
@@ -517,15 +506,24 @@ void main() {
           beforeHatch: true,
           focusMinutes: 15,
         ),
+        // In the plain voice, naming only the egg (#114).
         [
-          'Fifteen minutes of Write the intro, counted. My shell is cracking, '
-              'slowly, gently.',
-          'Write the intro: 15 of 15 minutes, counted. My shell: 5 cracks, '
-              'evenly spaced.',
-          'You gave Write the intro 15 minutes, and my shell is cracking! '
-              "Who's in here, I wonder?",
+          '15 minutes of Write the intro, counted. Your stone egg is '
+              'cracking!',
+          '15 minutes of Write the intro, counted. Your paper egg is '
+              'cracking!',
+          '15 minutes of Write the intro, counted. Your spotted egg is '
+              'cracking!',
         ],
       );
+    });
+
+    test('a break that ends before the hatch is seen is plain too (#114)', () {
+      expect(bodies(NotificationKind.breakComplete, beforeHatch: true), [
+        'Your break is over.',
+        'Your break is over.',
+        'Your break is over.',
+      ]);
     });
 
     test('the first block under auto-start still speaks of the hatch, and '
@@ -551,17 +549,21 @@ void main() {
       );
     });
 
-    test('before the hatch the title is "Your egg"', () {
+    test('before the hatch the title names the egg (#114)', () {
       expect(
-        notificationText(
-          l,
-          notification(
-            NotificationKind.blockComplete,
-            beforeHatch: true,
-            petName: null,
-          ),
-        ).title,
-        'Your egg',
+        [
+          for (final species in Species.values)
+            notificationText(
+              l,
+              notification(
+                NotificationKind.blockComplete,
+                species: species,
+                beforeHatch: true,
+                petName: null,
+              ),
+            ).title,
+        ],
+        ['Your stone egg', 'Your paper egg', 'Your spotted egg'],
       );
     });
 
@@ -599,6 +601,47 @@ void main() {
   });
 
   group('plain voice', () {
+    // The egg gives nothing away before the hatch (#114).
+    test('the eggs: their names, hints and line', () {
+      List<String> each(String Function(String species) line) => [
+        for (final species in Species.values) line(species.name),
+      ];
+
+      expect(each(l.eggName), ['Stone egg', 'Paper egg', 'Spotted egg']);
+      expect(each(l.eggHint), [
+        'Cool, heavy and very still. Something patient is inside.',
+        'It rustles, neatly folded at every edge. Something tidy is inside.',
+        'It wiggles when you look at it. Something cheerful is inside.',
+      ]);
+      expect(each((s) => l.egg(l.eggInLine(s))), [
+        'Your stone egg hatches when you finish a focus block.',
+        'Your paper egg hatches when you finish a focus block.',
+        'Your spotted egg hatches when you finish a focus block.',
+      ]);
+      expect(l.pickTitle, 'Choose your egg');
+      expect(
+        l.pickLine,
+        'Whatever is inside is yours to keep. It hatches when you finish your '
+        'first focus block.',
+      );
+      expect(l.hatchName('Joe'), 'Name your Joe');
+    });
+
+    test('no egg line names a species', () {
+      final lines = [
+        l.pickTitle,
+        l.pickLine,
+        for (final species in Species.values) ...[
+          l.eggName(species.name),
+          l.eggHint(species.name),
+          l.egg(l.eggInLine(species.name)),
+        ],
+      ];
+      for (final line in lines) {
+        expect(line, isNot(matches(RegExp('Geode|Joe|Lily'))), reason: line);
+      }
+    });
+
     test('lines with a name or a number in them', () {
       expect(
         l.delTask('Email Sam about the draft', 25),
@@ -647,8 +690,8 @@ void main() {
         'Geode, level 7. 480 of 600 EXP toward level 8. Stage 1 of 4.',
       );
       expect(
-        l.srEgg(l.speciesName('geode')),
-        'Geode egg. It hatches when you finish a focus block.',
+        l.srEgg(l.eggName('geode')),
+        'Stone egg. It hatches when you finish a focus block.',
       );
       expect(l.srClock(19, task), 'About 19 minutes left on Write the intro.');
       expect(l.srClock(1, task), 'About 1 minute left on Write the intro.');
@@ -749,7 +792,9 @@ void main() {
       'breakOver',
       'breakOverToday',
       'hatch',
-      'setup',
+      'eggName',
+      'eggInLine',
+      'eggHint',
       'egg',
       'awayNote',
       'countdown',

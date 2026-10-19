@@ -6,7 +6,6 @@ import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_service.dart';
-import 'package:tomo_core/voice/pet_moment.dart';
 
 import '../app/providers.dart';
 import '../app/routes.dart';
@@ -21,17 +20,17 @@ import '../ui/sharp_text.dart';
 import '../ui/text_field.dart';
 import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
-import '../voice/pet_voice.dart';
 
 // Onboarding (spec §8.2, ADR-0012): two screens, once ever, in the neutral
-// grey of the egg. No account, no permissions, nothing taught.
+// grey of the egg. No account, no permissions, nothing taught. The pet is
+// chosen by its egg and stays a surprise until the hatch (ADR-0031).
 //
 // Nothing is written until the second screen is finished or skipped; then
 // one transaction makes the pet, the project and the first task. Cut off
 // before that, the next start opens on the first screen again.
 
-/// Onboarding 1, *Choose your pet*: the three starters, the chosen pet
-/// describing itself in its own character.
+/// Onboarding 1, *Choose your egg*: the three starters' eggs by name, and the
+/// chosen egg's hint. Nothing here names a pet.
 class PickPetScreen extends StatefulWidget {
   const PickPetScreen({super.key});
 
@@ -62,7 +61,7 @@ class _PickPetScreenState extends State<PickPetScreen> {
             for (final species in Species.values) ...[
               if (species != Species.values.first) SizedBox(width: u(4)),
               Expanded(
-                child: _PetTile(
+                child: _EggTile(
                   species: species,
                   chosen: species == _species,
                   onPressed: () => setState(() => _species = species),
@@ -71,10 +70,7 @@ class _PickPetScreenState extends State<PickPetScreen> {
             ],
           ],
         ),
-        PixelText(
-          petLine(words, moment: const SetupMoment(), species: _species),
-          textAlign: TextAlign.center,
-        ),
+        PixelText(words.eggHint(_species.name), textAlign: TextAlign.center),
       ],
       bottom: [
         PixelButton(label: words.onboardingNext, wide: true, onPressed: _next),
@@ -83,11 +79,13 @@ class _PickPetScreenState extends State<PickPetScreen> {
   }
 }
 
-/// A starter on its tile at stage 1 (spec §7.1, 96 pt). The chosen one is
-/// sunken with a check before its name; the others are surface, muted and
-/// still. Shade and the check say which, never a pet's colour.
-class _PetTile extends StatelessWidget {
-  const _PetTile({
+/// A starter's egg on its tile, whole (spec §7.1, 96 pt). The chosen one is
+/// sunken with a check in its top corner and sways now and then; the others
+/// are surface, muted and still. Shade and the check say which, never a
+/// pet's colour. The check sits in the corner, not before the name, so a
+/// long name keeps to one line and no tile grows when chosen (#114).
+class _EggTile extends StatelessWidget {
+  const _EggTile({
     required this.species,
     required this.chosen,
     required this.onPressed,
@@ -113,49 +111,50 @@ class _PetTile extends StatelessWidget {
         return PixelBox(
           fill: pressed ? colours.pressed(fill) : fill,
           ring: ring ? colours.accent : null,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(u(2), u(6), u(2), u(5)),
-            child: Column(
-              children: [
-                LayoutBuilder(
-                  // The tile is the button, and its name says what it is.
-                  builder: (context, constraints) => ExcludeSemantics(
-                    child: IgnorePointer(
-                      child: PetView(
-                        look: HatchedLook(
-                          species: species,
-                          movement: reduce ? Movement.reduced : Movement.full,
-                          stage: 1,
-                          // The chosen pet is alive; the others wait, still.
-                          face: chosen ? Face.resting : Face.still,
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(u(2), u(6), u(2), u(5)),
+                child: Column(
+                  children: [
+                    LayoutBuilder(
+                      // The tile is the button, and its name says what it is.
+                      builder: (context, constraints) => ExcludeSemantics(
+                        child: IgnorePointer(
+                          child: PetView(
+                            look: EggLook(
+                              species: species,
+                              movement: reduce
+                                  ? Movement.reduced
+                                  : Movement.full,
+                              picture: 0,
+                              // The chosen egg is alive; the others wait, still.
+                              mayWobble: chosen,
+                            ),
+                            spot: constraints.maxWidth < PetSpot.setupTile
+                                ? constraints.maxWidth
+                                : PetSpot.setupTile,
+                            semanticLabel: '',
+                          ),
                         ),
-                        spot: constraints.maxWidth < PetSpot.setupTile
-                            ? constraints.maxWidth
-                            : PetSpot.setupTile,
-                        semanticLabel: '',
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: u(3)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (chosen) ...[
-                      PixelIcon(IconName.check, colour: ink),
-                      SizedBox(width: u(2)),
-                    ],
-                    Flexible(
-                      child: PixelText(
-                        words.speciesName(species.name),
-                        colour: ink,
-                        textAlign: TextAlign.center,
-                      ),
+                    SizedBox(height: u(3)),
+                    PixelText(
+                      words.eggName(species.name),
+                      colour: ink,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              if (chosen)
+                PositionedDirectional(
+                  top: u(2),
+                  start: u(2),
+                  child: PixelIcon(IconName.check, colour: ink),
+                ),
+            ],
           ),
         );
       },

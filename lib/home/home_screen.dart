@@ -7,7 +7,6 @@ import 'package:tomo_core/focus/projection.dart';
 import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/rewards/rewards.dart';
-import 'package:tomo_core/voice/pet_moment.dart';
 
 import '../app/placeholder_screens.dart';
 import '../app/providers.dart';
@@ -23,7 +22,6 @@ import '../ui/screen_body.dart';
 import '../ui/sharp_text.dart';
 import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
-import '../voice/pet_voice.dart';
 
 /// Home (spec §8.3): the pet, its name and EXP, and *Start focusing*; the
 /// level chip to Stats and the gear to Settings. Before the hatch, the egg
@@ -157,7 +155,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             )
           else if (pet != null)
             PixelText(
-              petLine(words, moment: const EggMoment(), species: pet.species),
+              words.egg(words.eggInLine(pet.species.name)),
               colour: colours.muted,
               textAlign: TextAlign.center,
             ),

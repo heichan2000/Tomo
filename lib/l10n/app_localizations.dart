@@ -220,17 +220,29 @@ abstract class AppLocalizations {
   /// **'{species, select, geode{Hello. {minutesWords} minutes of {task}, and I am made of them.} joe{Hello! 1 block, {minutes} minutes on {task}, 1 me. First entry, filed!} lily{Oh! You did it! {minutes} minutes on {task}, and here I am. That was you, wasn\'t it?} other{}}'**
   String hatch(String species, int minutes, String minutesWords, String task);
 
-  /// Pet voice. A pet's description on onboarding's first screen.
+  /// Plain voice. An egg's name, under it on onboarding's first screen. It never names the species: the pet is a surprise until the hatch (#114, ADR-0031).
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{I am Geode. ROCK.} joe{Joe. 1 paper bird. Everything counted, folded and filed.} lily{I\'m Lily! I\'ll cheer for every block you finish. You\'d like that, wouldn\'t you?} other{}}'**
-  String setup(String species);
+  /// **'{species, select, geode{Stone egg} joe{Paper egg} lily{Spotted egg} other{}}'**
+  String eggName(String species);
 
-  /// Pet voice. The egg's line on Home.
+  /// Plain voice. An egg's name inside a line ("Your stone egg …").
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{I am in here, waiting calmly. A finished focus block opens me.} joe{1 egg. 1 focus block to hatch. Neatly, please.} lily{I hatch when you finish a focus block. You can do it, can\'t you?} other{}}'**
-  String egg(String species);
+  /// **'{species, select, geode{stone egg} joe{paper egg} lily{spotted egg} other{}}'**
+  String eggInLine(String species);
+
+  /// Plain voice. The chosen egg's hint, under the tiles on onboarding's first screen (#114).
+  ///
+  /// In en, this message translates to:
+  /// **'{species, select, geode{Cool, heavy and very still. Something patient is inside.} joe{It rustles, neatly folded at every edge. Something tidy is inside.} lily{It wiggles when you look at it. Something cheerful is inside.} other{}}'**
+  String eggHint(String species);
+
+  /// Plain voice. The egg's line on Home, naming only the egg (#114).
+  ///
+  /// In en, this message translates to:
+  /// **'Your {egg} hatches when you finish a focus block.'**
+  String egg(String egg);
 
   /// Pet voice. A block finished while the user was away. {time} is a time of day as this phone writes it.
   ///
@@ -255,11 +267,11 @@ abstract class AppLocalizations {
   /// **'{species, select, geode{Every planned block is here. Steady work, all of it.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}. Exactly to plan. Lovely.} lily{{estimate, plural, =1{That\'s the one block you planned for it. You kept your word, didn\'t you?} other{That\'s all {estimate} blocks you planned for it. You kept your word, didn\'t you?}}} other{}}'**
   String estimate(String species, int estimate);
 
-  /// A notification's title before the hatch.
+  /// A notification's title before the hatch, naming only the egg (#114).
   ///
   /// In en, this message translates to:
-  /// **'Your egg'**
-  String get notifTitleEgg;
+  /// **'Your {egg}'**
+  String notifTitleEgg(String egg);
 
   /// Notification body. A focus block ended.
   ///
@@ -290,16 +302,17 @@ abstract class AppLocalizations {
   /// **'{species, select, geode{The break is whole. I am here, steady as ever.} joe{Break finished: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. Desk is ready.} lily{Your break is over! Feeling fresh, aren\'t you?} other{}}'**
   String notifBreakOver(String species, int breakMinutes);
 
-  /// Notification body. The first block ended, before the hatch.
+  /// Notification body, plain voice. The first block ended, before the hatch (#114).
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes of {task}, counted. My shell is cracking, slowly, gently.} joe{{task}: {minutes} of {minutes} minutes, counted. My shell: 5 cracks, evenly spaced.} lily{You gave {task} {minutes} minutes, and my shell is cracking! Who\'s in here, I wonder?} other{}}'**
-  String notifFirstBlock(
-    String species,
-    String task,
-    int minutes,
-    String minutesWords,
-  );
+  /// **'{minutes} minutes of {task}, counted. Your {egg} is cracking!'**
+  String notifFirstBlock(int minutes, String task, String egg);
+
+  /// Notification body, plain voice. A break ended before the hatch was seen (#114).
+  ///
+  /// In en, this message translates to:
+  /// **'Your break is over.'**
+  String get notifBreakOverEgg;
 
   /// Android notification channel name (spec §11.3), shown in the phone's settings.
   ///
@@ -343,16 +356,16 @@ abstract class AppLocalizations {
   /// **'Something you started has finished.'**
   String get notifPreviewsOff;
 
-  /// Plain voice. Onboarding 1, title.
+  /// Plain voice. Onboarding 1, title (#114).
   ///
   /// In en, this message translates to:
-  /// **'Choose your pet'**
+  /// **'Choose your egg'**
   String get pickTitle;
 
-  /// Plain voice. Onboarding 1, line.
+  /// Plain voice. Onboarding 1, line (#114).
   ///
   /// In en, this message translates to:
-  /// **'You keep this one. It hatches from an egg when you finish your first focus block.'**
+  /// **'Whatever is inside is yours to keep. It hatches when you finish your first focus block.'**
   String get pickLine;
 
   /// Plain voice. Onboarding 2, title.
@@ -589,11 +602,11 @@ abstract class AppLocalizations {
   /// **'{name}, level {level}. {exp} of 600 EXP toward level {nextLevel}. Stage {stage} of 4.'**
   String srPet(String name, int level, int exp, int nextLevel, int stage);
 
-  /// Screen reader. The egg, read when touched.
+  /// Screen reader. The egg, read when touched. It names only the egg (#114).
   ///
   /// In en, this message translates to:
-  /// **'{speciesName} egg. It hatches when you finish a focus block.'**
-  String srEgg(String speciesName);
+  /// **'{eggName}. It hatches when you finish a focus block.'**
+  String srEgg(String eggName);
 
   /// Screen reader. The quiet clock, read when touched.
   ///
@@ -979,11 +992,11 @@ abstract class AppLocalizations {
   /// **'Mark done'**
   String get estimateMarkDone;
 
-  /// The hatch, the label over the name field, pre-filled with the species name (spec §8.7; approved on Tomo Pixel Screens).
+  /// The hatch, the label over the name field, pre-filled with the species name. It says what hatched, since the egg kept it a surprise (#114).
   ///
   /// In en, this message translates to:
-  /// **'Name'**
-  String get hatchName;
+  /// **'Name your {speciesName}'**
+  String hatchName(String speciesName);
 
   /// The hatch, the one button: keeps the name and goes back to Focus's choices (spec §8.7; approved on Tomo Pixel Screens).
   ///

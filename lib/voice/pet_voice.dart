@@ -108,10 +108,6 @@ String petLine(
           : l.breakOver(s, breakMinutes);
     case HatchMoment(:final minutes, :final task):
       return l.hatch(s, minutes, startWords(minutes), task);
-    case SetupMoment():
-      return l.setup(s);
-    case EggMoment():
-      return l.egg(s);
     case AwayNoteMoment(:final time, :final minutes):
       return l.awayNote(s, time, minutes, startWords(minutes));
     case CountdownMoment(:final seconds):
@@ -123,8 +119,10 @@ String petLine(
 
 /// A timer notification's title and body (spec §11.1).
 ///
-/// The title is the pet's name, or "Your egg" before the hatch. A pet that
-/// hatched but was never named goes by its species.
+/// The title is the pet's name, or the egg's ("Your stone egg") before the
+/// hatch. A pet that hatched but was never named goes by its species. Before
+/// the hatch the bodies are plain and name only the egg, so the pet stays a
+/// surprise (ADR-0031).
 ({String title, String body}) notificationText(
   AppLocalizations l,
   TimerNotification notification,
@@ -133,16 +131,17 @@ String petLine(
   final s = content.species.name;
   final minutes = content.focusMinutes;
   final title = content.beforeHatch
-      ? l.notifTitleEgg
+      ? l.notifTitleEgg(l.eggInLine(s))
       : content.petName ?? l.speciesName(s);
   final body = switch (notification.kind) {
+    NotificationKind.breakComplete when content.beforeHatch =>
+      l.notifBreakOverEgg,
     NotificationKind.breakComplete => l.notifBreakOver(s, content.breakMinutes),
     // The first block's notification hints at the hatch, whatever comes next.
     _ when content.beforeHatch => l.notifFirstBlock(
-      s,
-      content.taskTitle,
       minutes,
-      numberWordsCapitalized(minutes),
+      content.taskTitle,
+      l.eggInLine(s),
     ),
     NotificationKind.blockComplete => l.notifBlockDone(
       s,

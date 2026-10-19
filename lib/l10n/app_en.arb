@@ -238,20 +238,38 @@
       }
     }
   },
-  "setup": "{species, select, geode{I am Geode. ROCK.} joe{Joe. 1 paper bird. Everything counted, folded and filed.} lily{I'm Lily! I'll cheer for every block you finish. You'd like that, wouldn't you?} other{}}",
-  "@setup": {
-    "description": "Pet voice. A pet's description on onboarding's first screen.",
+  "eggName": "{species, select, geode{Stone egg} joe{Paper egg} lily{Spotted egg} other{}}",
+  "@eggName": {
+    "description": "Plain voice. An egg's name, under it on onboarding's first screen. It never names the species: the pet is a surprise until the hatch (#114, ADR-0031).",
     "placeholders": {
       "species": {
         "type": "String"
       }
     }
   },
-  "egg": "{species, select, geode{I am in here, waiting calmly. A finished focus block opens me.} joe{1 egg. 1 focus block to hatch. Neatly, please.} lily{I hatch when you finish a focus block. You can do it, can't you?} other{}}",
-  "@egg": {
-    "description": "Pet voice. The egg's line on Home.",
+  "eggInLine": "{species, select, geode{stone egg} joe{paper egg} lily{spotted egg} other{}}",
+  "@eggInLine": {
+    "description": "Plain voice. An egg's name inside a line (\"Your stone egg …\").",
     "placeholders": {
       "species": {
+        "type": "String"
+      }
+    }
+  },
+  "eggHint": "{species, select, geode{Cool, heavy and very still. Something patient is inside.} joe{It rustles, neatly folded at every edge. Something tidy is inside.} lily{It wiggles when you look at it. Something cheerful is inside.} other{}}",
+  "@eggHint": {
+    "description": "Plain voice. The chosen egg's hint, under the tiles on onboarding's first screen (#114).",
+    "placeholders": {
+      "species": {
+        "type": "String"
+      }
+    }
+  },
+  "egg": "Your {egg} hatches when you finish a focus block.",
+  "@egg": {
+    "description": "Plain voice. The egg's line on Home, naming only the egg (#114).",
+    "placeholders": {
+      "egg": {
         "type": "String"
       }
     }
@@ -301,9 +319,14 @@
       }
     }
   },
-  "notifTitleEgg": "Your egg",
+  "notifTitleEgg": "Your {egg}",
   "@notifTitleEgg": {
-    "description": "A notification's title before the hatch."
+    "description": "A notification's title before the hatch, naming only the egg (#114).",
+    "placeholders": {
+      "egg": {
+        "type": "String"
+      }
+    }
   },
   "notifBlockDone": "{species, select, geode{{minutesWords} minutes of {task}. They settle in, and they stay.} joe{{task}: {minutes} of {minutes} minutes, filed.} lily{You gave {task} {minutes} minutes! Every one counted, didn't it?} other{}}",
   "@notifBlockDone": {
@@ -356,23 +379,24 @@
       }
     }
   },
-  "notifFirstBlock": "{species, select, geode{{minutesWords} minutes of {task}, counted. My shell is cracking, slowly, gently.} joe{{task}: {minutes} of {minutes} minutes, counted. My shell: 5 cracks, evenly spaced.} lily{You gave {task} {minutes} minutes, and my shell is cracking! Who's in here, I wonder?} other{}}",
+  "notifFirstBlock": "{minutes} minutes of {task}, counted. Your {egg} is cracking!",
   "@notifFirstBlock": {
-    "description": "Notification body. The first block ended, before the hatch.",
+    "description": "Notification body, plain voice. The first block ended, before the hatch (#114).",
     "placeholders": {
-      "species": {
-        "type": "String"
+      "minutes": {
+        "type": "int"
       },
       "task": {
         "type": "String"
       },
-      "minutes": {
-        "type": "int"
-      },
-      "minutesWords": {
+      "egg": {
         "type": "String"
       }
     }
+  },
+  "notifBreakOverEgg": "Your break is over.",
+  "@notifBreakOverEgg": {
+    "description": "Notification body, plain voice. A break ended before the hatch was seen (#114)."
   },
   "channelFocusBlock": "Focus block finished",
   "@channelFocusBlock": {
@@ -402,13 +426,13 @@
   "@notifPreviewsOff": {
     "description": "Notification body on iOS when previews are off."
   },
-  "pickTitle": "Choose your pet",
+  "pickTitle": "Choose your egg",
   "@pickTitle": {
-    "description": "Plain voice. Onboarding 1, title."
+    "description": "Plain voice. Onboarding 1, title (#114)."
   },
-  "pickLine": "You keep this one. It hatches from an egg when you finish your first focus block.",
+  "pickLine": "Whatever is inside is yours to keep. It hatches when you finish your first focus block.",
   "@pickLine": {
-    "description": "Plain voice. Onboarding 1, line."
+    "description": "Plain voice. Onboarding 1, line (#114)."
   },
   "taskTitle": "What are you working on?",
   "@taskTitle": {
@@ -663,11 +687,11 @@
       }
     }
   },
-  "srEgg": "{speciesName} egg. It hatches when you finish a focus block.",
+  "srEgg": "{eggName}. It hatches when you finish a focus block.",
   "@srEgg": {
-    "description": "Screen reader. The egg, read when touched.",
+    "description": "Screen reader. The egg, read when touched. It names only the egg (#114).",
     "placeholders": {
-      "speciesName": {
+      "eggName": {
         "type": "String"
       }
     }
@@ -1070,9 +1094,14 @@
   "@estimateMarkDone": {
     "description": "Focus, the estimate card's primary button: marks the task done (spec §8.4; approved on Tomo Pixel Screens)."
   },
-  "hatchName": "Name",
+  "hatchName": "Name your {speciesName}",
   "@hatchName": {
-    "description": "The hatch, the label over the name field, pre-filled with the species name (spec §8.7; approved on Tomo Pixel Screens)."
+    "description": "The hatch, the label over the name field, pre-filled with the species name. It says what hatched, since the egg kept it a surprise (#114).",
+    "placeholders": {
+      "speciesName": {
+        "type": "String"
+      }
+    }
   },
   "hatchDone": "Done",
   "@hatchDone": {
