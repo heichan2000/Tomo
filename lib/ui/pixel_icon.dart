@@ -13,19 +13,22 @@ import 'whole_dots.dart';
 ///
 /// Decorative: whatever it sits in carries the words.
 class PixelIcon extends StatelessWidget {
-  const PixelIcon(this.name, {super.key, this.colour});
+  const PixelIcon(this.name, {super.key, this.colour, this.scale = 1});
 
   final IconName name;
 
   /// Defaults to the theme's ink.
   final Color? colour;
 
+  /// UI pixels per icon pixel: 2 on an empty-state card (spec §8.8).
+  final int scale;
+
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
     child: PixelGrid(
       rows: gridRows(icons[name]!.grid),
       colours: {'#': colour ?? TomoTheme.of(context).ink},
-      dots: bodyDots(MediaQuery.devicePixelRatioOf(context)),
+      dots: scale * bodyDots(MediaQuery.devicePixelRatioOf(context)),
     ),
   );
 }

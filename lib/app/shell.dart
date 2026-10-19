@@ -14,7 +14,7 @@ import '../ui/pixel_icon.dart';
 import '../ui/sharp_text.dart';
 import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
-import 'placeholder_screens.dart';
+import '../work/work_screen.dart';
 import 'routes.dart';
 import 'running_banner.dart';
 
@@ -70,27 +70,27 @@ class _TomoShellState extends State<TomoShell> {
       if (!didPop) _back();
     },
     child: _ShellLayout(
-      content: MediaQuery.removeViewInsets(
-        context: context,
-        removeBottom: true,
-        child: MediaQuery.removePadding(
-          context: context,
-          removeBottom: true,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              for (final tab in ShellTab.values)
-                _TabStack(
-                  key: ValueKey(tab),
-                  navigatorKey: _stacks[tab]!,
-                  shown: tab == _tab,
-                  firstScreen: switch (tab) {
-                    ShellTab.home => const HomeScreen(),
-                    ShellTab.work => const WorkPlaceholder(),
-                  },
-                ),
-            ],
-          ),
+      // The shell makes the room for the keyboard and the phone's own
+      // buttons, so the screens inside see neither. Both come off one copy:
+      // removing each from the shell's own reading would put the other back.
+      content: MediaQuery(
+        data: MediaQuery.of(context)
+            .removeViewInsets(removeBottom: true)
+            .removePadding(removeBottom: true),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            for (final tab in ShellTab.values)
+              _TabStack(
+                key: ValueKey(tab),
+                navigatorKey: _stacks[tab]!,
+                shown: tab == _tab,
+                firstScreen: switch (tab) {
+                  ShellTab.home => const HomeScreen(),
+                  ShellTab.work => const WorkScreen(),
+                },
+              ),
+          ],
         ),
       ),
       banner: const RunningBannerSlot(),

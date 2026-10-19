@@ -1003,6 +1003,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get hatchDone;
+
+  /// The Work tab's title (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get workTitle;
+
+  /// Work: the + at the top right (screen reader), the sheet it opens (title), and the button on the no-projects card (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'New project'**
+  String get newProject;
+
+  /// The New project sheet's button, which makes the project and opens it (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Create project'**
+  String get createProject;
+
+  /// Screen reader. The field on the New project and Rename project sheets.
+  ///
+  /// In en, this message translates to:
+  /// **'Project name'**
+  String get projectName;
+
+  /// Under a project's name, on its Work row and in its header, when some tasks are open (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{open} open · {done} done'**
+  String projectCounts(int open, int done);
+
+  /// Under a project's name when every task is done (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'All {count} done'**
+  String projectAllDone(int count);
+
+  /// Under a project's name when it has no tasks (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks'**
+  String get projectNoTasks;
+
+  /// Screen reader. The ⋯ in a project's header, which opens Rename project and Delete project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project options'**
+  String get projectOptions;
+
+  /// The project menu's first row, and the title of the sheet it opens (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Rename project'**
+  String get renameProject;
+
+  /// The Rename project sheet's button (spec §17 small call; the approved screens don't show the sheet).
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get renameSave;
+
+  /// The project menu's red row, and the destructive button on its Delete sheet (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete project'**
+  String get deleteProject;
+
+  /// The field at the end of a project's open tasks: type a title, Enter adds it (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Add a task'**
+  String get addTask;
+
+  /// A task row's meta: finished blocks out of the planned ones, at or under the plan (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{planned, plural, =1{{done} of 1 block} other{{done} of {planned} blocks}}'**
+  String taskBlocksOfPlan(int done, int planned);
+
+  /// A task row's meta: more blocks finished than planned. No colour, warning or 'over' word (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{done} blocks · planned {planned}'**
+  String taskBlocksOverPlan(int done, int planned);
+
+  /// A task row's meta: finished blocks, no plan (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 block} other{{count} blocks}}'**
+  String taskBlocks(int count);
+
+  /// Screen reader. The ⋯ at the end of a task row, which opens the row menu (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Task options'**
+  String get taskOptions;
+
+  /// Screen reader. An open task's status ring: its status, then what a tap does (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{status}. Mark done'**
+  String srRingMarkDone(String status);
+
+  /// Screen reader. A done task's status ring: a tap reopens it (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Done. Reopen'**
+  String get srRingReopen;
+
+  /// The status control's first option, and a to-do ring's status (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'To do'**
+  String get statusTodo;
+
+  /// The status control's last option (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get statusDone;
+
+  /// The row menu: opens Move to project (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Move to another project'**
+  String get moveToAnotherProject;
+
+  /// The sheet that lists every project, the task's own checked (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Move to project'**
+  String get moveToProject;
+
+  /// The row menu's red row, and the destructive button on the Delete this task? sheet (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete task'**
+  String get deleteTask;
+
+  /// A Delete sheet's secondary button, above Delete (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

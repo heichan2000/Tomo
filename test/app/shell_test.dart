@@ -5,12 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/app/running_banner.dart';
 import 'package:tomo/focus/live_focus.dart';
-import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/home/home_screen.dart';
 import 'package:tomo/app/shell.dart';
 import 'package:tomo/ui/buttons.dart';
 import 'package:tomo/ui/kit_gallery_screen.dart';
 import 'package:tomo/ui/sheet.dart';
+import 'package:tomo/work/project_screen.dart';
+import 'package:tomo/work/work_screen.dart';
 import 'package:tomo_core/look/palette.dart';
 
 import '../ui/kit_harness.dart';
@@ -38,6 +39,8 @@ void main() {
   Finder gear() => find.byWidgetPredicate(
     (widget) => widget is PixelIconButton && widget.semanticLabel == 'Settings',
   );
+
+  Finder projectShown() => find.byType(ProjectScreen).hitTestable();
 
   bool showing(WidgetTester tester, String words) =>
       find.words(words).hitTestable().evaluate().isNotEmpty;
@@ -91,9 +94,9 @@ void main() {
 
     await tester.tap(tab('Work'));
     await tester.pumpAndSettle();
-    await tester.tap(find.words('A project'));
+    await tester.tap(find.words('Things'));
     await tester.pumpAndSettle();
-    expect(showing(tester, 'Project'), isTrue);
+    expect(projectShown(), findsOneWidget);
 
     await tester.tap(tab('Home'));
     await tester.pumpAndSettle();
@@ -103,7 +106,7 @@ void main() {
 
     await tester.tap(tab('Work'));
     await tester.pumpAndSettle();
-    expect(showing(tester, 'Project'), isTrue);
+    expect(projectShown(), findsOneWidget);
 
     await tester.tap(tab('Home'));
     await tester.pumpAndSettle();
@@ -116,16 +119,15 @@ void main() {
     await pumpTomo(tester);
     await tester.tap(tab('Work'));
     await tester.pumpAndSettle();
-    await tester.tap(find.words('A project'));
+    await tester.tap(find.words('Things'));
     await tester.pumpAndSettle();
-    await tester.tap(find.words('A task'));
-    await tester.pumpAndSettle();
-    expect(showing(tester, 'Task'), isTrue);
+    expect(projectShown(), findsOneWidget);
 
     await tester.tap(tab('Work'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(WorkPlaceholder).hitTestable(), findsOneWidget);
+    expect(find.byType(WorkScreen).hitTestable(), findsOneWidget);
+    expect(projectShown(), findsNothing);
   });
 
   testTomo('a pushed screen keeps the tab bar', (tester) async {
@@ -236,6 +238,10 @@ void main() {
       closeTo(keyboardTop, 1e-9),
     );
     expect(tester.getRect(find.byType(HomeScreen)).top, screen.top);
+    // The room is made once: the screen inside no longer sees a keyboard
+    // to make room for again.
+    final home = tester.element(find.byType(HomeScreen));
+    expect(MediaQuery.viewInsetsOf(home).bottom, 0);
   });
 
   testTomo('the tab bar sits above the phone\'s own buttons', (tester) async {

@@ -120,6 +120,65 @@ void main() {
     });
   });
 
+  group("Work's projects, with their open and done tasks counted", () {
+    Future<List<(String, int, int)>> summaries() async => [
+      for (final s in await tasks.watchProjectSummaries().first)
+        (s.project.name, s.open, s.done),
+    ];
+
+    test('to-do and doing count as open', () async {
+      final p = await project('Thesis');
+      final doing = await task(p, 'doing');
+      final done = await task(p, 'done');
+      await task(p, 'todo');
+      await setStatus(doing, TaskStatus.doing);
+      await setStatus(done, TaskStatus.done);
+
+      expect(await summaries(), [('Thesis', 2, 1)]);
+    });
+
+    test('a project with no tasks counts none', () async {
+      await project('Empty');
+
+      expect(await summaries(), [('Empty', 0, 0)]);
+    });
+
+    test("only a project's own tasks count", () async {
+      final a = await project('A');
+      final b = await project('B');
+      await task(a, 'in A');
+      await setStatus(await task(b, 'in B'), TaskStatus.done);
+
+      expect(await summaries(), [('B', 0, 1), ('A', 1, 0)]);
+    });
+
+    test('in the same order as the projects, read once too', () async {
+      final older = await project('Older');
+      await project('Newer');
+      await task(older, 'Something');
+
+      expect(await summaries(), [('Older', 1, 0), ('Newer', 0, 0)]);
+      expect(
+        [for (final s in await tasks.projectSummaries()) s.project.name],
+        await projectNames(),
+      );
+    });
+
+    test('a change shows at once', () async {
+      final p = await project('P');
+      final open = await task(p, 'open');
+      final seen = tasks.watchProjectSummaries().map(
+        (list) => (list.single.open, list.single.done),
+      );
+      final changes = seen.take(2).toList();
+      await Future<void>.delayed(Duration.zero);
+
+      await setStatus(open, TaskStatus.done);
+
+      expect(await changes, [(1, 0), (0, 1)]);
+    });
+  });
+
   group("a project's tasks", () {
     test('doing, then to-do, then done', () async {
       final p = await project('P');

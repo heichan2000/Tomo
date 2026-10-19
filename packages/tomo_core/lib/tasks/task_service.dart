@@ -66,9 +66,19 @@ abstract interface class TaskService {
   /// Every project, the most recently active first.
   Stream<List<Project>> watchProjects();
 
+  /// [watchProjects]'s list, each project with its open and done tasks
+  /// counted: the Work tab.
+  Stream<List<ProjectSummary>> watchProjectSummaries();
+
+  /// [watchProjectSummaries]'s list, read once.
+  Future<List<ProjectSummary>> projectSummaries();
+
   /// A project's tasks: doing, then to-do, then done; within each, the most
   /// recently touched first.
   Stream<List<Task>> watchTasksInProject(int id);
+
+  /// [watchTasksInProject]'s list, read once.
+  Future<List<Task>> tasksInProject(int id);
 
   /// The tasks a block can start on: doing, then to-do, the most recently
   /// focused first. No done tasks.
@@ -288,12 +298,24 @@ final class _DriftTaskService implements TaskService {
   Future<List<Project>> projects() =>
       _projectsByActivity().get().then(_projects);
 
+  @override
+  Stream<List<ProjectSummary>> watchProjectSummaries() =>
+      _projectsByActivity().watch().map(_summaries);
+
+  @override
+  Future<List<ProjectSummary>> projectSummaries() =>
+      _projectsByActivity().get().then(_summaries);
+
   /// Most recent activity: the latest of the project's own creation and its
-  /// tasks' creation, last focus and completion.
+  /// tasks' creation, last focus and completion. Each row also counts the
+  /// project's open and done tasks.
   Selectable<QueryRow> _projectsByActivity() => _db.customSelect(
     'SELECT p.*, MAX(p.created_at, COALESCE(MAX(MAX(t.created_at, '
     'COALESCE(t.last_focused_at, 0), COALESCE(t.completed_at, 0))), 0)) '
-    'AS activity '
+    'AS activity, '
+    "COUNT(t.id) - COUNT(CASE WHEN t.status = 'done' THEN 1 END) "
+    'AS open_tasks, '
+    "COUNT(CASE WHEN t.status = 'done' THEN 1 END) AS done_tasks "
     'FROM projects p LEFT JOIN tasks t ON t.project_id = p.id '
     'GROUP BY p.id ORDER BY activity DESC, p.id DESC',
     readsFrom: {_db.projects, _db.tasks},
@@ -303,17 +325,31 @@ final class _DriftTaskService implements TaskService {
     for (final row in rows) _project(_db.projects.map(row.data)),
   ];
 
+  List<ProjectSummary> _summaries(List<QueryRow> rows) => [
+    for (final row in rows)
+      ProjectSummary(
+        _project(_db.projects.map(row.data)),
+        open: row.read<int>('open_tasks'),
+        done: row.read<int>('done_tasks'),
+      ),
+  ];
+
   @override
-  Stream<List<Task>> watchTasksInProject(int id) {
-    final query = _db.select(_db.tasks)
-      ..where((t) => t.projectId.equals(id))
-      ..orderBy([
-        (t) => OrderingTerm(expression: _statusRank(t)),
-        (t) => OrderingTerm.desc(_lastTouched(t)),
-        (t) => OrderingTerm.desc(t.id),
-      ]);
-    return query.watch().map((rows) => rows.map(_task).toList());
-  }
+  Stream<List<Task>> watchTasksInProject(int id) =>
+      _inProject(id).watch().map((rows) => rows.map(_task).toList());
+
+  @override
+  Future<List<Task>> tasksInProject(int id) =>
+      _inProject(id).get().then((rows) => rows.map(_task).toList());
+
+  SimpleSelectStatement<$TasksTable, TaskRow> _inProject(int id) =>
+      _db.select(_db.tasks)
+        ..where((t) => t.projectId.equals(id))
+        ..orderBy([
+          (t) => OrderingTerm(expression: _statusRank(t)),
+          (t) => OrderingTerm.desc(_lastTouched(t)),
+          (t) => OrderingTerm.desc(t.id),
+        ]);
 
   @override
   Stream<List<Task>> watchPickerTasks() =>

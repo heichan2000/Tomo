@@ -943,4 +943,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hatchDone => 'Done';
+
+  @override
+  String get workTitle => 'Work';
+
+  @override
+  String get newProject => 'New project';
+
+  @override
+  String get createProject => 'Create project';
+
+  @override
+  String get projectName => 'Project name';
+
+  @override
+  String projectCounts(int open, int done) {
+    return '$open open · $done done';
+  }
+
+  @override
+  String projectAllDone(int count) {
+    return 'All $count done';
+  }
+
+  @override
+  String get projectNoTasks => 'No tasks';
+
+  @override
+  String get projectOptions => 'Project options';
+
+  @override
+  String get renameProject => 'Rename project';
+
+  @override
+  String get renameSave => 'Rename';
+
+  @override
+  String get deleteProject => 'Delete project';
+
+  @override
+  String get addTask => 'Add a task';
+
+  @override
+  String taskBlocksOfPlan(int done, int planned) {
+    String _temp0 = intl.Intl.pluralLogic(
+      planned,
+      locale: localeName,
+      other: '$done of $planned blocks',
+      one: '$done of 1 block',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String taskBlocksOverPlan(int done, int planned) {
+    return '$done blocks · planned $planned';
+  }
+
+  @override
+  String taskBlocks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count blocks',
+      one: '1 block',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get taskOptions => 'Task options';
+
+  @override
+  String srRingMarkDone(String status) {
+    return '$status. Mark done';
+  }
+
+  @override
+  String get srRingReopen => 'Done. Reopen';
+
+  @override
+  String get statusTodo => 'To do';
+
+  @override
+  String get statusDone => 'Done';
+
+  @override
+  String get moveToAnotherProject => 'Move to another project';
+
+  @override
+  String get moveToProject => 'Move to project';
+
+  @override
+  String get deleteTask => 'Delete task';
+
+  @override
+  String get cancel => 'Cancel';
 }

@@ -105,6 +105,26 @@ final class Project {
   int get hashCode => Object.hash(id, name, createdAt);
 }
 
+/// A project with its tasks counted, as a row on the Work tab says it:
+/// `4 open · 3 done` (spec §8.8). To-do and doing are open.
+final class ProjectSummary {
+  const ProjectSummary(this.project, {required this.open, required this.done});
+
+  final Project project;
+  final int open;
+  final int done;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ProjectSummary &&
+      other.project == project &&
+      other.open == open &&
+      other.done == done;
+
+  @override
+  int get hashCode => Object.hash(project, open, done);
+}
+
 /// A new value for a field that can also be cleared. `Edit(null)` clears it;
 /// leaving the patch's field null leaves the task's alone.
 final class Edit<T> {

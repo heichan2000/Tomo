@@ -5,8 +5,10 @@ import 'package:flutter/material.dart'
     show AdaptiveTextSelectionToolbar, materialTextSelectionHandleControls;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tomo_core/art/pixel_art.dart';
 
 import 'pixel_box.dart';
+import 'pixel_icon.dart';
 import 'sharp_text.dart';
 import 'tomo_theme.dart';
 import 'ui_pixel.dart';
@@ -29,6 +31,8 @@ class PixelTextField extends StatefulWidget {
     this.onSubmitted,
     this.maxLines,
     this.inputFormatters,
+    this.restingIcon,
+    this.staysOpen = false,
   });
 
   final TextEditingController controller;
@@ -49,6 +53,14 @@ class PixelTextField extends StatefulWidget {
   final int? maxLines;
 
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Shown, muted, before the [hint] while the field is empty and not being
+  /// typed in: the + of *Add a task* (spec §8.8).
+  final IconName? restingIcon;
+
+  /// The keyboard stays up after [onSubmitted], ready for the next line, as
+  /// *Add a task* is (spec §8.8).
+  final bool staysOpen;
 
   @override
   State<PixelTextField> createState() => _PixelTextFieldState();
@@ -153,6 +165,7 @@ class _PixelTextFieldState extends State<PixelTextField>
         inputFormatters: widget.inputFormatters,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
+        onEditingComplete: widget.staysOpen ? () {} : null,
         selectionControls: android
             ? materialTextSelectionHandleControls
             : cupertinoTextSelectionHandleControls,
@@ -180,7 +193,17 @@ class _PixelTextFieldState extends State<PixelTextField>
             children: [
               if (widget.hint != null && widget.controller.text.isEmpty)
                 ExcludeSemantics(
-                  child: PixelText(widget.hint!, colour: colours.muted),
+                  child: Row(
+                    children: [
+                      if (widget.restingIcon != null && !typing) ...[
+                        PixelIcon(widget.restingIcon!, colour: colours.muted),
+                        SizedBox(width: u(4)),
+                      ],
+                      Expanded(
+                        child: PixelText(widget.hint!, colour: colours.muted),
+                      ),
+                    ],
+                  ),
                 ),
               Semantics(
                 label: widget.label,

@@ -1106,5 +1106,140 @@
   "hatchDone": "Done",
   "@hatchDone": {
     "description": "The hatch, the one button: keeps the name and goes back to Focus's choices (spec §8.7; approved on Tomo Pixel Screens)."
+  },
+  "workTitle": "Work",
+  "@workTitle": {
+    "description": "The Work tab's title (approved on Tomo Task Screens)."
+  },
+  "newProject": "New project",
+  "@newProject": {
+    "description": "Work: the + at the top right (screen reader), the sheet it opens (title), and the button on the no-projects card (approved on Tomo Task Screens)."
+  },
+  "createProject": "Create project",
+  "@createProject": {
+    "description": "The New project sheet's button, which makes the project and opens it (approved on Tomo Task Screens)."
+  },
+  "projectName": "Project name",
+  "@projectName": {
+    "description": "Screen reader. The field on the New project and Rename project sheets."
+  },
+  "projectCounts": "{open} open · {done} done",
+  "@projectCounts": {
+    "description": "Under a project's name, on its Work row and in its header, when some tasks are open (approved on Tomo Task Screens).",
+    "placeholders": {
+      "open": {
+        "type": "int"
+      },
+      "done": {
+        "type": "int"
+      }
+    }
+  },
+  "projectAllDone": "All {count} done",
+  "@projectAllDone": {
+    "description": "Under a project's name when every task is done (approved on Tomo Task Screens).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectNoTasks": "No tasks",
+  "@projectNoTasks": {
+    "description": "Under a project's name when it has no tasks (approved on Tomo Task Screens)."
+  },
+  "projectOptions": "Project options",
+  "@projectOptions": {
+    "description": "Screen reader. The ⋯ in a project's header, which opens Rename project and Delete project."
+  },
+  "renameProject": "Rename project",
+  "@renameProject": {
+    "description": "The project menu's first row, and the title of the sheet it opens (approved on Tomo Task Screens)."
+  },
+  "renameSave": "Rename",
+  "@renameSave": {
+    "description": "The Rename project sheet's button (spec §17 small call; the approved screens don't show the sheet)."
+  },
+  "deleteProject": "Delete project",
+  "@deleteProject": {
+    "description": "The project menu's red row, and the destructive button on its Delete sheet (approved on Tomo Task Screens)."
+  },
+  "addTask": "Add a task",
+  "@addTask": {
+    "description": "The field at the end of a project's open tasks: type a title, Enter adds it (approved on Tomo Task Screens)."
+  },
+  "taskBlocksOfPlan": "{planned, plural, =1{{done} of 1 block} other{{done} of {planned} blocks}}",
+  "@taskBlocksOfPlan": {
+    "description": "A task row's meta: finished blocks out of the planned ones, at or under the plan (approved on Tomo Task Screens).",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      }
+    }
+  },
+  "taskBlocksOverPlan": "{done} blocks · planned {planned}",
+  "@taskBlocksOverPlan": {
+    "description": "A task row's meta: more blocks finished than planned. No colour, warning or 'over' word (approved on Tomo Task Screens).",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      }
+    }
+  },
+  "taskBlocks": "{count, plural, =1{1 block} other{{count} blocks}}",
+  "@taskBlocks": {
+    "description": "A task row's meta: finished blocks, no plan (approved on Tomo Task Screens).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskOptions": "Task options",
+  "@taskOptions": {
+    "description": "Screen reader. The ⋯ at the end of a task row, which opens the row menu (approved on Tomo Task Screens)."
+  },
+  "srRingMarkDone": "{status}. Mark done",
+  "@srRingMarkDone": {
+    "description": "Screen reader. An open task's status ring: its status, then what a tap does (approved on Tomo Task Screens).",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "srRingReopen": "Done. Reopen",
+  "@srRingReopen": {
+    "description": "Screen reader. A done task's status ring: a tap reopens it (approved on Tomo Task Screens)."
+  },
+  "statusTodo": "To do",
+  "@statusTodo": {
+    "description": "The status control's first option, and a to-do ring's status (approved on Tomo Task Screens)."
+  },
+  "statusDone": "Done",
+  "@statusDone": {
+    "description": "The status control's last option (approved on Tomo Task Screens)."
+  },
+  "moveToAnotherProject": "Move to another project",
+  "@moveToAnotherProject": {
+    "description": "The row menu: opens Move to project (approved on Tomo Task Screens)."
+  },
+  "moveToProject": "Move to project",
+  "@moveToProject": {
+    "description": "The sheet that lists every project, the task's own checked (approved on Tomo Task Screens)."
+  },
+  "deleteTask": "Delete task",
+  "@deleteTask": {
+    "description": "The row menu's red row, and the destructive button on the Delete this task? sheet (approved on Tomo Task Screens)."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "A Delete sheet's secondary button, above Delete (approved on Tomo Task Screens)."
   }
 }
