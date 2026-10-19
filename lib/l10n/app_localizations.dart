@@ -1019,6 +1019,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mark done'**
   String get estimateMarkDone;
+
+  /// The hatch, the label over the name field, pre-filled with the species name (spec §8.7; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get hatchName;
+
+  /// The hatch, the one button: keeps the name and goes back to Focus's choices (spec §8.7; approved on Tomo Pixel Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get hatchDone;
 }
 
 class _AppLocalizationsDelegate

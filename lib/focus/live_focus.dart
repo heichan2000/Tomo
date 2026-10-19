@@ -41,6 +41,7 @@ import '../voice/pet_voice.dart';
 import 'after_block.dart';
 import 'clock_view.dart';
 import 'focus_screen.dart';
+import 'hatch.dart';
 import 'task_picker.dart';
 
 /// Focus while a cycle is live (spec §8.4): a block running, a break, the
@@ -100,8 +101,12 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
   /// The estimate card's fact line, while the card shows.
   String? _estimate;
 
-  /// The last choice failed to write.
+  /// The last choice, or the pet's name, failed to write.
   var _failed = false;
+
+  /// The name being given at the hatch, pre-filled with the species name;
+  /// made as the takeover first shows.
+  TextEditingController? _name;
 
   @override
   void initState() {
@@ -125,6 +130,7 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
     _wake?.cancel();
     _lifecycle.dispose();
     _played?.player?.dispose();
+    _name?.dispose();
     super.dispose();
   }
 
@@ -323,13 +329,32 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
     }
   }
 
-  /// The hatch stand-in's *Done*: back to Focus's choices.
-  void _hatchNamed() {
+  /// The hatch's *Done* (spec §8.7): the pet keeps its name, and Focus goes
+  /// back to its choices. A name cleared away is the species name again:
+  /// the pet always has one (#18).
+  Future<void> _hatchNamed() => _run(() async {
     final played = _played;
-    if (played == null) return;
-    played.player?.dispose();
-    setState(() => _played = _Played(line: played.line, forBlock: true));
-  }
+    final pet = ref.read(petStandingProvider);
+    if (played == null || pet == null) return;
+    final typed = _name?.text.trim() ?? '';
+    final named = await ref
+        .read(petServiceProvider)
+        .rename(
+          typed.isEmpty
+              ? AppLocalizations.of(context).speciesName(pet.species.name)
+              : typed,
+        );
+    if (!mounted) return;
+    setState(() {
+      if (named is Failure) {
+        _failed = true;
+        return;
+      }
+      _failed = false;
+      played.player?.dispose();
+      _played = _Played(line: played.line, forBlock: true);
+    });
+  });
 
   /// The run is over and the screen has moved on: let it go.
   void _dropPlayed() {
@@ -500,7 +525,7 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
   /// While the hatch has the screen, it waits for the naming (C5).
   void _back(FocusState state) {
     if (_played?.player case final player? when player.frame.cleared) {
-      if (player.ended != null) _hatchNamed();
+      if (player.ended != null) unawaited(_hatchNamed());
       return;
     }
     switch (state) {
@@ -582,12 +607,12 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
       final away = _away;
       final notes = [if (away != null) _awayNote(away, pet)];
       body = switch (state) {
-        _ when hatching => HatchStandIn(
+        _ when hatching => _hatch(
+          pet: pet,
           frame: player.frame,
-          rest: _seen(pet)
-              .lookAt(now, calmPet: calmPet, reduceMotion: reduceMotion),
           line: played!.line,
-          onDone: _hatchNamed,
+          calmPet: calmPet,
+          reduceMotion: reduceMotion,
         ),
         _ when after => _after(
           pet: pet,
@@ -651,6 +676,35 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
         if (!didPop) _back(state);
       },
       child: ColoredBox(color: colours.ground, child: body),
+    );
+  }
+
+  /// The hatch takeover (spec §8.7), its name field made the first time.
+  Widget _hatch({
+    required PetStanding pet,
+    required RunFrame frame,
+    required String line,
+    required bool calmPet,
+    required bool reduceMotion,
+  }) {
+    final words = AppLocalizations.of(context);
+    final name = _name ??= TextEditingController(
+      text: words.speciesName(pet.species.name),
+    );
+    final seen = _seen(pet);
+    final rest = seen.lookAt(
+      _now(),
+      calmPet: calmPet,
+      reduceMotion: reduceMotion,
+    );
+    return HatchTakeover(
+      frame: frame,
+      rest: rest,
+      semanticLabel: petLabel(words, seen, rest),
+      line: line,
+      name: name,
+      failed: _failed,
+      onDone: _busy ? null : () => unawaited(_hatchNamed()),
     );
   }
 

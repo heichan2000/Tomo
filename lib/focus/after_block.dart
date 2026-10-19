@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tomo_core/art/drawings.dart';
 import 'package:tomo_core/focus/choices.dart';
-import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/run_script.dart';
 import 'package:tomo_core/rewards/rewards.dart';
 import 'package:tomo_core/stats/stats.dart';
@@ -144,7 +142,7 @@ class AfterBlock extends StatelessWidget {
               onPressed: choice.onPressed,
             ),
         ])
-          _SteppingIn(stepIn: stepIn, child: part),
+          SteppingIn(stepIn: stepIn, child: part),
       ],
       bottomGap: 5,
     );
@@ -253,52 +251,9 @@ class _TodayLineState extends ConsumerState<TodayLine> {
   }
 }
 
-/// A stand-in for the hatch takeover (spec §8.7) until *The hatch takeover*
-/// builds its naming: the run on a cleared screen, then *Done*. A builder's
-/// tool: its words are not in the copy file.
-class HatchStandIn extends StatelessWidget {
-  const HatchStandIn({
-    super.key,
-    required this.frame,
-    required this.rest,
-    required this.line,
-    required this.onDone,
-  });
-
-  final RunFrame frame;
-  final PetLook rest;
-  final String line;
-  final VoidCallback onDone;
-
-  @override
-  Widget build(BuildContext context) => ScreenBody(
-    content: const [],
-    middle: [
-      Center(
-        child: RewardPet(
-          frame: frame,
-          rest: rest,
-          spot: 192,
-          semanticLabel: artOf(rest.species).name,
-        ),
-      ),
-      _SteppingIn(
-        stepIn: frame.payload,
-        child: PixelText(line, textAlign: TextAlign.center),
-      ),
-    ],
-    bottom: [
-      _SteppingIn(
-        stepIn: frame.payload,
-        child: PixelButton(label: 'Done', wide: true, onPressed: onDone),
-      ),
-    ],
-  );
-}
-
 /// [child] unseen, its room kept, until [stepIn] brings it up into place.
-class _SteppingIn extends StatelessWidget {
-  const _SteppingIn({required this.stepIn, required this.child});
+class SteppingIn extends StatelessWidget {
+  const SteppingIn({super.key, required this.stepIn, required this.child});
 
   final StepIn? stepIn;
   final Widget child;

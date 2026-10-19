@@ -47,6 +47,7 @@ enum InvalidField {
   notes,
   estimate,
   projectName,
+  petName,
   focusMinutes,
   breakMinutes,
 }
