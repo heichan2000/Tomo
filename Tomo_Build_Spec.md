@@ -924,6 +924,16 @@ From [Task & project management screens design](https://github.com/heichan2000/T
 - **Empty states:** a surface card with a 2× icon, a title, one line and one
   manual action. Never the AI, never a teaser.
 
+**Work and the project screen are built** in [Work and the project screen](https://github.com/heichan2000/Tomo/issues/99),
+in `lib/work/`: `WorkScreen` (the tab, `newProject`, `EmptyCard`) and
+`ProjectScreen` (the list, the quiet mark done, *Add a task*, the menus and
+the deletes). A row is `TaskListRow`; the sheets are in `work_sheets.dart`
+(`chooseProjectToMove` and `confirmDelete` are for Task detail too). The
+screens watch `WorkLists` (`work_lists.dart`), fed by
+`TaskService.watchProjectSummaries()` (each project with its open and done
+counts) and `watchTasksInProject()`. Task detail is still a stand-in
+(`openTaskDetail`). Its calls: C133–C143.
+
 ### 8.9 Stats
 
 From [Stats screen scope & the definition of a streak](https://github.com/heichan2000/Tomo/issues/21)
@@ -1703,6 +1713,17 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C130 | Dropping `pets.personality` (#115) | The version-1 schema changed in place and its snapshot was made again: nothing has shipped, so there is no one to migrate. `drift_dev make-migrations` refuses a changed v1, so the old `drift_schema_v1.json` was deleted first. |
 | C131 | An egg's name inside a sentence (#114) | Lower case: "Your stone egg hatches…", "Your paper egg". `eggName` is the tile's *Stone egg*; `eggInLine` is the same name for use inside a line. |
 | C132 | The egg's lines, now plain (#114) | `SetupMoment` and `EggMoment` are gone from `PetMoment`, since the pet no longer speaks before the hatch; the pick reads `eggHint`, Home reads `egg`. The run that hatches the egg is unchanged: its screen-reader announcement says "Your egg hatched." and then the pet's name and hatch line, at the reveal. |
+| C133 | When the running task's row wears the accent *Focus* chip | Only while its block runs. In the break and after, the row shows *Doing*, as the task lock lifts then too. |
+| C134 | How long a lock refusal's sunken line stays | Until the next touch anywhere on the screen, or a scroll (as Tomo Task Screens said). |
+| C135 | *Delete task* or *Delete project* while the block runs | Refused at once, with the line under the row that was tapped in the menu; the delete sheet is never shown first. |
+| C136 | A status picked in the row menu | Written at once; the sheet closes and the row holds, then slides, as after a ring tap. A refusal shows under the status control and the sheet stays. |
+| C137 | *Rename project*, which the approved screens don't show | A sheet like *New project*: title *Rename project*, the field holding the name, and *Rename*. Both sheets' buttons are off until a name is typed; the field takes 60 characters (§5.3). |
+| C138 | How the row moves after a ring tap | It holds 450 ms in its old place showing its new ring, then slides to its new place in 240 ms, easing out, in whole UI pixels; the rows it passes take their places at once. Under reduce motion it jumps. As Tomo Task Screens played it. |
+| C139 | *Add a task*'s + and keyboard | The + shows only while the field is empty and not being typed in. Enter keeps the keyboard up for the next task. A failed add shows the error line under the field. Adding a task on Work doesn't change `lastProjectId` (C104). |
+| C140 | Reads the Work screens needed, and widget tests | `TaskService.watchProjectSummaries()` / `projectSummaries()` and `tasksInProject()`. The screens watch them through `workListsProvider`, which whole-app widget tests replace; `petChanged` feeds the Work lists too (C72). |
+| C141 | Screens inside the shell saw the keyboard, though the shell had already made room for it (found here: a project with a few tasks scrolled away under the keyboard) | The shell takes the keyboard and the bottom padding off one copy of the screen's facts, so the screens see neither (`TomoShell`). |
+| C142 | A project just made, or deleted while its screen is open | Its screen goes back to Work once the project has been listed and then is gone; a project not listed yet is not taken for deleted. |
+| C143 | Where a task opens before Task detail exists | `openTaskDetail` pushes a stand-in, `TaskDetailPlaceholder`, for *Task detail* to replace. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

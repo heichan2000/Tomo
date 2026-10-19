@@ -4,7 +4,6 @@ import '../ui/buttons.dart';
 import '../ui/sharp_text.dart';
 import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
-import 'routes.dart';
 
 // Stand-ins for the screens their own tickets build, so the shell and the
 // start-up routing can be used before them. Each goes when its real screen
@@ -26,43 +25,25 @@ class SettingsPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) => const _Pushed('Settings');
 }
 
-class WorkPlaceholder extends StatelessWidget {
-  const WorkPlaceholder({super.key});
+/// Stands in for Task detail, pushed from a task's row on Work.
+class TaskDetailPlaceholder extends StatelessWidget {
+  const TaskDetailPlaceholder({super.key, required this.title});
+
+  final String title;
 
   @override
-  Widget build(BuildContext context) => _Placeholder(
-    title: 'Work',
-    actions: [
-      (
-        'A project',
-        () => pushInTab(
-          context,
-          (_) => _Pushed(
-            'Project',
-            next: (
-              'A task',
-              (context) => pushInTab(context, (_) => const _Pushed('Task')),
-            ),
-          ),
-        ),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) => _Pushed(title);
 }
 
 class _Pushed extends StatelessWidget {
-  const _Pushed(this.title, {this.next});
+  const _Pushed(this.title);
 
   final String title;
-  final (String, void Function(BuildContext))? next;
 
   @override
   Widget build(BuildContext context) => _Placeholder(
     title: title,
-    actions: [
-      ('Back', () => Navigator.of(context).pop()),
-      if (next case (final label, final open)) (label, () => open(context)),
-    ],
+    actions: [('Back', () => Navigator.of(context).pop())],
   );
 }
 

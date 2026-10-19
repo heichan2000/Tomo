@@ -7,6 +7,7 @@ import 'package:tomo/app/providers.dart';
 import 'package:tomo/app/start_up.dart';
 import 'package:tomo/app/tomo_app.dart';
 import 'package:tomo/app/tomo_look.dart';
+import 'package:tomo/work/work_lists.dart';
 import 'package:tomo_core/clock.dart';
 import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/diagnostic_log.dart';
@@ -84,6 +85,7 @@ Future<TomoDatabase> pumpTomo(
     );
   });
   final ready = started! as Started;
+  await _feedWork(tester, db);
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -98,6 +100,7 @@ Future<TomoDatabase> pumpTomo(
         speciesChangesProvider.overrideWithValue(_speciesChanges.stream),
         petChangesProvider.overrideWithValue(_petChanges.stream),
         cycleTaskChangesProvider.overrideWithValue(_cycleTaskChanges.stream),
+        workListsProvider.overrideWithValue(_work),
       ],
       child: TomoApp(first: ready.first),
     ),
@@ -133,12 +136,14 @@ Future<int> startBlockOn(
 }
 
 var _petChanges = StreamController<PetStanding?>.broadcast();
+var _work = _FedWorkLists();
 var _speciesChanges = StreamController<Species?>.broadcast();
 var _cycleTaskChanges = StreamController<CycleTask?>.broadcast();
 
-/// Tells the app the pet or the cycle changed, as watching the database
-/// would: reads [db] on the real clock and hands the pet, its species once
-/// hatched (the accent), and the cycle's task, to the screens.
+/// Tells the app the pet, the cycle or the Work lists changed, as watching
+/// the database would: reads [db] on the real clock and hands the pet, its
+/// species once hatched (the accent), the cycle's task, and every project
+/// with its tasks, to the screens.
 Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
   final (pet, task) = (await tester.runAsync(
     () async => (
@@ -149,6 +154,7 @@ Future<void> petChanged(WidgetTester tester, TomoDatabase db) async {
   _petChanges.add(pet);
   _speciesChanges.add(pet != null && pet.hatched ? pet.species : null);
   _cycleTaskChanges.add(task);
+  await _feedWork(tester, db);
   // One frame to deliver it, one to show it.
   await tester.pump();
   await tester.pump();
@@ -185,5 +191,52 @@ Future<void> _closeAll(WidgetTester tester) async {
   _speciesChanges = StreamController<Species?>.broadcast();
   await _cycleTaskChanges.close();
   _cycleTaskChanges = StreamController<CycleTask?>.broadcast();
+  await _work.close();
+  _work = _FedWorkLists();
   await tester.pump();
+}
+
+/// Reads the Work lists from [db] on the real clock and hands them to the
+/// screens watching them.
+Future<void> _feedWork(WidgetTester tester, TomoDatabase db) async {
+  final (projects, tasks) = (await tester.runAsync(() async {
+    final service = TaskService(db, log: Log(sinks: const []));
+    final projects = await service.projectSummaries();
+    return (
+      projects,
+      {
+        for (final summary in projects)
+          summary.project.id: await service.tasksInProject(summary.project.id),
+      },
+    );
+  }))!;
+  _work.feed(projects, tasks);
+}
+
+/// The Work lists as [petChanged] last read them. Each new watcher hears
+/// the latest at once, as a watched query would.
+final class _FedWorkLists implements WorkLists {
+  final _changes = StreamController<void>.broadcast();
+  var _projects = const <ProjectSummary>[];
+  var _tasks = const <int, List<Task>>{};
+
+  void feed(List<ProjectSummary> projects, Map<int, List<Task>> tasks) {
+    _projects = projects;
+    _tasks = tasks;
+    _changes.add(null);
+  }
+
+  Future<void> close() => _changes.close();
+
+  Stream<T> _latest<T>(T Function() read) async* {
+    yield read();
+    yield* _changes.stream.map((_) => read());
+  }
+
+  @override
+  Stream<List<ProjectSummary>> projects() => _latest(() => _projects);
+
+  @override
+  Stream<List<Task>> tasksIn(int projectId) =>
+      _latest(() => _tasks[projectId] ?? const <Task>[]);
 }

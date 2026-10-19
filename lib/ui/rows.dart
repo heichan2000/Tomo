@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:tomo_core/art/pixel_art.dart';
 
 import 'buttons.dart';
 import 'pixel_box.dart';
+import 'pixel_icon.dart';
 import 'sharp_text.dart';
 import 'tomo_theme.dart';
 import 'ui_pixel.dart';
@@ -150,6 +152,39 @@ class PixelChip extends StatelessWidget {
           label,
           step: big ? TypeStep.body : TypeStep.caption,
           colour: ink,
+        ),
+      ),
+    );
+  }
+}
+
+/// A sunken line of plain words where something happened (spec §8.8): a
+/// task-lock refusal under what was tapped, a write that failed, or a
+/// project's all-done line with its done icon. Never a toast.
+class SunkenLine extends StatelessWidget {
+  const SunkenLine(this.text, {super.key, this.icon});
+
+  final String text;
+
+  /// Shown muted before the words.
+  final IconName? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colours = TomoTheme.of(context);
+    final u = UiPixel.of(context);
+    return PixelBox(
+      fill: colours.sunken,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: u(7), vertical: u(5)),
+        child: Row(
+          children: [
+            if (icon != null) ...[
+              PixelIcon(icon!, colour: colours.muted),
+              SizedBox(width: u(5)),
+            ],
+            Expanded(child: PixelText(text)),
+          ],
         ),
       ),
     );
