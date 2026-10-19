@@ -230,15 +230,6 @@ class Pets extends Table with TableInfo {
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL',
   );
-  late final GeneratedColumn<String> personality = GeneratedColumn<String>(
-    'personality',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT \'quiet\'',
-    defaultValue: const CustomExpression('\'quiet\''),
-  );
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
@@ -276,7 +267,6 @@ class Pets extends Table with TableInfo {
   List<GeneratedColumn> get $columns => [
     id,
     species,
-    personality,
     name,
     hatchedAt,
     exp,

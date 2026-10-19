@@ -157,12 +157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             )
           else if (pet != null)
             PixelText(
-              petLine(
-                words,
-                moment: const EggMoment(),
-                species: pet.species,
-                personality: pet.personality,
-              ),
+              petLine(words, moment: const EggMoment(), species: pet.species),
               colour: colours.muted,
               textAlign: TextAlign.center,
             ),

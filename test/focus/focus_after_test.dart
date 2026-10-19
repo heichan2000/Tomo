@@ -155,10 +155,12 @@ void main() {
     ok(await focus.markBeatRunSeen());
   }
 
-  const blockLine = 'Twenty-five minutes. They stay.';
-  const taskLine = 'Write the intro is done. It stays done.';
-  const breakOverLine = 'The break is whole. I am here.';
-  const awayWords = 'the block is whole, with no one watching.';
+  const blockLine = 'Twenty-five minutes. Nice and steady.';
+  const taskLine =
+      'Write the intro is done. Twenty-five minutes rest in it, and they stay.';
+  const breakOverLine =
+      'The break is whole. Twenty-five minutes today, and I am here.';
+  const awayWords = 'the block is whole, quietly, on its own.';
 
   group('block done, on screen', () {
     testTomo('the beat plays, then the line, the bar and the choices', (
@@ -324,7 +326,10 @@ void main() {
       await passTo(tester, 25);
 
       expect(find.words('Is this task done?'), findsOneWidget);
-      expect(find.words('Every planned block is here.'), findsOneWidget);
+      expect(
+        find.words('Every planned block is here. Steady work, all of it.'),
+        findsOneWidget,
+      );
       expect(button('Not yet'), findsOneWidget);
       expect(button('Mark done'), findsOneWidget);
       expect(find.words('Mark task done'), findsNothing);
@@ -367,7 +372,13 @@ void main() {
       await tap(tester, button('Another 25-min block'));
       await passTo(tester, 50);
 
-      expect(find.words(blockLine), findsOneWidget);
+      // The task's second block: Geode says the fact line.
+      expect(
+        find.words(
+          'Twenty-five minutes. Nice and steady. Fifty on Write the intro now.',
+        ),
+        findsOneWidget,
+      );
       expect(find.words('Is this task done?'), findsNothing);
       expect(button('Mark task done'), findsOneWidget);
     });

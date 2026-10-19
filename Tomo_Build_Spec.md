@@ -50,7 +50,7 @@ These decisions change what gets built:
 - One pet, picked at setup from three starters, hatched by the first finished
   block, growing through four stages on EXP earned by finished blocks.
 - A lightweight Stats screen (four all-time numbers).
-- Settings: rename pet, personality, Calm pet, auto-start, notifications,
+- Settings: rename pet, Calm pet, auto-start, notifications,
   appearance, About with *Share diagnostics*.
 - English only, all copy in ARB. iPhone and Android phones, portrait.
 
@@ -392,7 +392,6 @@ Index `(project_id, status)`.
 |---|---|---|
 | `id` | int PK | |
 | `species` | `geode`/`joe`/`lily` not null | permanent |
-| `personality` | `quiet`/`chatty`, default `quiet` | editable |
 | `name` | text null | null until the hatch names it |
 | `hatched_at` | int null | **null is the egg** |
 | `exp` | int not null default 0 | the truth |
@@ -737,16 +736,15 @@ Neutral grey chrome throughout. No account, no permissions, nothing taught.
 
 1. **Choose your pet.** Title and one line; the three starters as tiles at
    stage 1 (96 pt), the chosen one a sunken shade with a check before its name.
-   Below: the chosen pet's description line (**the pet speaking**, switching with
-   personality), the **Personality** segmented control **Quiet / Chatty**
-   (Quiet selected), its hint, *Next*.
+   Below: the chosen pet's description line (**the pet speaking**, in its own
+   character, ADR-0030), *Next*. There is no personality to choose.
 2. **What are you working on?** Back; title and one line; one text field;
    *Done* (primary), *Skip* (quiet, muted). The line becomes **both the seeded
    project's name and the first task**. Skipped → one plain default project and
    no task.
 
 Nothing is written until screen 2 finishes or is skipped; then **one
-transaction** creates the pet row (species, personality, `name` and
+transaction** creates the pet row (species, `name` and
 `hatched_at` null), the project, and the task if typed. A kill before that
 restarts onboarding from screen 1.
 
@@ -944,13 +942,14 @@ Pushed from Home's gear. Rows:
 
 | Group | Row |
 |---|---|
-| Pet | **Rename pet** · **Personality** (Quiet / Chatty) · **Calm pet** (switch) |
+| Pet | **Rename pet** · **Calm pet** (switch) |
 | Focus | **Auto-start** (switch, off) |
 | Notifications | permission status + *Open system settings* |
 | Appearance | **Match phone / Light / Dark** (full-width segmented control, wraps at large text) |
 | About | version; licences (Ark Pixel OFL registered); the `about` and `aboutOs` lines; **Share diagnostics** with its entry count (disabled at zero) and the `shareDiag` line |
 
-Species is permanent; name and personality are not.
+Species is permanent; the name is not. Each pet's character comes with its
+species (ADR-0030), so there is no Personality row.
 
 ### 8.11 Error block
 
@@ -1123,7 +1122,9 @@ fails if they differ. No launcher-icon or splash packages. The script is
 ### 10.1 Rules
 
 [ADR-0021](docs/adr/0021-plain-voice-bad-news-quiet-chatty-personality.md),
-[The pet's written voice](https://github.com/heichan2000/Tomo/issues/51).
+[ADR-0030](docs/adr/0030-each-pet-has-its-own-character.md),
+[The pet's written voice](https://github.com/heichan2000/Tomo/issues/51),
+[Give each pet its own personality](https://github.com/heichan2000/Tomo/issues/115).
 
 - **Pet voice keeps good news only**: reward and Focus lines, the hatch line,
   the egg line, timer notifications, setup descriptions.
@@ -1134,19 +1135,23 @@ fails if they differ. No launcher-icon or splash packages. The script is
   "you", durations, **numbers spelled in words** (so `tomo_core` needs a small
   English number-to-words helper); Joe — exact digits, no "you"; Lily — the only
   one who says "you", and every question closes itself.
-- **Personality is Quiet / Chatty**: how much the pet volunteers. Quiet is the
-  script; Chatty adds **one** detail where a real one exists, and only things
-  that can't go down (counts that grow, firsts, this cycle). Never streaks,
-  comparisons or time away. Timer notifications are Quiet only.
+- **Each pet has its own character** (ADR-0030), on top of its species rule:
+  Geode a calm, gentle rock; Joe a fussy, neat paper bird; Lily an
+  encouraging, bright kid. There is no personality choice.
+- **Facts can't go down.** A line may add a fact only if it is a count that
+  grows, a first, or this cycle. Never streaks, comparisons or time away.
+- **No line suggests putting work off**: no napping, no "later", no "skip it".
 - **ARB layout:** one entry per moment with the three pets side by side (a
-  `select` on species); Chatty entries separate, named by their detail
-  (`blockDoneChattyTaskTotal`), falling back to Quiet when missing or the detail
-  isn't true; plain-voice entries have no per-pet split.
+  `select` on species). Six moments also have a **fact entry**, named by its
+  fact (`blockDoneTaskTotal`), said only when `PetMoment.factHolds`;
+  plain-voice entries have no per-pet split.
 
 ### 10.2 The script
 
-**The full script — every pet-voice line (Quiet and Chatty, per species), the
-notifications, the plain-voice lines and the screen-reader runs — is in
+**Every pet-voice line, per species and including the notifications, is in
+[#115's record](https://github.com/heichan2000/Tomo/issues/115#issuecomment-6258694999).**
+It replaces the pet-voice lines of the first script. **The plain-voice lines
+and the screen-reader runs are still in
 [#51's resolution](https://github.com/heichan2000/Tomo/issues/51#issuecomment-6052038890).**
 Write the ARB file from it with numbers, task and project names as placeholders.
 It is not copied here so it has one home. *(Written: `lib/l10n/app_en.arb`. A
@@ -1159,8 +1164,8 @@ and recorded with the script in #51:
 
 | Case | Line |
 |---|---|
-| Lily, Chatty, a task done in one block (`taskDoneChattyTaskTotal`) | You finished {task} in just one block. Feels good, doesn't it? |
-| Lily, the estimate card, a plan of one block (`estimate`) | That's the one block you planned for it. |
+| Lily, a task done in one block (`taskDoneTaskTotal`) | You finished {task} in just one block! That feels great, doesn't it? *(Rewritten in character by #115.)* |
+| Lily, the estimate card, a plan of one block (`estimate`) | That's the one block you planned for it. You kept your word, didn't you? *(Rewritten in character by #115.)* |
 | Delete project, tasks but no focus time (`delProjNoFocus`) | Its {count} tasks go with it, for good. They have no focus time, so your stats don't change. *(One task: Its 1 task goes with it, for good. It has no focus time, so your stats don't change.)* |
 | Delete project, one task (`delProj`) | Its 1 task goes with it, for good. The {duration} you focused on **it** stays in your stats. |
 | Delete task, an hour or more of focus time (`delTaskLong`) | "{task}" and its notes go for good. The {duration} you focused on it stays in your stats. *(Under an hour, the script's `delTask` with minutes.)* |
@@ -1528,7 +1533,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | R11 | Moment budget 1.5–3 s (#12) vs evolution ≈ 4 s and hatch ≈ 5 s (ADR-0019) | The ladder's lengths win for those two beats. |
 | R12 | Home egg sentence in plain words (#18, #45) vs #51 | Pet-voice `egg` line. |
 | R13 | A Stats zero state (#5) vs #21 | None can occur. |
-| R14 | Personality chosen at the hatch, permanent (#9) vs #18, #30 | Chosen at setup, Quiet default, changeable. |
+| R14 | Personality chosen at the hatch, permanent (#9) vs #18, #30 | Chosen at setup, Quiet default, changeable. **Replaced by ADR-0030 (#115):** no choice at all; each pet has its own character. |
 | R15 | Fallback pet (#16) vs ADR-0020 | Retired. |
 | R16 | `movement: none` for Calm pet (#16) vs ADR-0018 | `full`/`reduced`; Calm pet acts through the face. |
 | R17 | Task picker "from Home only" (#5) vs #17 (Ready's task row) and #45 (*Start another task*) | Three doors (§8.1). |
@@ -1586,9 +1591,9 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C30 | A pet that hatched but was never named (killed on the naming screen) | Its notifications go by its species' name. |
 | C31 | The diagnostic log's byte ceiling, file and shape were not fixed | `diagnostics.log` in application-support: one JSON line per entry, at most 200 entries and 512 KiB, the oldest dropped first, a stack trace kept to its first 30 frames. *Share diagnostics* gets it rendered as plain text. Device facts (app version and build, OS version, device class, locale) are stamped on each entry. |
 | C32 | Debug builds and Flutter's own error report | In debug, an error Flutter caught is still printed by Flutter's own console report (with its message), as well as recorded. Release prints nothing. |
-| C33 | The script's key `break` is a word Dart keeps for itself | The copy file calls it `onBreak` (and `onBreakChattyToday`). |
+| C33 | The script's key `break` is a word Dart keeps for itself | The copy file calls it `onBreak` (and `onBreakToday`). |
 | C34 | The script shows each line with sample numbers; other numbers need "1 block", "1 hour", "1 minute" | Only the noun changes with the number. No other word of an approved line is touched. Where that was not enough, the user wrote the line ([#85](https://github.com/heichan2000/Tomo/issues/85), §10.2). |
-| C35 | When a Chatty detail "isn't true" | Block done: the task's first block. Level-up and evolution: under one (or two) whole hours focused. Task done: no focus time. Break and break over: nothing finished yet today. |
+| C35 | When a fact line's fact "isn't true" (was the Chatty detail; #115) | Block done: the task's first block. Level-up and evolution: under one (or two) whole hours focused. Task done: no focus time. Break and break over: nothing finished yet today. |
 | C36 | How Geode says numbers above one hundred | American style, no "and": "one hundred twenty", "four hundred twenty-five". |
 | C37 | Screen labels that are not in the script (buttons, tab names, Stats row labels) | Not typed in here: the approved prototypes are private to the owner. Each screen ticket adds its labels to the copy file. |
 | C38 | Icons and the sparkle are coloured at run time, so they have no colour key for the fingerprint | They fingerprint `paint <char> <role>` lines instead (icon `#` = `icon`; sparkle `#` = `arms`, `o` and `x` = `centre`). The Tomo egg has its own colour key. Ids are `icon.<name>`, `sparkle` and `tomo.egg`. Written out in `pixel_art.dart`. |
@@ -1666,7 +1671,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C110 | How "about N min" rounds (ADR-0010 says rough minutes) | To the nearest minute, a half minute already reading the lower number (4:30 left is *about 4*), so the words change at each half-minute mark. A minute or less reads *under a minute left*. The exact time is `mm:ss` with the seconds rounded up (`25:00` as a block starts, never `00:00` before it ends), three digits of minutes past 99. `quiet_clock.dart` in core. |
 | C111 | Words for a break's last minute and the clock's screen-reader lines, which the script lacks | *under a minute of rest left*; the banner's *Break · under a minute*; spoken, *About 4 minutes of rest left.*, *Under a minute of rest left.* and *Under a minute left on {task}.* The clock's label stays in rough minutes while the exact time shows. Approved by the user ([#96](https://github.com/heichan2000/Tomo/issues/96)). |
 | C112 | When the next block counts down (§4.8), and what it starts | Only when Focus sees the break run out (within 2 s, the app in front), auto-start on, the break not skipped and the task not done. The screen keeps the pet's break-over line above the countdown line, as the approved screen does. The block it starts has the cycle's own lengths and auto-start as it is set now, and sets `lastProjectId`. |
-| C113 | Reads Focus and the banner needed | `TaskService.cycleTask()` / `watchCycleTask()`: the live cycle's task and its project (`CycleTask`), read at start-up and watched as `cycleTaskProvider`, so a rename on Work shows on the banner. `StatsReader.dayOf(now)`: the day's blocks and minutes for the Chatty break lines, by each block's stored `local_date`. Widget tests of the whole app feed both through `petChanged`. |
+| C113 | Reads Focus and the banner needed | `TaskService.cycleTask()` / `watchCycleTask()`: the live cycle's task and its project (`CycleTask`), read at start-up and watched as `cycleTaskProvider`, so a rename on Work shows on the banner. `StatsReader.dayOf(now)`: the day's blocks and minutes for the break fact lines, by each block's stored `local_date`. Widget tests of the whole app feed both through `petChanged`. |
 | C114 | Who settles a block that ends while Focus is minimised | The banner, as it sees the block end (`reconcile`), so under auto-start the break starts on time and the banner moves on with it. Focus also reconciles as it opens and as the clock moves its state. |
 | C115 | Focus's running and break layout against the approved screen's three "grow"s | `ScreenBody`'s `middle` holds the pet, the line, the clock, the progress line and the chip as one group, halfway between the header and the one button. Kit parts added: `PixelChip(big:)` (body text, for *Focus* / *Break*), `ProgressLine` (2 UI pixels, grows in whole UI pixels), `PixelText.cut` (one line ending in "…", the running banner's task). |
 | C116 | Which line a run shows (and speaks after its facts) when it has several beats | Its rarest beat's, by the reward ladder: hatch, then evolution, then task done, then level-up, then the block. So a block that levels up shows the level-up line, and a task bonus that reaches a level keeps the task-done line (`runMoment`). |
@@ -1683,6 +1688,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C127 | The name fails to write | The plain error line shows above *Done* and the naming stays; *Done* tries again. The old name (none) stays, logged as `petWriteFailed`. |
 | C128 | Words for the naming | `hatchName` (*Name*, the caption and the field's screen-reader label) and `hatchDone` (*Done*), from Tomo Pixel Screens. `PixelTextField` gained `label:` for this. |
 | C129 | The accent in widget tests of the whole app | The harness feeds the hatched species through `petChanged`, as it feeds the pet (C113), so a test sees the grey turn to the species colour. |
+| C130 | Dropping `pets.personality` (#115) | The version-1 schema changed in place and its snapshot was made again: nothing has shipped, so there is no one to migrate. `drift_dev make-migrations` refuses a changed v1, so the old `drift_schema_v1.json` was deleted first. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
@@ -1765,8 +1771,8 @@ EXP only visualising it?*
   length, task splitting, timing, estimates or tapping. The task bonus is 10% of
   the task's own minutes, once.
 - **Nothing can go down.** No decay, no streak, no time-of-day moods, no "welcome
-  back" that measures absence, no Stats number a delete can lower, no Chatty
-  detail that can fall. Stopping early costs that block and nothing before it,
+  back" that measures absence, no Stats number a delete can lower, no pet
+  fact that can fall. Stopping early costs that block and nothing before it,
   and the egg never closes on screen.
 - **Nothing nags.** Three notifications, all for timers the user started; no
   buzz during a block; the pet never speaks ambiently; bad news is plain.

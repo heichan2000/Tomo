@@ -1,20 +1,17 @@
 import '../pet/beat.dart';
-import '../pet/species.dart';
 import '../rewards/rewards.dart';
 
 /// A moment the pet has a line for, with the facts that line is made from
 /// (spec §10, [#51](https://github.com/heichan2000/Tomo/issues/51)).
 ///
 /// The words live in the app's copy file; this is only what they are about.
+///
+/// Some moments have a second line that adds a fact, said only when
+/// `factHolds`; otherwise the pet says the moment's usual line. A fact is only
+/// ever something that cannot go down: a count that grows, a first, this
+/// cycle. Never a streak, a comparison or time away (ADR-0030).
 sealed class PetMoment {
   const PetMoment();
-
-  /// Whether the Chatty entry's one extra detail is true right now. When it
-  /// is not, or there is no Chatty entry, the pet says its Quiet line.
-  ///
-  /// Chatty adds only things that cannot go down: counts that grow, firsts,
-  /// this cycle. Never a streak, a comparison or time away.
-  bool chattyDetailHolds(Species species);
 }
 
 /// A focus block was just credited.
@@ -35,9 +32,8 @@ final class BlockDoneMoment extends PetMoment {
   /// Minutes focused on this task, this block included.
   final int taskMinutes;
 
-  /// "When this task has 2 or more blocks."
-  @override
-  bool chattyDetailHolds(Species species) => taskBlocks >= 2;
+  /// The fact line: this task has 2 or more blocks.
+  bool get factHolds => taskBlocks >= 2;
 }
 
 /// The pet reached a level.
@@ -57,9 +53,8 @@ final class LevelUpMoment extends PetMoment {
   /// Whole hours focused.
   int get hours => totalMinutes ~/ 60;
 
-  /// "Always", as long as there is a whole hour to speak of.
-  @override
-  bool chattyDetailHolds(Species species) => hours >= 1;
+  /// The fact line: there is a whole hour to speak of.
+  bool get factHolds => hours >= 1;
 }
 
 /// The pet changed stage.
@@ -71,9 +66,9 @@ final class EvolutionMoment extends PetMoment {
 
   int get hours => totalMinutes ~/ 60;
 
-  /// "Always": by the first evolution there are hours to speak of.
-  @override
-  bool chattyDetailHolds(Species species) => hours >= 2;
+  /// The fact line: always, since by the first evolution there are hours to
+  /// speak of.
+  bool get factHolds => hours >= 2;
 }
 
 /// A task was marked done, with a pet on screen.
@@ -88,9 +83,8 @@ final class TaskDoneMoment extends PetMoment {
   final int taskBlocks;
   final int taskMinutes;
 
-  /// "When the task has focus time."
-  @override
-  bool chattyDetailHolds(Species species) => taskMinutes > 0;
+  /// The fact line: the task has focus time.
+  bool get factHolds => taskMinutes > 0;
 }
 
 /// A break is running.
@@ -107,9 +101,9 @@ final class OnBreakMoment extends PetMoment {
   final int todayBlocks;
   final int todayMinutes;
 
-  /// "Always (a break follows a block)", unless that block ended yesterday.
-  @override
-  bool chattyDetailHolds(Species species) => todayBlocks >= 1;
+  /// The fact line: a block ended today. Almost always, since a break follows
+  /// a block, unless that block ended yesterday.
+  bool get factHolds => todayBlocks >= 1;
 }
 
 /// A break has ended.
@@ -124,8 +118,8 @@ final class BreakOverMoment extends PetMoment {
   final int todayBlocks;
   final int todayMinutes;
 
-  @override
-  bool chattyDetailHolds(Species species) => todayBlocks >= 1;
+  /// The fact line: a block ended today.
+  bool get factHolds => todayBlocks >= 1;
 }
 
 /// The egg hatched, at the end of the first finished block.
@@ -137,30 +131,19 @@ final class HatchMoment extends PetMoment {
 
   /// The first block's task.
   final String task;
-
-  /// "Always (the first block's task)."
-  @override
-  bool chattyDetailHolds(Species species) => true;
 }
 
 /// The pet describing itself on onboarding's first screen.
 final class SetupMoment extends PetMoment {
   const SetupMoment();
-
-  /// "When Chatty is selected."
-  @override
-  bool chattyDetailHolds(Species species) => true;
 }
 
-/// The egg's line on Home. Quiet only.
+/// The egg's line on Home.
 final class EggMoment extends PetMoment {
   const EggMoment();
-
-  @override
-  bool chattyDetailHolds(Species species) => false;
 }
 
-/// A block finished while the user was away. Quiet only.
+/// A block finished while the user was away.
 final class AwayNoteMoment extends PetMoment {
   const AwayNoteMoment({required this.time, required this.minutes});
 
@@ -168,30 +151,21 @@ final class AwayNoteMoment extends PetMoment {
   /// ("2:25 PM", or "14:25").
   final String time;
   final int minutes;
-
-  @override
-  bool chattyDetailHolds(Species species) => false;
 }
 
-/// The auto-start countdown. Quiet only.
+/// The auto-start countdown.
 final class CountdownMoment extends PetMoment {
   const CountdownMoment({required this.seconds});
 
   final int seconds;
-
-  @override
-  bool chattyDetailHolds(Species species) => false;
 }
 
-/// The estimate card's fact line. Quiet only.
+/// The estimate card's fact line.
 final class EstimateMoment extends PetMoment {
   const EstimateMoment({required this.estimate});
 
   /// The task's planned blocks.
   final int estimate;
-
-  @override
-  bool chattyDetailHolds(Species species) => false;
 }
 
 /// The moment whose line a beat run shows, and speaks after its facts

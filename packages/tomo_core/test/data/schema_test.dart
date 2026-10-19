@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart' hide isNull;
 import 'package:test/test.dart';
 import 'package:tomo_core/data/tomo_database.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 import 'package:tomo_core/testing.dart';
@@ -112,14 +111,13 @@ void main() {
       expect(task.completedAt, isNull);
     });
 
-    test('a new pet is a quiet, unnamed egg with no EXP', () async {
+    test('a new pet is an unnamed egg with no EXP', () async {
       final id = await addPet();
       final pet = await (db.select(
         db.pets,
       )..where((p) => p.id.equals(id))).getSingle();
 
       expect(pet.species, Species.joe);
-      expect(pet.personality, Personality.quiet);
       expect(pet.name, isNull);
       expect(pet.hatchedAt, isNull);
       expect(pet.exp, 0);
@@ -142,13 +140,10 @@ void main() {
     await addPet();
 
     final task = await db.customSelect('SELECT status FROM tasks').getSingle();
-    final pet = await db
-        .customSelect('SELECT species, personality FROM pets')
-        .getSingle();
+    final pet = await db.customSelect('SELECT species FROM pets').getSingle();
 
     expect(task.read<String>('status'), 'todo');
     expect(pet.read<String>('species'), 'joe');
-    expect(pet.read<String>('personality'), 'quiet');
   });
 
   test('an id is never used twice (ADR-0023)', () async {

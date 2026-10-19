@@ -15,7 +15,6 @@ import 'package:tomo_core/focus/block_lengths.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
 import 'package:tomo_core/look/palette.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
@@ -61,11 +60,10 @@ Future<TomoDatabase> pumpTomo(
   final db = openTestDatabase(clock: clock, log: log);
   final started = await tester.runAsync(() async {
     if (onboarded) {
-      await Onboarding(db, log: log).complete(
-        species: Species.geode,
-        personality: Personality.quiet,
-        defaultProjectName: 'Things',
-      );
+      await Onboarding(
+        db,
+        log: log,
+      ).complete(species: Species.geode, defaultProjectName: 'Things');
     }
     await before?.call(db);
     return startTomo(

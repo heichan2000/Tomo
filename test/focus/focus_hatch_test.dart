@@ -100,7 +100,8 @@ void main() {
   Future<FocusCycleRow> cycleRow() async =>
       (await current.runAsync(() => db.select(db.focusCycle).getSingle()))!;
 
-  const hatchLine = 'Twenty-five minutes. I am made of them.';
+  const hatchLine =
+      'Hello. Twenty-five minutes of Write the intro, and I am made of them.';
 
   testTomo('the block beat plays with Focus around it, then the takeover '
       'clears the screen', (tester) async {
@@ -151,8 +152,9 @@ void main() {
     expect((await petRow()).name, isNull);
   });
 
-  testTomo('the name is pre-filled with the species name, and Done keeps it',
-      (tester) async {
+  testTomo('the name is pre-filled with the species name, and Done keeps it', (
+    tester,
+  ) async {
     await open(tester);
     await toNaming(tester);
 

@@ -61,8 +61,8 @@ final class StatsReader {
   }
 
   /// The blocks that ended on the local day [now] falls on, by the day each
-  /// block stored at its settle: what the pet's Chatty break lines call
-  /// today. Not a Stats number (ADR-0026).
+  /// block stored at its settle: what the pet's break lines count as today.
+  /// Not a Stats number (ADR-0026).
   Future<DayTotals> dayOf(
     DateTime now, {
     UtcOffsetAt utcOffsetAt = phoneUtcOffsetAt,

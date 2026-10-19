@@ -268,20 +268,6 @@
             }
           },
           {
-            "name": "personality",
-            "getter_name": "personality",
-            "moor_type": "string",
-            "nullable": false,
-            "customConstraints": null,
-            "default_dart": "const CustomExpression('\\'quiet\\'')",
-            "default_client_dart": null,
-            "dsl_features": [],
-            "type_converter": {
-              "dart_expr": "const EnumNameConverter<Personality>(Personality.values)",
-              "dart_type_name": "Personality"
-            }
-          },
-          {
             "name": "name",
             "getter_name": "name",
             "moor_type": "string",
@@ -773,7 +759,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"pets\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"species\" TEXT NOT NULL, \"personality\" TEXT NOT NULL DEFAULT 'quiet', \"name\" TEXT NULL, \"hatched_at\" INTEGER NULL, \"exp\" INTEGER NOT NULL DEFAULT 0, \"created_at\" INTEGER NOT NULL);"
+          "sql": "CREATE TABLE IF NOT EXISTS \"pets\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"species\" TEXT NOT NULL, \"name\" TEXT NULL, \"hatched_at\" INTEGER NULL, \"exp\" INTEGER NOT NULL DEFAULT 0, \"created_at\" INTEGER NOT NULL);"
         }
       ]
     },

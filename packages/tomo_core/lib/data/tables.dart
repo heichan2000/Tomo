@@ -7,7 +7,6 @@ library;
 
 import 'package:drift/drift.dart';
 
-import '../pet/personality.dart';
 import '../pet/species.dart';
 import '../tasks/task_status.dart';
 
@@ -60,8 +59,6 @@ class Tasks extends Table {
 class Pets extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get species => textEnum<Species>()();
-  TextColumn get personality =>
-      textEnum<Personality>().withDefault(const Constant('quiet'))();
 
   /// Null until the hatch names it.
   TextColumn get name => text().nullable()();

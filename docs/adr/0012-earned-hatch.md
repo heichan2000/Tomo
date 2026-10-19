@@ -3,6 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-09-22
 - **Decided in:** [#18 Onboarding & hatch flow design](https://github.com/heichan2000/Tomo/issues/18)
+- **Amended by:** [ADR-0030](0030-each-pet-has-its-own-character.md) — the pick has no personality choice; each pet comes with its own character.
 
 ## Context
 

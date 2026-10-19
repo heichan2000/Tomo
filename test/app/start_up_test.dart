@@ -10,7 +10,6 @@ import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/block_lengths.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_service.dart';
@@ -46,7 +45,6 @@ void main() {
     addTearDown(db.close);
     await Onboarding(db, log: log).complete(
       species: Species.lily,
-      personality: Personality.quiet,
       defaultProjectName: 'Things',
       line: 'Write the intro',
     );

@@ -109,14 +109,14 @@ abstract class AppLocalizations {
   /// Pet voice. A focus block was credited.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes. They stay.} joe{{minutes} of {minutes} minutes. Counted!} lily{You stayed with it the whole way, didn\'t you?} other{}}'**
+  /// **'{species, select, geode{{minutesWords} minutes. Nice and steady.} joe{{minutes} of {minutes} minutes. Folded, creased, filed.} lily{You did the whole block! You\'re getting good at this, aren\'t you?} other{}}'**
   String blockDone(String species, int minutes, String minutesWords);
 
-  /// Pet voice, Chatty. Block done, when this task has 2 or more blocks.
+  /// Pet voice. Block done, with its fact: said when this task has 2 or more blocks.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes. {taskMinutesWords} on {task} now, all of it in me.} joe{{minutes} of {minutes} minutes. Counted! Block {taskBlocks} on {task}.} lily{You stayed with it the whole way, didn\'t you? That\'s {taskBlocks} blocks you\'ve given {task}.} other{}}'**
-  String blockDoneChattyTaskTotal(
+  /// **'{species, select, geode{{minutesWords} minutes. Nice and steady. {taskMinutesWords} on {task} now.} joe{{minutes} of {minutes} minutes. Block {taskBlocks} on {task}, filed in order.} lily{That\'s {taskBlocks} blocks for {task} now! You don\'t give up, do you?} other{}}'**
+  String blockDoneTaskTotal(
     String species,
     int minutes,
     String minutesWords,
@@ -128,14 +128,14 @@ abstract class AppLocalizations {
   /// Pet voice. The pet reached a level.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{Level {levelWords}. Another hour in me.} joe{Level {level}! Up from {levelBefore}.} lily{Level {level}. You did that, you know?} other{}}'**
+  /// **'{species, select, geode{Level {levelWords}. One more layer, calm and solid.} joe{Level {level}! Up from {levelBefore}. Records updated, neatly.} lily{Level {level}! I knew you could do it, didn\'t I?} other{}}'**
   String levelUp(String species, int level, String levelWords, int levelBefore);
 
-  /// Pet voice, Chatty. Level-up, with the total time focused.
+  /// Pet voice. Level-up, with its fact: the total time focused, said from the first whole hour.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{Level {levelWords}. {hoursWords} {hours, plural, =1{hour} other{hours}} in me now, layer on layer.} joe{Level {level}! Up from {levelBefore}. {totalMinutes} minutes of focus, all counted.} lily{Level {level}. That\'s {hours} {hours, plural, =1{hour} other{hours}} you\'ve focused. Can you believe it?} other{}}'**
-  String levelUpChattyTotalTime(
+  /// **'{species, select, geode{Level {levelWords}. {hoursWords} {hours, plural, =1{hour} other{hours}} of layers now, each one holding.} joe{Level {level}! Up from {levelBefore}. {totalMinutes} minutes on file, each in its place.} lily{Level {level}! That\'s {hours} {hours, plural, =1{hour} other{hours}} of focus. You\'re amazing, aren\'t you?} other{}}'**
+  String levelUpTotalTime(
     String species,
     int level,
     String levelWords,
@@ -148,14 +148,14 @@ abstract class AppLocalizations {
   /// Pet voice. The pet changed stage.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{I am bigger. All of me is still here.} joe{Stage {stage} of 4!} lily{Look at me! You did this, didn\'t you?} other{}}'**
+  /// **'{species, select, geode{I am bigger. Slowly, gently. All of me is still here.} joe{Stage {stage} of 4! Refolded. Every crease exactly right.} lily{Look at me, I\'m bigger! You did this, didn\'t you?} other{}}'**
   String evolution(String species, int stage);
 
-  /// Pet voice, Chatty. Evolution, with the total time focused.
+  /// Pet voice. Evolution, with its fact: the total time focused.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{I am bigger. {hoursWords} hours, and this is what they make. All of me is still here.} joe{Stage {stage} of 4! Folded from {hours} hours of focus.} lily{Look at me! {hours} hours of your focus did this, didn\'t they?} other{}}'**
-  String evolutionChattyTotalTime(
+  /// **'{species, select, geode{I am bigger. {hoursWords} hours, laid down gently. All of me is still here.} joe{Stage {stage} of 4! Refolded from {hours} hours of focus. Every crease exactly right.} lily{Look at me! {hours} hours of your focus made me bigger. You did this, didn\'t you?} other{}}'**
+  String evolutionTotalTime(
     String species,
     int stage,
     int hours,
@@ -165,14 +165,14 @@ abstract class AppLocalizations {
   /// Pet voice. A task was marked done.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{task} is done. It stays done.} joe{Done: {task}!} lily{You finished {task}. Feels good, doesn\'t it?} other{}}'**
+  /// **'{species, select, geode{{task} is done. A good, quiet feeling. It stays done.} joe{Done: {task}! Ticked, filed, put away.} lily{You finished {task}! That feels great, doesn\'t it?} other{}}'**
   String taskDone(String species, String task);
 
-  /// Pet voice, Chatty. Task done, when the task has focus time.
+  /// Pet voice. Task done, with its fact: said when the task has focus time.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{task} is done. {taskMinutesWords} minutes are in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes.} lily{{taskBlocks, plural, =1{You finished {task} in just one block. Feels good, doesn\'t it?} other{You finished {task}, all {taskBlocks} blocks of it. Feels good, doesn\'t it?}}} other{}}'**
-  String taskDoneChattyTaskTotal(
+  /// **'{species, select, geode{{task} is done. {taskMinutesWords} minutes rest in it, and they stay.} joe{Done: {task}! {taskBlocks} {taskBlocks, plural, =1{block} other{blocks}}, {taskMinutes} minutes. Ticked, filed, put away.} lily{{taskBlocks, plural, =1{You finished {task} in just one block! That feels great, doesn\'t it?} other{You finished {task}, all {taskBlocks} blocks of it! That feels great, doesn\'t it?}}} other{}}'**
+  String taskDoneTaskTotal(
     String species,
     String task,
     int taskBlocks,
@@ -183,14 +183,14 @@ abstract class AppLocalizations {
   /// Pet voice. A break is running. (The script calls this key "break", a word Dart keeps for itself.)
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{A break. Everything is still here.} joe{Break: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You\'re resting. Nice, isn\'t it?} other{}}'**
+  /// **'{species, select, geode{It\'s break time.} joe{Break: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. Desk tidied for the next one.} lily{Break time! You earned it, didn\'t you?} other{}}'**
   String onBreak(String species, int breakMinutes);
 
-  /// Pet voice, Chatty. On a break, with what was finished today.
+  /// Pet voice. On a break, with its fact: what was finished today, said when a block ended today.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{A break. {todayMinutesWords} minutes today, and everything is still here.} joe{Break: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} done today.} lily{You\'re resting after {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} today. Nice, isn\'t it?} other{}}'**
-  String onBreakChattyToday(
+  /// **'{species, select, geode{It\'s break time. {todayMinutesWords} minutes today.} joe{Break: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} filed today.} lily{Break time, after {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} today! You earned it, didn\'t you?} other{}}'**
+  String onBreakToday(
     String species,
     int breakMinutes,
     int todayBlocks,
@@ -200,59 +200,42 @@ abstract class AppLocalizations {
   /// Pet voice. The break has ended.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{The break is whole. I am here.} joe{Break done: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You\'re back. A bit rested now, aren\'t you?} other{}}'**
+  /// **'{species, select, geode{The break is whole. Calm, and ready. I am here.} joe{Break done: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. Desk is tidy and ready.} lily{You\'re back! All rested, aren\'t you?} other{}}'**
   String breakOver(String species, int breakMinutes);
 
-  /// Pet voice, Chatty. Break over, with what was finished today.
+  /// Pet voice. Break over, with its fact: what was finished today, said when a block ended today.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{The break is whole. {todayMinutesWords} minutes today, and I am here.} joe{Break done: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} so far today.} lily{You\'re back, with {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} behind you today. A bit rested now, aren\'t you?} other{}}'**
-  String breakOverChattyToday(
+  /// **'{species, select, geode{The break is whole. {todayMinutesWords} minutes today, and I am here.} joe{Break done: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} on today\'s list.} lily{You\'re back, with {todayBlocks} {todayBlocks, plural, =1{block} other{blocks}} done today! All rested, aren\'t you?} other{}}'**
+  String breakOverToday(
     String species,
     int breakMinutes,
     int todayBlocks,
     String todayMinutesWords,
   );
 
-  /// Pet voice. The hatch line, after the first finished block.
+  /// Pet voice. The hatch line, after the first finished block, naming its task.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes. I am made of them.} joe{Hello! 1 block, {minutes} minutes, 1 me.} lily{Oh! It was you, wasn\'t it?} other{}}'**
-  String hatch(String species, int minutes, String minutesWords);
-
-  /// Pet voice, Chatty. The hatch line, with the first block's task.
-  ///
-  /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes of {task}. I am made of them.} joe{Hello! 1 block, {minutes} minutes on {task}, 1 me. First of everything!} lily{Oh! It was you, wasn\'t it? {minutes} minutes on {task}, and here I am.} other{}}'**
-  String hatchChattyFirstBlock(
-    String species,
-    int minutes,
-    String minutesWords,
-    String task,
-  );
+  /// **'{species, select, geode{Hello. {minutesWords} minutes of {task}, and I am made of them.} joe{Hello! 1 block, {minutes} minutes on {task}, 1 me. First entry, filed!} lily{Oh! You did it! {minutes} minutes on {task}, and here I am. That was you, wasn\'t it?} other{}}'**
+  String hatch(String species, int minutes, String minutesWords, String task);
 
   /// Pet voice. A pet's description on onboarding's first screen.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{I am Geode. I keep every minute.} joe{Joe. 1 paper bird. I count.} lily{I\'m Lily. I\'d like to know you.} other{}}'**
+  /// **'{species, select, geode{I am Geode. ROCK.} joe{Joe. 1 paper bird. Everything counted, folded and filed.} lily{I\'m Lily! I\'ll cheer for every block you finish. You\'d like that, wouldn\'t you?} other{}}'**
   String setup(String species);
-
-  /// Pet voice, Chatty. The description when Chatty is selected.
-  ///
-  /// In en, this message translates to:
-  /// **'{species, select, geode{I am Geode. I keep every minute of focus, layer on layer, and I like to say so.} joe{I\'m Joe! 1 paper bird who counts every block and every minute, out loud.} lily{I\'m Lily! I notice every block you finish, and I tell you about it. You don\'t mind, do you?} other{}}'**
-  String setupChatty(String species);
 
   /// Pet voice. The egg's line on Home.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{I am in here. A finished focus block opens me.} joe{1 egg. 1 focus block to hatch.} lily{I hatch when you finish a focus block. Shall we?} other{}}'**
+  /// **'{species, select, geode{I am in here, waiting calmly. A finished focus block opens me.} joe{1 egg. 1 focus block to hatch. Neatly, please.} lily{I hatch when you finish a focus block. You can do it, can\'t you?} other{}}'**
   String egg(String species);
 
   /// Pet voice. A block finished while the user was away. {time} is a time of day as this phone writes it.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{time}: the block is whole, with no one watching. {minutesWords} minutes, counted.} joe{Finished at {time}. {minutes} of {minutes} minutes, counted.} lily{Your block finished at {time} while you were away. All {minutes} minutes count.} other{}}'**
+  /// **'{species, select, geode{{time}: the block is whole, quietly, on its own. {minutesWords} minutes, counted.} joe{Finished at {time}. {minutes} of {minutes} minutes, logged and filed.} lily{Your block finished at {time} while you were away. All {minutes} minutes count, don\'t they?} other{}}'**
   String awayNote(
     String species,
     String time,
@@ -263,13 +246,13 @@ abstract class AppLocalizations {
   /// Pet voice. The auto-start countdown, in seconds.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{The next block begins in {secondsWords}.} joe{Next block in {seconds}.} lily{Your next block starts in {seconds}. Ready?} other{}}'**
+  /// **'{species, select, geode{Steady. The next block begins in {secondsWords}.} joe{Next block in {seconds}. Pencils sharpened.} lily{Your next block starts in {seconds}. You\'ve got this, haven\'t you?} other{}}'**
   String countdown(String species, int seconds, String secondsWords);
 
   /// Pet voice. The estimate card's fact line.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{Every planned block is here.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}.} lily{{estimate, plural, =1{That\'s the one block you planned for it.} other{That\'s all {estimate} blocks you planned for it.}}} other{}}'**
+  /// **'{species, select, geode{Every planned block is here. Steady work, all of it.} joe{{estimate} of {estimate} planned {estimate, plural, =1{block} other{blocks}}. Exactly to plan. Lovely.} lily{{estimate, plural, =1{That\'s the one block you planned for it. You kept your word, didn\'t you?} other{That\'s all {estimate} blocks you planned for it. You kept your word, didn\'t you?}}} other{}}'**
   String estimate(String species, int estimate);
 
   /// A notification's title before the hatch.
@@ -281,7 +264,7 @@ abstract class AppLocalizations {
   /// Notification body. A focus block ended.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes of {task}. They are counted.} joe{{task}: {minutes} of {minutes} minutes, counted.} lily{You gave {task} {minutes} minutes. Every one of them counted.} other{}}'**
+  /// **'{species, select, geode{{minutesWords} minutes of {task}. They settle in, and they stay.} joe{{task}: {minutes} of {minutes} minutes, filed.} lily{You gave {task} {minutes} minutes! Every one counted, didn\'t it?} other{}}'**
   String notifBlockDone(
     String species,
     String task,
@@ -292,7 +275,7 @@ abstract class AppLocalizations {
   /// Notification body. A focus block ended and auto-start began the break.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes of {task}, counted. The break is here.} joe{{task}: {minutes} of {minutes} minutes, counted. Break started: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You gave {task} {minutes} minutes, and they all counted. Your break has begun.} other{}}'**
+  /// **'{species, select, geode{{minutesWords} minutes of {task}, counted. The break is here. Breathe.} joe{{task}: {minutes} of {minutes} minutes, filed. Break started: {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{You gave {task} {minutes} minutes! Your break has begun. You earned it, didn\'t you?} other{}}'**
   String notifBlockDoneBreakBegun(
     String species,
     String task,
@@ -304,13 +287,13 @@ abstract class AppLocalizations {
   /// Notification body. A break ended.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{The break is whole. I am here.} joe{Break finished: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}.} lily{Your break is over. Did you stretch? Either way, it was yours.} other{}}'**
+  /// **'{species, select, geode{The break is whole. I am here, steady as ever.} joe{Break finished: {breakMinutes} of {breakMinutes} {breakMinutes, plural, =1{minute} other{minutes}}. Desk is ready.} lily{Your break is over! Feeling fresh, aren\'t you?} other{}}'**
   String notifBreakOver(String species, int breakMinutes);
 
   /// Notification body. The first block ended, before the hatch.
   ///
   /// In en, this message translates to:
-  /// **'{species, select, geode{{minutesWords} minutes of {task}, counted. My shell is cracking.} joe{{task}: {minutes} of {minutes} minutes, counted. My shell: 5 cracks.} lily{You gave {task} {minutes} minutes, and my shell is cracking. Who\'s in here, I wonder?} other{}}'**
+  /// **'{species, select, geode{{minutesWords} minutes of {task}, counted. My shell is cracking, slowly, gently.} joe{{task}: {minutes} of {minutes} minutes, counted. My shell: 5 cracks, evenly spaced.} lily{You gave {task} {minutes} minutes, and my shell is cracking! Who\'s in here, I wonder?} other{}}'**
   String notifFirstBlock(
     String species,
     String task,
@@ -371,18 +354,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You keep this one. It hatches from an egg when you finish your first focus block.'**
   String get pickLine;
-
-  /// Plain voice. Onboarding 1, personality label.
-  ///
-  /// In en, this message translates to:
-  /// **'Personality'**
-  String get persLabel;
-
-  /// Plain voice. Onboarding 1, under Quiet / Chatty.
-  ///
-  /// In en, this message translates to:
-  /// **'How much your pet says. You can change it in Settings.'**
-  String get persHint;
 
   /// Plain voice. Onboarding 2, title.
   ///
@@ -689,18 +660,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
-
-  /// Personality control, the Quiet option (onboarding and Settings).
-  ///
-  /// In en, this message translates to:
-  /// **'Quiet'**
-  String get persQuiet;
-
-  /// Personality control, the Chatty option (onboarding and Settings).
-  ///
-  /// In en, this message translates to:
-  /// **'Chatty'**
-  String get persChatty;
 
   /// Onboarding 1, the button to the second screen (approved on Tomo Pixel Screens).
   ///

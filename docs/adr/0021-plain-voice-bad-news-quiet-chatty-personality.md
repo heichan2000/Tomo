@@ -4,6 +4,7 @@
 - **Date:** 2026-10-05
 - **Decided in:** [#30 Pet voice system: per-starter voices and the hatch personality choice](https://github.com/heichan2000/Tomo/issues/30)
 - **Amended by:** [ADR-0029](0029-mvp-ships-without-ai-and-never-goes-online.md) — the AI lines (the five failure causes, running-low, the lapsed proposal, the chat explainer, the data note) and the system-prompt rules are parked. Quiet/Chatty and plain voice for bad news stand; the written lines are in [#51](https://github.com/heichan2000/Tomo/issues/51).
+- **Amended by:** [ADR-0030](0030-each-pet-has-its-own-character.md) — **personality is no longer Quiet or Chatty**: each pet has its own fixed character and one line per moment, with no choice anywhere. Plain voice for bad news, the species rules and the can't-go-down rule for facts stand.
 
 ## Context
 
