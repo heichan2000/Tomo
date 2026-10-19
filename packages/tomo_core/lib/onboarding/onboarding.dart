@@ -1,10 +1,7 @@
-import 'package:drift/drift.dart';
-
 import '../data/instants.dart';
 import '../data/tomo_database.dart';
 import '../diagnostics/diagnostic_entry.dart';
 import '../diagnostics/log.dart';
-import '../pet/personality.dart';
 import '../pet/species.dart';
 import '../result.dart';
 import '../tasks/task_service.dart';
@@ -35,7 +32,6 @@ final class Onboarding {
   /// Finishing a second time writes nothing.
   Future<Result<void>> complete({
     required Species species,
-    required Personality personality,
     required String defaultProjectName,
     String? line,
   }) async {
@@ -55,13 +51,7 @@ final class Onboarding {
         final now = epochMs(_db.clock().toUtc());
         await _db
             .into(_db.pets)
-            .insert(
-              PetsCompanion.insert(
-                species: species,
-                personality: Value(personality),
-                createdAt: now,
-              ),
-            );
+            .insert(PetsCompanion.insert(species: species, createdAt: now));
         final projectId = await _db
             .into(_db.projects)
             .insert(ProjectsCompanion.insert(name: name, createdAt: now));

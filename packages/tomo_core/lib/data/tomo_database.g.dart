@@ -1099,16 +1099,6 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, PetRow> {
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<Species>($PetsTable.$converterspecies);
-  @override
-  late final GeneratedColumnWithTypeConverter<Personality, String> personality =
-      GeneratedColumn<String>(
-        'personality',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant('quiet'),
-      ).withConverter<Personality>($PetsTable.$converterpersonality);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -1154,7 +1144,6 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, PetRow> {
   List<GeneratedColumn> get $columns => [
     id,
     species,
-    personality,
     name,
     hatchedAt,
     exp,
@@ -1220,12 +1209,6 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, PetRow> {
           data['${effectivePrefix}species'],
         )!,
       ),
-      personality: $PetsTable.$converterpersonality.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}personality'],
-        )!,
-      ),
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -1252,14 +1235,11 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, PetRow> {
 
   static JsonTypeConverter2<Species, String, String> $converterspecies =
       const EnumNameConverter<Species>(Species.values);
-  static JsonTypeConverter2<Personality, String, String> $converterpersonality =
-      const EnumNameConverter<Personality>(Personality.values);
 }
 
 class PetRow extends DataClass implements Insertable<PetRow> {
   final int id;
   final Species species;
-  final Personality personality;
 
   /// Null until the hatch names it.
   final String? name;
@@ -1273,7 +1253,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
   const PetRow({
     required this.id,
     required this.species,
-    required this.personality,
     this.name,
     this.hatchedAt,
     required this.exp,
@@ -1286,11 +1265,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
     {
       map['species'] = Variable<String>(
         $PetsTable.$converterspecies.toSql(species),
-      );
-    }
-    {
-      map['personality'] = Variable<String>(
-        $PetsTable.$converterpersonality.toSql(personality),
       );
     }
     if (!nullToAbsent || name != null) {
@@ -1308,7 +1282,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
     return PetsCompanion(
       id: Value(id),
       species: Value(species),
-      personality: Value(personality),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       hatchedAt: hatchedAt == null && nullToAbsent
           ? const Value.absent()
@@ -1328,9 +1301,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
       species: $PetsTable.$converterspecies.fromJson(
         serializer.fromJson<String>(json['species']),
       ),
-      personality: $PetsTable.$converterpersonality.fromJson(
-        serializer.fromJson<String>(json['personality']),
-      ),
       name: serializer.fromJson<String?>(json['name']),
       hatchedAt: serializer.fromJson<int?>(json['hatchedAt']),
       exp: serializer.fromJson<int>(json['exp']),
@@ -1345,9 +1315,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
       'species': serializer.toJson<String>(
         $PetsTable.$converterspecies.toJson(species),
       ),
-      'personality': serializer.toJson<String>(
-        $PetsTable.$converterpersonality.toJson(personality),
-      ),
       'name': serializer.toJson<String?>(name),
       'hatchedAt': serializer.toJson<int?>(hatchedAt),
       'exp': serializer.toJson<int>(exp),
@@ -1358,7 +1325,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
   PetRow copyWith({
     int? id,
     Species? species,
-    Personality? personality,
     Value<String?> name = const Value.absent(),
     Value<int?> hatchedAt = const Value.absent(),
     int? exp,
@@ -1366,7 +1332,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
   }) => PetRow(
     id: id ?? this.id,
     species: species ?? this.species,
-    personality: personality ?? this.personality,
     name: name.present ? name.value : this.name,
     hatchedAt: hatchedAt.present ? hatchedAt.value : this.hatchedAt,
     exp: exp ?? this.exp,
@@ -1376,9 +1341,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
     return PetRow(
       id: data.id.present ? data.id.value : this.id,
       species: data.species.present ? data.species.value : this.species,
-      personality: data.personality.present
-          ? data.personality.value
-          : this.personality,
       name: data.name.present ? data.name.value : this.name,
       hatchedAt: data.hatchedAt.present ? data.hatchedAt.value : this.hatchedAt,
       exp: data.exp.present ? data.exp.value : this.exp,
@@ -1391,7 +1353,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
     return (StringBuffer('PetRow(')
           ..write('id: $id, ')
           ..write('species: $species, ')
-          ..write('personality: $personality, ')
           ..write('name: $name, ')
           ..write('hatchedAt: $hatchedAt, ')
           ..write('exp: $exp, ')
@@ -1401,15 +1362,13 @@ class PetRow extends DataClass implements Insertable<PetRow> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, species, personality, name, hatchedAt, exp, createdAt);
+  int get hashCode => Object.hash(id, species, name, hatchedAt, exp, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PetRow &&
           other.id == this.id &&
           other.species == this.species &&
-          other.personality == this.personality &&
           other.name == this.name &&
           other.hatchedAt == this.hatchedAt &&
           other.exp == this.exp &&
@@ -1419,7 +1378,6 @@ class PetRow extends DataClass implements Insertable<PetRow> {
 class PetsCompanion extends UpdateCompanion<PetRow> {
   final Value<int> id;
   final Value<Species> species;
-  final Value<Personality> personality;
   final Value<String?> name;
   final Value<int?> hatchedAt;
   final Value<int> exp;
@@ -1427,7 +1385,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
   const PetsCompanion({
     this.id = const Value.absent(),
     this.species = const Value.absent(),
-    this.personality = const Value.absent(),
     this.name = const Value.absent(),
     this.hatchedAt = const Value.absent(),
     this.exp = const Value.absent(),
@@ -1436,7 +1393,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
   PetsCompanion.insert({
     this.id = const Value.absent(),
     required Species species,
-    this.personality = const Value.absent(),
     this.name = const Value.absent(),
     this.hatchedAt = const Value.absent(),
     this.exp = const Value.absent(),
@@ -1446,7 +1402,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
   static Insertable<PetRow> custom({
     Expression<int>? id,
     Expression<String>? species,
-    Expression<String>? personality,
     Expression<String>? name,
     Expression<int>? hatchedAt,
     Expression<int>? exp,
@@ -1455,7 +1410,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (species != null) 'species': species,
-      if (personality != null) 'personality': personality,
       if (name != null) 'name': name,
       if (hatchedAt != null) 'hatched_at': hatchedAt,
       if (exp != null) 'exp': exp,
@@ -1466,7 +1420,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
   PetsCompanion copyWith({
     Value<int>? id,
     Value<Species>? species,
-    Value<Personality>? personality,
     Value<String?>? name,
     Value<int?>? hatchedAt,
     Value<int>? exp,
@@ -1475,7 +1428,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
     return PetsCompanion(
       id: id ?? this.id,
       species: species ?? this.species,
-      personality: personality ?? this.personality,
       name: name ?? this.name,
       hatchedAt: hatchedAt ?? this.hatchedAt,
       exp: exp ?? this.exp,
@@ -1492,11 +1444,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
     if (species.present) {
       map['species'] = Variable<String>(
         $PetsTable.$converterspecies.toSql(species.value),
-      );
-    }
-    if (personality.present) {
-      map['personality'] = Variable<String>(
-        $PetsTable.$converterpersonality.toSql(personality.value),
       );
     }
     if (name.present) {
@@ -1519,7 +1466,6 @@ class PetsCompanion extends UpdateCompanion<PetRow> {
     return (StringBuffer('PetsCompanion(')
           ..write('id: $id, ')
           ..write('species: $species, ')
-          ..write('personality: $personality, ')
           ..write('name: $name, ')
           ..write('hatchedAt: $hatchedAt, ')
           ..write('exp: $exp, ')
@@ -4021,7 +3967,6 @@ typedef $$TasksTableProcessedTableManager =
 typedef $$PetsTableCreateCompanionBuilder = PetsCompanion Function({
   Value<int> id,
   required Species species,
-  Value<Personality> personality,
   Value<String?> name,
   Value<int?> hatchedAt,
   Value<int> exp,
@@ -4030,7 +3975,6 @@ typedef $$PetsTableCreateCompanionBuilder = PetsCompanion Function({
 typedef $$PetsTableUpdateCompanionBuilder = PetsCompanion Function({
   Value<int> id,
   Value<Species> species,
-  Value<Personality> personality,
   Value<String?> name,
   Value<int?> hatchedAt,
   Value<int> exp,
@@ -4078,12 +4022,6 @@ class $$PetsTableFilterComposer extends Composer<_$TomoDatabase, $PetsTable> {
         column: $table.species,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
-
-  ColumnWithTypeConverterFilters<Personality, Personality, String>
-  get personality => $composableBuilder(
-    column: $table.personality,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
@@ -4149,11 +4087,6 @@ class $$PetsTableOrderingComposer extends Composer<_$TomoDatabase, $PetsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get personality => $composableBuilder(
-    column: $table.personality,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -4189,12 +4122,6 @@ class $$PetsTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<Species, String> get species =>
       $composableBuilder(column: $table.species, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Personality, String> get personality =>
-      $composableBuilder(
-        column: $table.personality,
-        builder: (column) => column,
-      );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -4264,7 +4191,6 @@ class $$PetsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<Species> species = const Value.absent(),
-                Value<Personality> personality = const Value.absent(),
                 Value<String?> name = const Value.absent(),
                 Value<int?> hatchedAt = const Value.absent(),
                 Value<int> exp = const Value.absent(),
@@ -4272,7 +4198,6 @@ class $$PetsTableTableManager
               }) => PetsCompanion(
                 id: id,
                 species: species,
-                personality: personality,
                 name: name,
                 hatchedAt: hatchedAt,
                 exp: exp,
@@ -4282,7 +4207,6 @@ class $$PetsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required Species species,
-                Value<Personality> personality = const Value.absent(),
                 Value<String?> name = const Value.absent(),
                 Value<int?> hatchedAt = const Value.absent(),
                 Value<int> exp = const Value.absent(),
@@ -4290,7 +4214,6 @@ class $$PetsTableTableManager
               }) => PetsCompanion.insert(
                 id: id,
                 species: species,
-                personality: personality,
                 name: name,
                 hatchedAt: hatchedAt,
                 exp: exp,

@@ -93,7 +93,9 @@ void main() {
       'a focus block.',
     );
     expect(
-      find.words('I am in here. A finished focus block opens me.'),
+      find.words(
+        'I am in here, waiting calmly. A finished focus block opens me.',
+      ),
       findsOneWidget,
     );
     expect(levelChip(), findsNothing);
@@ -123,7 +125,9 @@ void main() {
     expect(find.words('480 / 600 EXP'), findsOneWidget);
     expect(tester.widget<ExpBar>(find.byType(ExpBar)).lit, 16);
     expect(
-      find.words('I am in here. A finished focus block opens me.'),
+      find.words(
+        'I am in here, waiting calmly. A finished focus block opens me.',
+      ),
       findsNothing,
     );
   });

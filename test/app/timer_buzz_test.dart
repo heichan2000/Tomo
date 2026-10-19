@@ -9,7 +9,6 @@ import 'package:tomo/app/routes.dart';
 import 'package:tomo/app/timer_buzz.dart';
 import 'package:tomo_core/focus/live_cycle.dart';
 import 'package:tomo_core/notifications/haptics.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/testing.dart';
@@ -36,7 +35,6 @@ void main() {
 
   PetStanding pet(LiveCycle? live) => PetStanding(
     species: Species.geode,
-    personality: Personality.quiet,
     name: 'Pebble',
     exp: 250,
     hatched: true,

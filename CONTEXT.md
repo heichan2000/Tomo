@@ -423,19 +423,18 @@ the facts. See issue #30.
 _Avoid_: "neutral pet voice", "shared voice" (there is no pet voice shared by
 all three species)
 
-**Personality** — how much the pet *volunteers*: **Quiet** or **Chatty**,
-picked at setup next to the species. It sets what the pet offers unprompted,
-never how fully it answers when asked. It never changes the species' voice rule and never
-runs toward harsh. **Quiet** is the script: every pet-voice line is written in
-its quiet form. **Chatty** adds one extra detail to certain lines, and only when
-there is a real one to add; otherwise a chatty pet says the quiet line. The
-detail must be something that **can't go down**: a count that only grows, a
-first or a record, or what just happened this cycle. Never a streak, a
-comparison, or time away. Timer
-notifications are quiet-only. Changeable in Settings at any time, like the
-pet's name; only the species is permanent. See issue #30.
-_Avoid_: mood, temperament, tone (mood and tone suggest something that shifts
-with what the user does; personality does not)
+**Personality** — who the pet is, fixed by its species and written into every
+line it says: **Geode** a calm, gentle rock; **Joe** a fussy, neat paper bird;
+**Lily** an encouraging, bright kid. It sits on top of the species' voice rule
+(the rule is how it talks; the personality is who it is) and never runs toward
+harsh. There is nothing to choose and nothing to change. Some moments have a
+**fact line**, said only when its fact is true; a fact must be something that
+**can't go down** (a count that only grows, a first, or what just happened
+this cycle; never a streak, a comparison, or time away). No line suggests
+putting work off. See [ADR-0030](docs/adr/0030-each-pet-has-its-own-character.md).
+_Avoid_: Quiet, Chatty (the old choice of how much the pet says, retired by
+ADR-0030); mood, tone (they suggest something that shifts with what the user
+does; personality does not)
 
 ### Screens and navigation
 

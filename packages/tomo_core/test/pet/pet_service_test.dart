@@ -5,7 +5,6 @@ import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/diagnostic_entry.dart';
 import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/pet_service.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
@@ -22,11 +21,10 @@ void main() {
   late int writes;
 
   Future<void> hatchedGeode(TomoDatabase db) async {
-    await Onboarding(db, log: Log(sinks: const [])).complete(
-      species: Species.geode,
-      personality: Personality.quiet,
-      defaultProjectName: 'My work',
-    );
+    await Onboarding(
+      db,
+      log: Log(sinks: const []),
+    ).complete(species: Species.geode, defaultProjectName: 'My work');
   }
 
   setUp(() async {

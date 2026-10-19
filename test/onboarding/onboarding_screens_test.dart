@@ -5,15 +5,15 @@ import 'package:tomo/onboarding/onboarding_screens.dart';
 import 'package:tomo/ui/buttons.dart';
 import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/look/palette.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 
 import '../app/app_harness.dart';
 import '../ui/kit_harness.dart';
 
-/// Onboarding (spec §8.2): choose a pet and its personality, say what you are
-/// working on, and nothing is written until the end.
+/// Onboarding (spec §8.2): choose a pet, say what you are working on,
+/// and nothing is written until the end. Each pet has its own character, so
+/// there is no personality to choose (ADR-0030).
 void main() {
   Finder tile(String name) => find
       .ancestor(of: find.words(name), matching: find.byType(Pressable))
@@ -44,9 +44,7 @@ void main() {
     Future<List<T>> Function() read,
   ) async => (await tester.runAsync(read))!;
 
-  testTomo('it opens on Choose your pet, Geode and Quiet chosen', (
-    tester,
-  ) async {
+  testTomo('it opens on Choose your pet, Geode chosen', (tester) async {
     final semantics = tester.ensureSemantics();
     await pumpTomo(tester, onboarded: false);
 
@@ -69,45 +67,43 @@ void main() {
       ),
     );
     expect(tester.getSemantics(tile('Joe')), isSemantics(isSelected: false));
-    expect(find.words('I am Geode. I keep every minute.'), findsOneWidget);
-    expect(find.words('Personality'), findsOneWidget);
-    expect(
-      find.words('How much your pet says. You can change it in Settings.'),
-      findsOneWidget,
-    );
+    expect(find.words('I am Geode. ROCK.'), findsOneWidget);
+    expect(find.words('Personality'), findsNothing);
+    expect(find.words('Chatty'), findsNothing);
     semantics.dispose();
   });
 
-  testTomo('the chosen pet describes itself, Quiet or Chatty', (tester) async {
+  testTomo('the chosen pet describes itself, in its own character', (
+    tester,
+  ) async {
     final semantics = tester.ensureSemantics();
     await pumpTomo(tester, onboarded: false);
 
     await tap(tester, tile('Joe'));
     expect(tester.getSemantics(tile('Joe')), isSemantics(isSelected: true));
     expect(tester.getSemantics(tile('Geode')), isSemantics(isSelected: false));
-    expect(find.words('Joe. 1 paper bird. I count.'), findsOneWidget);
-
-    await tap(tester, find.words('Chatty'));
     expect(
-      find.words(
-        "I'm Joe! 1 paper bird who counts every block and every minute, "
-        'out loud.',
-      ),
+      find.words('Joe. 1 paper bird. Everything counted, folded and filed.'),
       findsOneWidget,
     );
 
-    await tap(tester, find.words('Quiet'));
-    expect(find.words('Joe. 1 paper bird. I count.'), findsOneWidget);
+    await tap(tester, tile('Lily'));
+    expect(
+      find.words(
+        "I'm Lily! I'll cheer for every block you finish. You'd like that, "
+        "wouldn't you?",
+      ),
+      findsOneWidget,
+    );
     semantics.dispose();
   });
 
-  testTomo('Back keeps the choices; nothing is written before the end', (
+  testTomo('Back keeps the chosen pet; nothing is written before the end', (
     tester,
   ) async {
     final db = await pumpTomo(tester, onboarded: false);
 
     await tap(tester, tile('Lily'));
-    await tap(tester, find.words('Chatty'));
     await tap(tester, button('Next'));
 
     expect(find.words('What are you working on?'), findsOneWidget);
@@ -117,7 +113,6 @@ void main() {
     await tap(tester, find.bySemanticsLabel('Back'));
     expect(find.words('Choose your pet'), findsOneWidget);
     expect(tester.getSemantics(tile('Lily')), isSemantics(isSelected: true));
-    expect(find.words('Chatty'), findsOneWidget);
   });
 
   testTomo('Android back on the second screen goes to the first', (
@@ -166,7 +161,6 @@ void main() {
   ) async {
     final db = await pumpTomo(tester, onboarded: false);
     await tap(tester, tile('Joe'));
-    await tap(tester, find.words('Chatty'));
     await tap(tester, button('Next'));
 
     await tester.enterText(find.byType(EditableText), '  Write the intro ');
@@ -176,7 +170,6 @@ void main() {
     final pets = await all(tester, db, db.select(db.pets).get);
     expect(pets, hasLength(1));
     expect(pets.single.species, Species.joe);
-    expect(pets.single.personality, Personality.chatty);
     expect(pets.single.name, isNull);
     expect(pets.single.hatchedAt, isNull);
     final projects = await all(tester, db, db.select(db.projects).get);
@@ -224,7 +217,6 @@ void main() {
 
     final pets = await all(tester, db, db.select(db.pets).get);
     expect(pets.single.species, Species.geode);
-    expect(pets.single.personality, Personality.quiet);
     final projects = await all(tester, db, db.select(db.projects).get);
     expect(projects.map((p) => p.name), ['My work']);
     expect(await all(tester, db, db.select(db.tasks).get), isEmpty);

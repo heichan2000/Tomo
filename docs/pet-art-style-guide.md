@@ -218,11 +218,15 @@ warm at every point (the PRD forbids a cop; #8 binds every line to grow-only),
 so the species axis has to carry distinctiveness on a dimension personality does
 not touch.
 
-#30 settled the personality axis as **Quiet / Chatty**: how much the pet
-volunteers ([ADR-0021](adr/0021-plain-voice-bad-news-quiet-chatty-personality.md)).
-The two right-hand columns below are those two ends. A Chatty line adds one
-detail that can't go down: a growing count, a first or record, or this cycle.
-It never mentions a streak, a comparison or time away.
+#30 first settled the personality axis as **Quiet / Chatty**, a choice of how
+much the pet volunteers ([ADR-0021](adr/0021-plain-voice-bad-news-quiet-chatty-personality.md)).
+[ADR-0030](adr/0030-each-pet-has-its-own-character.md) replaced that with **one
+fixed character per species**: Geode a calm, gentle rock; Joe a fussy, neat
+paper bird; Lily an encouraging, bright kid. The indelible properties below
+still hold underneath; the two right-hand columns are kept as the original
+study of how far a voice can stretch. Any fact a line adds can't go down: a
+growing count, a first or record, or this cycle. It never mentions a streak, a
+comparison or time away.
 
 | | Indelible property | At its quietest | At its most talkative |
 |---|---|---|---|

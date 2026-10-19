@@ -5,7 +5,6 @@ import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/block_lengths.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
 import 'package:tomo_core/pet/beat.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
@@ -64,7 +63,6 @@ void main() {
       .insert(
         PetsCompanion.insert(
           species: species,
-          personality: const Value(Personality.chatty),
           name: Value(name),
           exp: Value(exp),
           hatchedAt: Value(hatched ? 1 : null),
@@ -90,7 +88,6 @@ void main() {
 
     final pet = (await reader.read())!;
     expect(pet.species, Species.joe);
-    expect(pet.personality, Personality.chatty);
     expect(pet.name, isNull);
     expect(pet.hatched, isFalse);
     expect(pet.cycle, isNull);

@@ -213,7 +213,7 @@ void main() {
     expect(after.daysFocused, before.daysFocused);
   });
 
-  group('the day so far, for the Chatty break lines', () {
+  group('the day so far, for the break lines', () {
     test('the blocks and minutes that ended on the local day of now', () async {
       await threeBlocks();
 

@@ -3,7 +3,6 @@ import 'package:drift/drift.dart';
 import '../clock.dart';
 import '../diagnostics/diagnostic_entry.dart';
 import '../diagnostics/log.dart';
-import '../pet/personality.dart';
 import '../pet/species.dart';
 import '../tasks/task_status.dart';
 import 'tables.dart';

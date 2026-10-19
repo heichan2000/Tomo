@@ -5,7 +5,6 @@ import '../focus/projection.dart';
 import '../rewards/rewards.dart';
 import 'beat.dart';
 import 'beat_queue.dart';
-import 'personality.dart';
 import 'pet_look.dart';
 import 'species.dart';
 
@@ -14,7 +13,6 @@ import 'species.dart';
 final class PetStanding {
   const PetStanding({
     required this.species,
-    required this.personality,
     required this.name,
     required this.exp,
     required this.hatched,
@@ -23,7 +21,6 @@ final class PetStanding {
   });
 
   final Species species;
-  final Personality personality;
 
   /// Null until the hatch names it, or if the app was closed on the naming
   /// step; then the pet goes by its species' name (§17, C30).
@@ -98,7 +95,6 @@ final class PetReader {
     final row = await _db.select(_db.focusCycle).getSingleOrNull();
     return PetStanding(
       species: pet.species,
-      personality: pet.personality,
       name: pet.name,
       exp: pet.exp,
       hatched: pet.hatchedAt != null,

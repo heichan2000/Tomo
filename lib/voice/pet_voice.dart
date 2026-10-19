@@ -1,6 +1,5 @@
 import 'package:tomo_core/notifications/notification_schedule.dart';
 import 'package:tomo_core/pet/beat.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/voice/number_words.dart';
 import 'package:tomo_core/voice/pet_moment.dart';
@@ -9,9 +8,9 @@ import '../l10n/app_localizations.dart';
 
 /// The pet's line for [moment] (spec §10).
 ///
-/// A Quiet pet says the script's line. A Chatty pet says the Chatty entry,
-/// which adds one detail, when there is one **and its detail is true**;
-/// otherwise it says the Quiet line too.
+/// Each pet has one line per moment, in its own character (ADR-0030). Some
+/// moments also have a line that adds a fact, said only when that fact is
+/// true (`factHolds`); otherwise the pet says the usual line.
 ///
 /// The words are all in the copy file. Geode's numbers are spelled out here,
 /// because Geode never uses digits.
@@ -19,23 +18,21 @@ String petLine(
   AppLocalizations l, {
   required PetMoment moment,
   required Species species,
-  required Personality personality,
 }) {
   final s = species.name;
-  final chatty =
-      personality == Personality.chatty && moment.chattyDetailHolds(species);
   const words = numberWords;
   const startWords = numberWordsCapitalized;
 
   switch (moment) {
     case BlockDoneMoment(
+      :final factHolds,
       :final minutes,
       :final task,
       :final taskBlocks,
       :final taskMinutes,
     ):
-      return chatty
-          ? l.blockDoneChattyTaskTotal(
+      return factHolds
+          ? l.blockDoneTaskTotal(
               s,
               minutes,
               startWords(minutes),
@@ -45,13 +42,14 @@ String petLine(
             )
           : l.blockDone(s, minutes, startWords(minutes));
     case LevelUpMoment(
+      :final factHolds,
       :final level,
       :final levelBefore,
       :final hours,
       :final totalMinutes,
     ):
-      return chatty
-          ? l.levelUpChattyTotalTime(
+      return factHolds
+          ? l.levelUpTotalTime(
               s,
               level,
               words(level),
@@ -61,13 +59,18 @@ String petLine(
               totalMinutes,
             )
           : l.levelUp(s, level, words(level), levelBefore);
-    case EvolutionMoment(:final stage, :final hours):
-      return chatty
-          ? l.evolutionChattyTotalTime(s, stage, hours, startWords(hours))
+    case EvolutionMoment(:final stage, :final hours, :final factHolds):
+      return factHolds
+          ? l.evolutionTotalTime(s, stage, hours, startWords(hours))
           : l.evolution(s, stage);
-    case TaskDoneMoment(:final task, :final taskBlocks, :final taskMinutes):
-      return chatty
-          ? l.taskDoneChattyTaskTotal(
+    case TaskDoneMoment(
+      :final task,
+      :final taskBlocks,
+      :final taskMinutes,
+      :final factHolds,
+    ):
+      return factHolds
+          ? l.taskDoneTaskTotal(
               s,
               task,
               taskBlocks,
@@ -76,12 +79,13 @@ String petLine(
             )
           : l.taskDone(s, task);
     case OnBreakMoment(
+      :final factHolds,
       :final breakMinutes,
       :final todayBlocks,
       :final todayMinutes,
     ):
-      return chatty
-          ? l.onBreakChattyToday(
+      return factHolds
+          ? l.onBreakToday(
               s,
               breakMinutes,
               todayBlocks,
@@ -89,12 +93,13 @@ String petLine(
             )
           : l.onBreak(s, breakMinutes);
     case BreakOverMoment(
+      :final factHolds,
       :final breakMinutes,
       :final todayBlocks,
       :final todayMinutes,
     ):
-      return chatty
-          ? l.breakOverChattyToday(
+      return factHolds
+          ? l.breakOverToday(
               s,
               breakMinutes,
               todayBlocks,
@@ -102,11 +107,9 @@ String petLine(
             )
           : l.breakOver(s, breakMinutes);
     case HatchMoment(:final minutes, :final task):
-      return chatty
-          ? l.hatchChattyFirstBlock(s, minutes, startWords(minutes), task)
-          : l.hatch(s, minutes, startWords(minutes));
+      return l.hatch(s, minutes, startWords(minutes), task);
     case SetupMoment():
-      return chatty ? l.setupChatty(s) : l.setup(s);
+      return l.setup(s);
     case EggMoment():
       return l.egg(s);
     case AwayNoteMoment(:final time, :final minutes):
@@ -118,7 +121,7 @@ String petLine(
   }
 }
 
-/// A timer notification's title and body (spec §11.1). Quiet only.
+/// A timer notification's title and body (spec §11.1).
 ///
 /// The title is the pet's name, or "Your egg" before the hatch. A pet that
 /// hatched but was never named goes by its species.

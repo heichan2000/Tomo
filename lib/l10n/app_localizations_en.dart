@@ -26,16 +26,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String blockDone(String species, int minutes, String minutesWords) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': '$minutesWords minutes. They stay.',
-      'joe': '$minutes of $minutes minutes. Counted!',
-      'lily': 'You stayed with it the whole way, didn\'t you?',
+      'geode': '$minutesWords minutes. Nice and steady.',
+      'joe': '$minutes of $minutes minutes. Folded, creased, filed.',
+      'lily':
+          'You did the whole block! You\'re getting good at this, aren\'t you?',
       'other': '',
     });
     return '$_temp0';
   }
 
   @override
-  String blockDoneChattyTaskTotal(
+  String blockDoneTaskTotal(
     String species,
     int minutes,
     String minutesWords,
@@ -45,11 +46,11 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     String _temp0 = intl.Intl.selectLogic(species, {
       'geode':
-          '$minutesWords minutes. $taskMinutesWords on $task now, all of it in me.',
+          '$minutesWords minutes. Nice and steady. $taskMinutesWords on $task now.',
       'joe':
-          '$minutes of $minutes minutes. Counted! Block $taskBlocks on $task.',
+          '$minutes of $minutes minutes. Block $taskBlocks on $task, filed in order.',
       'lily':
-          'You stayed with it the whole way, didn\'t you? That\'s $taskBlocks blocks you\'ve given $task.',
+          'That\'s $taskBlocks blocks for $task now! You don\'t give up, do you?',
       'other': '',
     });
     return '$_temp0';
@@ -63,16 +64,16 @@ class AppLocalizationsEn extends AppLocalizations {
     int levelBefore,
   ) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'Level $levelWords. Another hour in me.',
-      'joe': 'Level $level! Up from $levelBefore.',
-      'lily': 'Level $level. You did that, you know?',
+      'geode': 'Level $levelWords. One more layer, calm and solid.',
+      'joe': 'Level $level! Up from $levelBefore. Records updated, neatly.',
+      'lily': 'Level $level! I knew you could do it, didn\'t I?',
       'other': '',
     });
     return '$_temp0';
   }
 
   @override
-  String levelUpChattyTotalTime(
+  String levelUpTotalTime(
     String species,
     int level,
     String levelWords,
@@ -95,11 +96,11 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     String _temp2 = intl.Intl.selectLogic(species, {
       'geode':
-          'Level $levelWords. $hoursWords $_temp0 in me now, layer on layer.',
+          'Level $levelWords. $hoursWords $_temp0 of layers now, each one holding.',
       'joe':
-          'Level $level! Up from $levelBefore. $totalMinutes minutes of focus, all counted.',
+          'Level $level! Up from $levelBefore. $totalMinutes minutes on file, each in its place.',
       'lily':
-          'Level $level. That\'s $hours $_temp1 you\'ve focused. Can you believe it?',
+          'Level $level! That\'s $hours $_temp1 of focus. You\'re amazing, aren\'t you?',
       'other': '',
     });
     return '$_temp2';
@@ -108,16 +109,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String evolution(String species, int stage) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'I am bigger. All of me is still here.',
-      'joe': 'Stage $stage of 4!',
-      'lily': 'Look at me! You did this, didn\'t you?',
+      'geode': 'I am bigger. Slowly, gently. All of me is still here.',
+      'joe': 'Stage $stage of 4! Refolded. Every crease exactly right.',
+      'lily': 'Look at me, I\'m bigger! You did this, didn\'t you?',
       'other': '',
     });
     return '$_temp0';
   }
 
   @override
-  String evolutionChattyTotalTime(
+  String evolutionTotalTime(
     String species,
     int stage,
     int hours,
@@ -125,9 +126,11 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     String _temp0 = intl.Intl.selectLogic(species, {
       'geode':
-          'I am bigger. $hoursWords hours, and this is what they make. All of me is still here.',
-      'joe': 'Stage $stage of 4! Folded from $hours hours of focus.',
-      'lily': 'Look at me! $hours hours of your focus did this, didn\'t they?',
+          'I am bigger. $hoursWords hours, laid down gently. All of me is still here.',
+      'joe':
+          'Stage $stage of 4! Refolded from $hours hours of focus. Every crease exactly right.',
+      'lily':
+          'Look at me! $hours hours of your focus made me bigger. You did this, didn\'t you?',
       'other': '',
     });
     return '$_temp0';
@@ -136,16 +139,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String taskDone(String species, String task) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': '$task is done. It stays done.',
-      'joe': 'Done: $task!',
-      'lily': 'You finished $task. Feels good, doesn\'t it?',
+      'geode': '$task is done. A good, quiet feeling. It stays done.',
+      'joe': 'Done: $task! Ticked, filed, put away.',
+      'lily': 'You finished $task! That feels great, doesn\'t it?',
       'other': '',
     });
     return '$_temp0';
   }
 
   @override
-  String taskDoneChattyTaskTotal(
+  String taskDoneTaskTotal(
     String species,
     String task,
     int taskBlocks,
@@ -162,13 +165,15 @@ class AppLocalizationsEn extends AppLocalizations {
       taskBlocks,
       locale: localeName,
       other:
-          'You finished $task, all $taskBlocks blocks of it. Feels good, doesn\'t it?',
-      one: 'You finished $task in just one block. Feels good, doesn\'t it?',
+          'You finished $task, all $taskBlocks blocks of it! That feels great, doesn\'t it?',
+      one:
+          'You finished $task in just one block! That feels great, doesn\'t it?',
     );
     String _temp2 = intl.Intl.selectLogic(species, {
       'geode':
-          '$task is done. $taskMinutesWords minutes are in it, and they stay.',
-      'joe': 'Done: $task! $taskBlocks $_temp0, $taskMinutes minutes.',
+          '$task is done. $taskMinutesWords minutes rest in it, and they stay.',
+      'joe':
+          'Done: $task! $taskBlocks $_temp0, $taskMinutes minutes. Ticked, filed, put away.',
       'lily': '$_temp1',
       'other': '',
     });
@@ -184,16 +189,16 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'minute',
     );
     String _temp1 = intl.Intl.selectLogic(species, {
-      'geode': 'A break. Everything is still here.',
-      'joe': 'Break: $breakMinutes $_temp0.',
-      'lily': 'You\'re resting. Nice, isn\'t it?',
+      'geode': 'It\'s break time.',
+      'joe': 'Break: $breakMinutes $_temp0. Desk tidied for the next one.',
+      'lily': 'Break time! You earned it, didn\'t you?',
       'other': '',
     });
     return '$_temp1';
   }
 
   @override
-  String onBreakChattyToday(
+  String onBreakToday(
     String species,
     int breakMinutes,
     int todayBlocks,
@@ -218,11 +223,10 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'block',
     );
     String _temp3 = intl.Intl.selectLogic(species, {
-      'geode':
-          'A break. $todayMinutesWords minutes today, and everything is still here.',
-      'joe': 'Break: $breakMinutes $_temp0. $todayBlocks $_temp1 done today.',
+      'geode': 'It\'s break time. $todayMinutesWords minutes today.',
+      'joe': 'Break: $breakMinutes $_temp0. $todayBlocks $_temp1 filed today.',
       'lily':
-          'You\'re resting after $todayBlocks $_temp2 today. Nice, isn\'t it?',
+          'Break time, after $todayBlocks $_temp2 today! You earned it, didn\'t you?',
       'other': '',
     });
     return '$_temp3';
@@ -237,16 +241,17 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'minute',
     );
     String _temp1 = intl.Intl.selectLogic(species, {
-      'geode': 'The break is whole. I am here.',
-      'joe': 'Break done: $breakMinutes of $breakMinutes $_temp0.',
-      'lily': 'You\'re back. A bit rested now, aren\'t you?',
+      'geode': 'The break is whole. Calm, and ready. I am here.',
+      'joe':
+          'Break done: $breakMinutes of $breakMinutes $_temp0. Desk is tidy and ready.',
+      'lily': 'You\'re back! All rested, aren\'t you?',
       'other': '',
     });
     return '$_temp1';
   }
 
   @override
-  String breakOverChattyToday(
+  String breakOverToday(
     String species,
     int breakMinutes,
     int todayBlocks,
@@ -274,38 +279,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'geode':
           'The break is whole. $todayMinutesWords minutes today, and I am here.',
       'joe':
-          'Break done: $breakMinutes of $breakMinutes $_temp0. $todayBlocks $_temp1 so far today.',
+          'Break done: $breakMinutes of $breakMinutes $_temp0. $todayBlocks $_temp1 on today\'s list.',
       'lily':
-          'You\'re back, with $todayBlocks $_temp2 behind you today. A bit rested now, aren\'t you?',
+          'You\'re back, with $todayBlocks $_temp2 done today! All rested, aren\'t you?',
       'other': '',
     });
     return '$_temp3';
   }
 
   @override
-  String hatch(String species, int minutes, String minutesWords) {
+  String hatch(String species, int minutes, String minutesWords, String task) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': '$minutesWords minutes. I am made of them.',
-      'joe': 'Hello! 1 block, $minutes minutes, 1 me.',
-      'lily': 'Oh! It was you, wasn\'t it?',
-      'other': '',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String hatchChattyFirstBlock(
-    String species,
-    int minutes,
-    String minutesWords,
-    String task,
-  ) {
-    String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': '$minutesWords minutes of $task. I am made of them.',
+      'geode': 'Hello. $minutesWords minutes of $task, and I am made of them.',
       'joe':
-          'Hello! 1 block, $minutes minutes on $task, 1 me. First of everything!',
+          'Hello! 1 block, $minutes minutes on $task, 1 me. First entry, filed!',
       'lily':
-          'Oh! It was you, wasn\'t it? $minutes minutes on $task, and here I am.',
+          'Oh! You did it! $minutes minutes on $task, and here I am. That was you, wasn\'t it?',
       'other': '',
     });
     return '$_temp0';
@@ -314,20 +303,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String setup(String species) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'I am Geode. I keep every minute.',
-      'joe': 'Joe. 1 paper bird. I count.',
-      'lily': 'I\'m Lily. I\'d like to know you.',
-      'other': '',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String setupChatty(String species) {
-    String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'I am Geode. I keep every minute of focus, layer on layer, and I like to say so.',
-      'joe': 'I\'m Joe! 1 paper bird who counts every block and every minute, out loud.',
-      'lily': 'I\'m Lily! I notice every block you finish, and I tell you about it. You don\'t mind, do you?',
+      'geode': 'I am Geode. ROCK.',
+      'joe': 'Joe. 1 paper bird. Everything counted, folded and filed.',
+      'lily': 'I\'m Lily! I\'ll cheer for every block you finish. You\'d like that, wouldn\'t you?',
       'other': '',
     });
     return '$_temp0';
@@ -336,9 +314,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String egg(String species) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'I am in here. A finished focus block opens me.',
-      'joe': '1 egg. 1 focus block to hatch.',
-      'lily': 'I hatch when you finish a focus block. Shall we?',
+      'geode': 'I am in here, waiting calmly. A finished focus block opens me.',
+      'joe': '1 egg. 1 focus block to hatch. Neatly, please.',
+      'lily':
+          'I hatch when you finish a focus block. You can do it, can\'t you?',
       'other': '',
     });
     return '$_temp0';
@@ -353,10 +332,11 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     String _temp0 = intl.Intl.selectLogic(species, {
       'geode':
-          '$time: the block is whole, with no one watching. $minutesWords minutes, counted.',
-      'joe': 'Finished at $time. $minutes of $minutes minutes, counted.',
+          '$time: the block is whole, quietly, on its own. $minutesWords minutes, counted.',
+      'joe':
+          'Finished at $time. $minutes of $minutes minutes, logged and filed.',
       'lily':
-          'Your block finished at $time while you were away. All $minutes minutes count.',
+          'Your block finished at $time while you were away. All $minutes minutes count, don\'t they?',
       'other': '',
     });
     return '$_temp0';
@@ -365,9 +345,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String countdown(String species, int seconds, String secondsWords) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': 'The next block begins in $secondsWords.',
-      'joe': 'Next block in $seconds.',
-      'lily': 'Your next block starts in $seconds. Ready?',
+      'geode': 'Steady. The next block begins in $secondsWords.',
+      'joe': 'Next block in $seconds. Pencils sharpened.',
+      'lily':
+          'Your next block starts in $seconds. You\'ve got this, haven\'t you?',
       'other': '',
     });
     return '$_temp0';
@@ -384,12 +365,13 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp1 = intl.Intl.pluralLogic(
       estimate,
       locale: localeName,
-      other: 'That\'s all $estimate blocks you planned for it.',
-      one: 'That\'s the one block you planned for it.',
+      other:
+          'That\'s all $estimate blocks you planned for it. You kept your word, didn\'t you?',
+      one: 'That\'s the one block you planned for it. You kept your word, didn\'t you?',
     );
     String _temp2 = intl.Intl.selectLogic(species, {
-      'geode': 'Every planned block is here.',
-      'joe': '$estimate of $estimate planned $_temp0.',
+      'geode': 'Every planned block is here. Steady work, all of it.',
+      'joe': '$estimate of $estimate planned $_temp0. Exactly to plan. Lovely.',
       'lily': '$_temp1',
       'other': '',
     });
@@ -407,9 +389,9 @@ class AppLocalizationsEn extends AppLocalizations {
     String minutesWords,
   ) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': '$minutesWords minutes of $task. They are counted.',
-      'joe': '$task: $minutes of $minutes minutes, counted.',
-      'lily': 'You gave $task $minutes minutes. Every one of them counted.',
+      'geode': '$minutesWords minutes of $task. They settle in, and they stay.',
+      'joe': '$task: $minutes of $minutes minutes, filed.',
+      'lily': 'You gave $task $minutes minutes! Every one counted, didn\'t it?',
       'other': '',
     });
     return '$_temp0';
@@ -430,11 +412,12 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'minute',
     );
     String _temp1 = intl.Intl.selectLogic(species, {
-      'geode': '$minutesWords minutes of $task, counted. The break is here.',
+      'geode':
+          '$minutesWords minutes of $task, counted. The break is here. Breathe.',
       'joe':
-          '$task: $minutes of $minutes minutes, counted. Break started: $breakMinutes $_temp0.',
+          '$task: $minutes of $minutes minutes, filed. Break started: $breakMinutes $_temp0.',
       'lily':
-          'You gave $task $minutes minutes, and they all counted. Your break has begun.',
+          'You gave $task $minutes minutes! Your break has begun. You earned it, didn\'t you?',
       'other': '',
     });
     return '$_temp1';
@@ -449,9 +432,10 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'minute',
     );
     String _temp1 = intl.Intl.selectLogic(species, {
-      'geode': 'The break is whole. I am here.',
-      'joe': 'Break finished: $breakMinutes of $breakMinutes $_temp0.',
-      'lily': 'Your break is over. Did you stretch? Either way, it was yours.',
+      'geode': 'The break is whole. I am here, steady as ever.',
+      'joe':
+          'Break finished: $breakMinutes of $breakMinutes $_temp0. Desk is ready.',
+      'lily': 'Your break is over! Feeling fresh, aren\'t you?',
       'other': '',
     });
     return '$_temp1';
@@ -465,11 +449,12 @@ class AppLocalizationsEn extends AppLocalizations {
     String minutesWords,
   ) {
     String _temp0 = intl.Intl.selectLogic(species, {
-      'geode': '$minutesWords minutes of $task, counted. My shell is cracking.',
+      'geode':
+          '$minutesWords minutes of $task, counted. My shell is cracking, slowly, gently.',
       'joe':
-          '$task: $minutes of $minutes minutes, counted. My shell: 5 cracks.',
+          '$task: $minutes of $minutes minutes, counted. My shell: 5 cracks, evenly spaced.',
       'lily':
-          'You gave $task $minutes minutes, and my shell is cracking. Who\'s in here, I wonder?',
+          'You gave $task $minutes minutes, and my shell is cracking! Who\'s in here, I wonder?',
       'other': '',
     });
     return '$_temp0';
@@ -503,13 +488,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pickLine =>
       'You keep this one. It hatches from an egg when you finish your first focus block.';
-
-  @override
-  String get persLabel => 'Personality';
-
-  @override
-  String get persHint =>
-      'How much your pet says. You can change it in Settings.';
 
   @override
   String get taskTitle => 'What are you working on?';
@@ -753,12 +731,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Back';
-
-  @override
-  String get persQuiet => 'Quiet';
-
-  @override
-  String get persChatty => 'Chatty';
 
   @override
   String get onboardingNext => 'Next';

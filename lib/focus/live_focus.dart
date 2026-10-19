@@ -249,7 +249,6 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
         totalMinutes: totalMinutes,
       ),
       species: pet.species,
-      personality: pet.personality,
     );
     final player = RunPlayer(
       script: RunScript(
@@ -322,7 +321,6 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
             AppLocalizations.of(context),
             moment: EstimateMoment(estimate: estimate),
             species: pet.species,
-            personality: pet.personality,
           );
         });
       }
@@ -371,7 +369,6 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
       AppLocalizations.of(context),
       moment: AwayNoteMoment(time: time, minutes: away.focusMinutes),
       species: pet.species,
-      personality: pet.personality,
     );
   }
 
@@ -711,7 +708,6 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
   /// [pet] with its owed run had: how it stands once the run is over.
   PetStanding _seen(PetStanding pet) => PetStanding(
     species: pet.species,
-    personality: pet.personality,
     name: pet.name,
     exp: pet.exp,
     hatched: pet.hatched,
@@ -737,12 +733,8 @@ class _LiveFocusState extends ConsumerState<LiveFocus>
     final words = AppLocalizations.of(context);
     final player = played?.player;
     final frame = player?.frame;
-    String line(PetMoment moment) => petLine(
-      words,
-      moment: moment,
-      species: pet.species,
-      personality: pet.personality,
-    );
+    String line(PetMoment moment) =>
+        petLine(words, moment: moment, species: pet.species);
     final taskDone = live.task.status == TaskStatus.done;
     final estimate = _estimate;
     void Function()? off(void Function() action) => _busy ? null : action;
@@ -951,7 +943,6 @@ class _Break extends StatelessWidget {
               todayMinutes: today.minutes,
             ),
             species: standing.species,
-            personality: standing.personality,
           ),
         ),
         QuietClock(
@@ -1042,12 +1033,8 @@ class _CountdownState extends State<_Countdown> {
       });
     }
     final standing = widget.standing;
-    String line(PetMoment moment) => petLine(
-      words,
-      moment: moment,
-      species: standing.species,
-      personality: standing.personality,
-    );
+    String line(PetMoment moment) =>
+        petLine(words, moment: moment, species: standing.species);
     return ScreenBody(
       content: [widget.header],
       middle: [

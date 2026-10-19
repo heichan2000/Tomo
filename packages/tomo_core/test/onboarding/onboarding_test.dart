@@ -5,7 +5,6 @@ import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/diagnostic_entry.dart';
 import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/onboarding/onboarding.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_status.dart';
@@ -31,10 +30,8 @@ void main() {
   Future<Result<void>> finish({
     String? line,
     Species species = Species.geode,
-    Personality personality = Personality.quiet,
   }) => onboarding.complete(
     species: species,
-    personality: personality,
     line: line,
     defaultProjectName: 'My work',
   );
@@ -44,17 +41,12 @@ void main() {
   });
 
   test('finishing makes the pet: the chosen species, still an egg', () async {
-    final result = await finish(
-      line: 'Thesis',
-      species: Species.lily,
-      personality: Personality.chatty,
-    );
+    final result = await finish(line: 'Thesis', species: Species.lily);
 
     expect(result, isA<Success<void>>());
     expect(await onboarding.isComplete(), isTrue);
     final pet = await db.select(db.pets).getSingle();
     expect(pet.species, Species.lily);
-    expect(pet.personality, Personality.chatty);
     expect(pet.name, isNull);
     expect(pet.hatchedAt, isNull);
     expect(pet.exp, 0);
@@ -122,7 +114,6 @@ void main() {
 
       final result = await cutOff.complete(
         species: Species.joe,
-        personality: Personality.quiet,
         line: 'Thesis',
         defaultProjectName: 'My work',
       );

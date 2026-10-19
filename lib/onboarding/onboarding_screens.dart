@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tomo_core/art/pixel_art.dart';
 import 'package:tomo_core/pet/pet_look.dart';
-import 'package:tomo_core/pet/personality.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_service.dart';
@@ -18,7 +17,6 @@ import '../ui/motion.dart';
 import '../ui/pixel_box.dart';
 import '../ui/pixel_icon.dart';
 import '../ui/screen_body.dart';
-import '../ui/segmented.dart';
 import '../ui/sharp_text.dart';
 import '../ui/text_field.dart';
 import '../ui/tomo_theme.dart';
@@ -33,7 +31,7 @@ import '../voice/pet_voice.dart';
 // before that, the next start opens on the first screen again.
 
 /// Onboarding 1, *Choose your pet*: the three starters, the chosen pet
-/// describing itself, and Quiet / Chatty.
+/// describing itself in its own character.
 class PickPetScreen extends StatefulWidget {
   const PickPetScreen({super.key});
 
@@ -43,20 +41,17 @@ class PickPetScreen extends StatefulWidget {
 
 class _PickPetScreenState extends State<PickPetScreen> {
   var _species = Species.geode;
-  var _personality = Personality.quiet;
 
   void _next() => Navigator.of(context).push(
     PixelPageRoute<void>(
       settings: const RouteSettings(name: '/onboarding/task'),
-      builder: (_) =>
-          FirstTaskScreen(species: _species, personality: _personality),
+      builder: (_) => FirstTaskScreen(species: _species),
     ),
   );
 
   @override
   Widget build(BuildContext context) {
     final words = AppLocalizations.of(context);
-    final colours = TomoTheme.of(context);
     final u = UiPixel.of(context);
     return ScreenBody(
       content: [
@@ -77,40 +72,8 @@ class _PickPetScreenState extends State<PickPetScreen> {
           ],
         ),
         PixelText(
-          petLine(
-            words,
-            moment: const SetupMoment(),
-            species: _species,
-            personality: _personality,
-          ),
+          petLine(words, moment: const SetupMoment(), species: _species),
           textAlign: TextAlign.center,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: u(1)),
-              child: PixelText(words.persLabel),
-            ),
-            SizedBox(height: u(3)),
-            PixelSegmented<Personality>(
-              segments: [
-                Segment(Personality.quiet, words.persQuiet),
-                Segment(Personality.chatty, words.persChatty),
-              ],
-              selected: _personality,
-              onChanged: (value) => setState(() => _personality = value),
-            ),
-            SizedBox(height: u(3)),
-            Padding(
-              padding: EdgeInsets.only(left: u(1)),
-              child: PixelText(
-                words.persHint,
-                step: TypeStep.caption,
-                colour: colours.muted,
-              ),
-            ),
-          ],
         ),
       ],
       bottom: [
@@ -204,14 +167,9 @@ class _PetTile extends StatelessWidget {
 /// first project's name and its first task, or *Skip* for one plain project
 /// and no task.
 class FirstTaskScreen extends ConsumerStatefulWidget {
-  const FirstTaskScreen({
-    super.key,
-    required this.species,
-    required this.personality,
-  });
+  const FirstTaskScreen({super.key, required this.species});
 
   final Species species;
-  final Personality personality;
 
   @override
   ConsumerState<FirstTaskScreen> createState() => _FirstTaskScreenState();
@@ -246,7 +204,6 @@ class _FirstTaskScreenState extends ConsumerState<FirstTaskScreen> {
         .read(onboardingProvider)
         .complete(
           species: widget.species,
-          personality: widget.personality,
           defaultProjectName: words.defaultProject,
           line: line,
         );

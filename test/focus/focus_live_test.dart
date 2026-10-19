@@ -335,7 +335,10 @@ void main() {
     ) async {
       await open(tester, before: onBreak, minute: 26);
 
-      expect(find.words('A break. Everything is still here.'), findsOneWidget);
+      expect(
+        find.words("It's break time. Twenty-five minutes today."),
+        findsOneWidget,
+      );
       expect(find.words('about 4 min of rest left'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
@@ -381,12 +384,18 @@ void main() {
       await open(tester, before: autoBreak, minute: 29);
 
       await passTo(tester, 30);
-      expect(find.words('The next block begins in ten.'), findsOneWidget);
+      expect(
+        find.words('Steady. The next block begins in ten.'),
+        findsOneWidget,
+      );
       expect(button('Start now'), findsOneWidget);
       expect(button('Not yet'), findsOneWidget);
 
       await passTo(tester, 30, 4);
-      expect(find.words('The next block begins in six.'), findsOneWidget);
+      expect(
+        find.words('Steady. The next block begins in six.'),
+        findsOneWidget,
+      );
 
       await passTo(tester, 30, 10);
       expect(find.words('about 25 min left'), findsOneWidget);

@@ -27,7 +27,7 @@ The guiding principle for the whole product: **EXP only *visualizes* progress â€
 ## User Stories
 
 ### Onboarding & first run
-1. As a new user, I want to name my pet and watch it hatch on first launch, so that I feel an immediate personal bond with it. *(Amended by [ADR-0012](docs/adr/0012-earned-hatch.md): the user picks one of three starters and a personality at setup, and the egg hatches, and is named, at the end of their first finished focus block.)*
+1. As a new user, I want to name my pet and watch it hatch on first launch, so that I feel an immediate personal bond with it. *(Amended by [ADR-0012](docs/adr/0012-earned-hatch.md): the user picks one of three starters at setup (each with its own personality, [ADR-0030](docs/adr/0030-each-pet-has-its-own-character.md)), and the egg hatches, and is named, at the end of their first finished focus block.)*
 2. As a new user, I want to start managing tasks and running focus sessions without setting up anything technical, so that I can use the app instantly.
 3. *(Moved to Future Versions with the AI layer, [ADR-0029](docs/adr/0029-mvp-ships-without-ai-and-never-goes-online.md).)*
 
