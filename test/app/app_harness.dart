@@ -7,6 +7,7 @@ import 'package:tomo/app/providers.dart';
 import 'package:tomo/app/start_up.dart';
 import 'package:tomo/app/tomo_app.dart';
 import 'package:tomo/app/tomo_look.dart';
+import 'package:tomo/platform/share.dart';
 import 'package:tomo/work/work_lists.dart';
 import 'package:tomo_core/clock.dart';
 import 'package:tomo_core/data/tomo_database.dart';
@@ -45,6 +46,7 @@ Future<TomoDatabase> pumpTomo(
   FakeScheduler? notifications,
   FakePermission? permission,
   Stream<String?> notificationTaps = const Stream.empty(),
+  ShareSheet? shareSheet,
   Future<void> Function(TomoDatabase db)? before,
   Clock? clock,
 }) async {
@@ -97,6 +99,10 @@ Future<TomoDatabase> pumpTomo(
           permission ?? FakePermission(),
         ),
         notificationTapsProvider.overrideWithValue(notificationTaps),
+        shareSheetProvider.overrideWithValue(shareSheet ?? SharedTexts()),
+        appVersionProvider.overrideWith(
+          (ref) async => (version: '1.0.0', build: '1'),
+        ),
         speciesChangesProvider.overrideWithValue(_speciesChanges.stream),
         petChangesProvider.overrideWithValue(_petChanges.stream),
         cycleTaskChangesProvider.overrideWithValue(_cycleTaskChanges.stream),
@@ -247,4 +253,15 @@ final class _FedWorkLists implements WorkLists {
         .where((t) => t.id == id)
         .firstOrNull,
   );
+}
+
+/// A share sheet that keeps what it was handed.
+final class SharedTexts implements ShareSheet {
+  final shared = <({String fileName, String text})>[];
+
+  @override
+  Future<void> shareTextFile({
+    required String fileName,
+    required String text,
+  }) async => shared.add((fileName: fileName, text: text));
 }

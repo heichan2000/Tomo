@@ -1080,4 +1080,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToFocus => 'Back to focus';
+
+  @override
+  String get statsTitle => 'Stats';
+
+  @override
+  String get statLevel => 'Level';
+
+  @override
+  String get statTimeFocused => 'Time focused';
+
+  @override
+  String get statBlocks => 'Blocks finished';
+
+  @override
+  String get statDays => 'Days focused';
+
+  @override
+  String get settingsPet => 'Pet';
+
+  @override
+  String get renamePet => 'Rename pet';
+
+  @override
+  String get petNameField => 'Pet\'s name';
+
+  @override
+  String get calmPet => 'Calm pet';
+
+  @override
+  String get calmPetAbout => 'Your pet stays still, apart from celebrations.';
+
+  @override
+  String get settingsFocus => 'Focus';
+
+  @override
+  String get autoStart => 'Auto-start';
+
+  @override
+  String get autoStartAbout => 'When a block ends, the break starts by itself.';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get notifStatusOn => 'Notifications are on';
+
+  @override
+  String get notifStatusNotAsked =>
+      'Not asked yet. Your phone will ask when you start your first block.';
+
+  @override
+  String get openSystemSettings => 'Open system settings';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get appearanceSystem => 'Match phone';
+
+  @override
+  String get appearanceLight => 'Light';
+
+  @override
+  String get appearanceDark => 'Dark';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String versionNumber(String version, String build) {
+    return '$version ($build)';
+  }
+
+  @override
+  String get licences => 'Licences';
+
+  @override
+  String licenceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count licences',
+      one: '1 licence',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareDiagnostics => 'Share diagnostics';
+
+  @override
+  String diagEntries(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count errors recorded',
+      one: '1 error recorded',
+      zero: 'No errors recorded',
+    );
+    return '$_temp0';
+  }
 }

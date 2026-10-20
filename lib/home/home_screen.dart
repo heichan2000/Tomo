@@ -8,10 +8,11 @@ import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/rewards/rewards.dart';
 
-import '../app/placeholder_screens.dart';
 import '../app/providers.dart';
 import '../app/routes.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/settings_screen.dart';
+import '../stats/stats_screen.dart';
 import '../pet/pet_label.dart';
 import '../pet/pet_view.dart';
 import '../ui/buttons.dart';
@@ -191,7 +192,7 @@ class _TopRow extends StatelessWidget {
         if (level != null)
           Pressable(
             onPressed: () =>
-                pushInTab(context, (_) => const StatsPlaceholder()),
+                pushInTab(context, (_) => const StatsScreen()),
             semanticLabel: words.srLevelChip(level),
             builder: (context, pressed, ring) => ConstrainedBox(
               // The chip is small; its target is the full 48 pt.
@@ -229,7 +230,7 @@ class _TopRow extends StatelessWidget {
             icon: PixelIcon(IconName.gear, colour: colours.ink),
             semanticLabel: words.settings,
             onPressed: () =>
-                pushInTab(context, (_) => const SettingsPlaceholder()),
+                pushInTab(context, (_) => const SettingsScreen()),
           ),
         ),
       ],

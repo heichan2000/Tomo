@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tomo_core/data/device_only_file.dart';
 import 'package:tomo_core/data/settings.dart';
 import 'package:tomo_core/data/tomo_database.dart';
@@ -21,6 +22,7 @@ import 'package:tomo_core/tasks/task_service.dart';
 
 import '../platform/haptics.dart';
 import '../platform/notifications.dart';
+import '../platform/share.dart';
 
 // What every screen reads Tomo through: hand-written Riverpod providers, no
 // code generation (spec §15.2).
@@ -62,6 +64,21 @@ final notificationPermissionProvider = Provider<NotificationPermission>(
 /// The phone's haptics (spec §11.5). A test sets a recorder.
 final hapticPlayerProvider = Provider<HapticPlayer>(
   (ref) => const SystemHaptics(),
+);
+
+/// The phone's share sheet, for *Share diagnostics* (spec §13). A test sets
+/// a recorder.
+final shareSheetProvider = Provider<ShareSheet>(
+  (ref) => const PhoneShareSheet(),
+);
+
+/// The app's version and build number, for Settings → About. A test sets
+/// them.
+final appVersionProvider = FutureProvider<({String version, String build})>(
+  (ref) async {
+    final package = await PackageInfo.fromPlatform();
+    return (version: package.version, build: package.buildNumber);
+  },
 );
 
 /// The payload of each notification tapped while Tomo is running.
@@ -224,6 +241,24 @@ class ClockNotice extends Notifier<bool> {
 
   void show() => state = true;
   void dismiss() => state = false;
+}
+
+/// Settings → Auto-start (spec §4.8), as last read or changed. It is
+/// snapshotted into a cycle as its block starts, so changing it never
+/// touches a running cycle.
+final autoStartProvider = AsyncNotifierProvider<AutoStart, bool>(
+  AutoStart.new,
+);
+
+class AutoStart extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() => ref.read(settingsProvider).autoStart();
+
+  /// Changes it at once and remembers the choice.
+  Future<void> set(bool value) {
+    state = AsyncData(value);
+    return ref.read(settingsProvider).setAutoStart(value);
+  }
 }
 
 /// Settings → Calm pet (spec §7.7), as read at start-up and changed since.

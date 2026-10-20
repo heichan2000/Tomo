@@ -1293,5 +1293,135 @@
   "backToFocus": "Back to focus",
   "@backToFocus": {
     "description": "Task detail, in place of Start focusing while this task's block runs (approved on Tomo Task Screens)."
+  },
+  "statsTitle": "Stats",
+  "@statsTitle": {
+    "description": "Stats, the screen's title (approved on Tomo Stats Screen)."
+  },
+  "statLevel": "Level",
+  "@statLevel": {
+    "description": "Stats, the first row's label (approved on Tomo Stats Screen)."
+  },
+  "statTimeFocused": "Time focused",
+  "@statTimeFocused": {
+    "description": "Stats, the row of every finished block's minutes (approved on Tomo Stats Screen)."
+  },
+  "statBlocks": "Blocks finished",
+  "@statBlocks": {
+    "description": "Stats, the row counting finished blocks (approved on Tomo Stats Screen)."
+  },
+  "statDays": "Days focused",
+  "@statDays": {
+    "description": "Stats, the row counting days with a finished block (approved on Tomo Stats Screen)."
+  },
+  "settingsPet": "Pet",
+  "@settingsPet": {
+    "description": "Settings, the label over Rename pet and Calm pet (spec §8.10)."
+  },
+  "renamePet": "Rename pet",
+  "@renamePet": {
+    "description": "Settings, the row that opens the Rename pet sheet, and the sheet's title (spec §8.10)."
+  },
+  "petNameField": "Pet's name",
+  "@petNameField": {
+    "description": "Screen reader. The field on the Rename pet sheet."
+  },
+  "calmPet": "Calm pet",
+  "@calmPet": {
+    "description": "Settings, the switch that stills the pet between celebrations (spec §7.7, §8.10)."
+  },
+  "calmPetAbout": "Your pet stays still, apart from celebrations.",
+  "@calmPetAbout": {
+    "description": "Plain voice. Settings, under Calm pet."
+  },
+  "settingsFocus": "Focus",
+  "@settingsFocus": {
+    "description": "Settings, the label over Auto-start (spec §8.10)."
+  },
+  "autoStart": "Auto-start",
+  "@autoStart": {
+    "description": "Settings, the switch that starts breaks, and the next block from Focus, by themselves (spec §4.8, §8.10)."
+  },
+  "autoStartAbout": "When a block ends, the break starts by itself.",
+  "@autoStartAbout": {
+    "description": "Plain voice. Settings, under Auto-start (spec §4.8)."
+  },
+  "settingsNotifications": "Notifications",
+  "@settingsNotifications": {
+    "description": "Settings, the label over the notification status (spec §8.10)."
+  },
+  "notifStatusOn": "Notifications are on",
+  "@notifStatusOn": {
+    "description": "Plain voice. Settings, the phone lets Tomo post notifications."
+  },
+  "notifStatusNotAsked": "Not asked yet. Your phone will ask when you start your first block.",
+  "@notifStatusNotAsked": {
+    "description": "Plain voice. Settings, the phone hasn't asked about notifications yet (spec §11.4)."
+  },
+  "openSystemSettings": "Open system settings",
+  "@openSystemSettings": {
+    "description": "Settings, the row that opens the phone's notification settings for Tomo (spec §8.10)."
+  },
+  "settingsAppearance": "Appearance",
+  "@settingsAppearance": {
+    "description": "Settings, the label over the theme control (spec §8.10)."
+  },
+  "appearanceSystem": "Match phone",
+  "@appearanceSystem": {
+    "description": "Settings, Appearance: follow the phone's light or dark setting (spec §8.10)."
+  },
+  "appearanceLight": "Light",
+  "@appearanceLight": {
+    "description": "Settings, Appearance (spec §8.10)."
+  },
+  "appearanceDark": "Dark",
+  "@appearanceDark": {
+    "description": "Settings, Appearance (spec §8.10)."
+  },
+  "settingsAbout": "About",
+  "@settingsAbout": {
+    "description": "Settings, the label over the version, licences and Share diagnostics (spec §8.10)."
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Settings, About: the label beside the app's version."
+  },
+  "versionNumber": "{version} ({build})",
+  "@versionNumber": {
+    "description": "Settings, About: the app's version and build number, as \"1.0.0 (1)\".",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "licences": "Licences",
+  "@licences": {
+    "description": "Settings, About: the row that opens the licences of the code and the font Tomo uses, and that screen's title."
+  },
+  "licenceCount": "{count, plural, =1{1 licence} other{{count} licences}}",
+  "@licenceCount": {
+    "description": "Licences: under a package's name, how many licences it has.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareDiagnostics": "Share diagnostics",
+  "@shareDiagnostics": {
+    "description": "Settings, About: the button that hands the diagnostic log to the phone's share sheet (spec §13)."
+  },
+  "diagEntries": "{count, plural, =0{No errors recorded} =1{1 error recorded} other{{count} errors recorded}}",
+  "@diagEntries": {
+    "description": "Plain voice. Settings, About: how many entries the diagnostic log holds, beside Share diagnostics. The button is off at zero.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

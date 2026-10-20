@@ -719,7 +719,8 @@ hand out the database, the services, the logs and the stores; `TomoShell`
 (`shell.dart`) is the two tabs, the banner's slot (`RunningBannerSlot`) and
 `ShellTabBar`; `routes.dart` has `openFocus`, `pushInTab` and
 `finishOnboarding`; `PhoneColumn` is the wide-screen column. Screens not yet
-built are stand-ins in `placeholder_screens.dart`. Approved by the user on the
+built were stand-ins in `placeholder_screens.dart`, gone since the last of them
+was built. Approved by the user on the
 emulator. Its calls: C64–C72.
 
 The task picker is **built** in [Focus: the task picker and Ready](https://github.com/heichan2000/Tomo/issues/95),
@@ -958,6 +959,12 @@ chip, which appears at the hatch, which writes a block record. Deliberately
 absent: streaks, today, weeks, charts, per-project time, records, comparisons,
 tasks finished.
 
+**Stats is built** in [Stats and Settings](https://github.com/heichan2000/Tomo/issues/101),
+in `lib/stats/stats_screen.dart`: `StatsScreen`, pushed from the level chip,
+reads `statsReaderProvider` once as it opens; a row is `StatRow`. The back
+and title are `BackHeader` (`lib/ui/back_header.dart`), shared with Task
+detail. Approved by the user on the emulator. Its calls: C150 and C155.
+
 ### 8.10 Settings
 
 Pushed from Home's gear. Rows:
@@ -972,6 +979,13 @@ Pushed from Home's gear. Rows:
 
 Species is permanent; the name is not. Each pet's character comes with its
 species (ADR-0030), so there is no Personality row.
+
+**Settings is built** in [Stats and Settings](https://github.com/heichan2000/Tomo/issues/101),
+in `lib/settings/`: `SettingsScreen`, pushed from the gear, and
+`LicencesScreen`. Every choice takes effect and is kept at once; there is no
+save. *Share diagnostics* goes through `ShareSheet` (`lib/platform/share.dart`,
+`shareSheetProvider`), which whole-app widget tests replace. Approved by the
+user on the emulator. Its calls: C150–C156.
 
 ### 8.11 Error block
 
@@ -1735,6 +1749,13 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C147 | *Start focusing* when the cycle is live but no block runs (a break, or after a block) | The task lock has lifted (C133), so the button works as usual: Focus opens on Ready on this task, and starting there replaces the cycle, as *StartBlock* does (§4.3). *Back to focus* only while this task's block runs; turned off only while another task's does. |
 | C148 | Where Task detail's refusals and failures show | Under the part used: the title, the notes, the project row, the status control, the stepper, *Delete task*. They go at the next touch or scroll (C134). A task deleted while its screen is open goes back to the project. |
 | C149 | Parts Task detail needed | `PixelTextField` gained `step:` (the title is in title text), `minLines:` (notes are three lines tall when empty) and `keyboardType:`; `PixelStepper` gained `mutedValue:` for *No plan*. `WorkLists.task(id)` / `workTaskProvider` watch the one task, which whole-app widget tests feed like the lists (C140). |
+| C150 | Words for Stats and Settings not in the script | Stats: *Level*, *Time focused*, *Blocks finished*, *Days focused*, from Tomo Stats Screen. No prototype has Settings, so its words follow §8.10: the group labels, *Rename pet*, *Calm pet*, *Auto-start*, *Open system settings*, *Match phone / Light / Dark*, *Version* `1.0.0 (1)`, *Licences*, *Share diagnostics*. Under the switches: *Your pet stays still, apart from celebrations.* and *When a block ends, the break starts by itself.*, chosen by the user. |
+| C151 | Rename pet before the hatch | Not shown: an egg has no name to change. Once hatched, the row shows the name and opens the same name sheet as a project (`askName`), up to 20 characters (`maxPetNameLength`). |
+| C152 | How the notification permission shows | One row, *Open system settings*, with the status under it: *Notifications are on*; *Notifications are off* (the bell's words); or *Not asked yet. Your phone will ask when you start your first block.* Tapping it opens the phone's notification settings for Tomo in every case. |
+| C153 | How the licences show | In Tomo's own look, not Flutter's stock page: `LicencesScreen` lists each package once with how many licences it has, and opens their text. |
+| C154 | What Share diagnostics hands over, and when it is off | `tomo-diagnostics.txt`, the log's export, to the phone's share sheet. Under the button, how many errors the log holds, counted as Settings opens; at none the button is off. |
+| C155 | A Stats number too wide to sit beside its label | It drops under the label, at the right (Tomo Stats Screen). Numbers stop growing at 130% text and never wrap. |
+| C156 | Parts Stats and Settings needed | `BackHeader` (back and an optional title, from Task detail's own); `askName` (the project name sheet, now for any name); `autoStartProvider`; `appVersionProvider` (`package_info_plus`). `placeholder_screens.dart` is gone. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

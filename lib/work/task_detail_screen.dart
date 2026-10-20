@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +15,7 @@ import '../app/providers.dart';
 import '../app/routes.dart';
 import '../focus/task_picker.dart';
 import '../l10n/app_localizations.dart';
+import '../ui/back_header.dart';
 import '../ui/buttons.dart';
 import '../ui/pixel_icon.dart';
 import '../ui/rows.dart';
@@ -330,7 +330,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
           },
           child: ScreenBody(
             content: [
-              const _BackHeader(),
+              BackHeader(backLabel: words.back),
               field(
                 PixelTextField(
                   controller: _title,
@@ -439,32 +439,3 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
 /// Opens a task's own screen, pushed in the Work tab.
 void openTaskDetail(BuildContext context, Task task) =>
     pushInTab(context, (_) => TaskDetailScreen(task: task));
-
-/// Back, alone at the top. Its target reaches into the screen's margin, so
-/// the icon lines up with the fields.
-class _BackHeader extends StatelessWidget {
-  const _BackHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final words = AppLocalizations.of(context);
-    final colours = TomoTheme.of(context);
-    final u = UiPixel.of(context);
-    return LayoutBuilder(
-      builder: (context, constraints) => OverflowBox(
-        fit: OverflowBoxFit.deferToChild,
-        minWidth: constraints.maxWidth + u(12),
-        maxWidth: constraints.maxWidth + u(12),
-        child: Row(
-          children: [
-            PixelIconButton(
-              icon: PixelIcon(IconName.back, colour: colours.ink),
-              semanticLabel: words.back,
-              onPressed: () => Navigator.of(context).maybePop(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
