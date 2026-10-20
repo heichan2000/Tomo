@@ -1039,4 +1039,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get taskTitleField => 'Title';
+
+  @override
+  String get addNotes => 'Add notes';
+
+  @override
+  String get notesField => 'Notes';
+
+  @override
+  String get detailProject => 'Project';
+
+  @override
+  String get detailStatus => 'Status';
+
+  @override
+  String get plannedBlocks => 'Planned blocks';
+
+  @override
+  String get noPlan => 'No plan';
+
+  @override
+  String get focusSoFar => 'Focus so far';
+
+  @override
+  String get focusSoFarNone => 'None yet';
+
+  @override
+  String focusSoFarDone(int blocks, String duration) {
+    String _temp0 = intl.Intl.pluralLogic(
+      blocks,
+      locale: localeName,
+      other: '$blocks blocks',
+      one: '1 block',
+    );
+    return '$_temp0 · $duration';
+  }
+
+  @override
+  String get backToFocus => 'Back to focus';
 }

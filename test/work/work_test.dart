@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/app/shell.dart';
 import 'package:tomo/app/tomo_look.dart';
 import 'package:tomo/focus/focus_screen.dart';
@@ -10,6 +9,7 @@ import 'package:tomo/ui/rows.dart';
 import 'package:tomo/ui/segmented.dart';
 import 'package:tomo/ui/text_field.dart';
 import 'package:tomo/work/project_screen.dart';
+import 'package:tomo/work/task_detail_screen.dart';
 import 'package:tomo/work/task_list_row.dart';
 import 'package:tomo/work/work_screen.dart';
 import 'package:tomo_core/data/tomo_database.dart';
@@ -351,7 +351,7 @@ void main() {
 
       await tap(tester, find.words('Read the paper'));
 
-      expect(find.byType(TaskDetailPlaceholder).hitTestable(), findsOneWidget);
+      expect(find.byType(TaskDetailScreen).hitTestable(), findsOneWidget);
     });
   });
 

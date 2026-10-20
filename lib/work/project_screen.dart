@@ -11,9 +11,7 @@ import 'package:tomo_core/tasks/task.dart';
 import 'package:tomo_core/tasks/task_service.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 
-import '../app/placeholder_screens.dart';
 import '../app/providers.dart';
-import '../app/routes.dart';
 import '../l10n/app_localizations.dart';
 import '../ui/buttons.dart';
 import '../ui/motion.dart';
@@ -26,6 +24,7 @@ import '../ui/tomo_theme.dart';
 import '../ui/ui_pixel.dart';
 import '../voice/pet_voice.dart';
 import 'sliding_list.dart';
+import 'task_detail_screen.dart';
 import 'task_list_row.dart';
 import 'work_lists.dart';
 import 'work_screen.dart';
@@ -489,10 +488,6 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen>
     );
   }
 }
-
-/// Opens a task's own screen, pushed in the Work tab.
-void openTaskDetail(BuildContext context, Task task) =>
-    pushInTab(context, (_) => TaskDetailPlaceholder(title: task.title));
 
 /// Back, the project's name and its tasks counted, and ⋯. The icons' targets
 /// reach into the screen's margins, so the icons line up with the rows.

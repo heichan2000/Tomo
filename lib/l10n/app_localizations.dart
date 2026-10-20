@@ -1147,6 +1147,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// Screen reader. Task detail's title field, which has no label on screen (spec §17 C144).
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get taskTitleField;
+
+  /// Task detail, the empty notes field (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Add notes'**
+  String get addNotes;
+
+  /// Screen reader. Task detail's notes field, which has no label on screen (spec §17 C144).
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesField;
+
+  /// Task detail, the label over the project row (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get detailProject;
+
+  /// Task detail, the label over the status control (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get detailStatus;
+
+  /// Task detail, the label over the stepper (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Planned blocks'**
+  String get plannedBlocks;
+
+  /// Task detail, the stepper with no planned blocks (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'No plan'**
+  String get noPlan;
+
+  /// Task detail, the label over what focusing has done (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Focus so far'**
+  String get focusSoFar;
+
+  /// Task detail, Focus so far with no finished block (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'None yet'**
+  String get focusSoFarNone;
+
+  /// Task detail, Focus so far: the task's finished blocks and their time, written as Stats writes it (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'{blocks, plural, =1{1 block} other{{blocks} blocks}} · {duration}'**
+  String focusSoFarDone(int blocks, String duration);
+
+  /// Task detail, in place of Start focusing while this task's block runs (approved on Tomo Task Screens).
+  ///
+  /// In en, this message translates to:
+  /// **'Back to focus'**
+  String get backToFocus;
 }
 
 class _AppLocalizationsDelegate

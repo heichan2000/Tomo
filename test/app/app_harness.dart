@@ -239,4 +239,12 @@ final class _FedWorkLists implements WorkLists {
   @override
   Stream<List<Task>> tasksIn(int projectId) =>
       _latest(() => _tasks[projectId] ?? const <Task>[]);
+
+  @override
+  Stream<Task?> task(int id) => _latest(
+    () => _tasks.values
+        .expand((tasks) => tasks)
+        .where((t) => t.id == id)
+        .firstOrNull,
+  );
 }

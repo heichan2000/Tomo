@@ -5,7 +5,7 @@ import 'package:tomo_core/tasks/task_service.dart';
 import '../app/providers.dart';
 
 /// What the Work screens watch (spec §8.8): every project with its tasks
-/// counted, and one project's tasks.
+/// counted, one project's tasks, and one task.
 abstract interface class WorkLists {
   /// Every project, the most recently active first, with its open and done
   /// tasks counted.
@@ -14,6 +14,9 @@ abstract interface class WorkLists {
   /// A project's tasks: doing, then to-do, then done; the most recently
   /// touched first in each.
   Stream<List<Task>> tasksIn(int projectId);
+
+  /// One task, wherever it is moved; null once it is deleted.
+  Stream<Task?> task(int id);
 }
 
 /// Where the Work screens hear of a change: the database. Widget tests of
@@ -31,6 +34,10 @@ final projectTasksProvider = StreamProvider.autoDispose.family<List<Task>, int>(
   (ref, projectId) => ref.watch(workListsProvider).tasksIn(projectId),
 );
 
+final workTaskProvider = StreamProvider.autoDispose.family<Task?, int>(
+  (ref, id) => ref.watch(workListsProvider).task(id),
+);
+
 final class _Watched implements WorkLists {
   const _Watched(this._tasks);
 
@@ -42,4 +49,7 @@ final class _Watched implements WorkLists {
   @override
   Stream<List<Task>> tasksIn(int projectId) =>
       _tasks.watchTasksInProject(projectId);
+
+  @override
+  Stream<Task?> task(int id) => _tasks.watchTask(id);
 }
