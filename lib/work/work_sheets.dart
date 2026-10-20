@@ -36,34 +36,62 @@ Future<void> askProjectName(
   required String button,
   String initial = '',
   required Future<WriteOutcome> Function(String name) save,
+}) => askName(
+  context,
+  title: title,
+  button: button,
+  label: AppLocalizations.of(context).projectName,
+  maxLength: maxProjectNameLength,
+  initial: initial,
+  save: save,
+);
+
+/// A name, asked for on a sheet with one field, [maxLength] characters long
+/// as a reader counts them: a project's, or the pet's (Settings → *Rename
+/// pet*). [label] is what a screen reader calls the field. Behaves as
+/// [askProjectName] says.
+Future<void> askName(
+  BuildContext context, {
+  required String title,
+  required String button,
+  required String label,
+  required int maxLength,
+  String initial = '',
+  required Future<WriteOutcome> Function(String name) save,
 }) => showPixelSheet<void>(
   context,
-  (_) => _ProjectNameSheet(
+  (_) => _NameSheet(
     title: title,
     button: button,
+    label: label,
+    maxLength: maxLength,
     initial: initial,
     save: save,
   ),
 );
 
-class _ProjectNameSheet extends StatefulWidget {
-  const _ProjectNameSheet({
+class _NameSheet extends StatefulWidget {
+  const _NameSheet({
     required this.title,
     required this.button,
+    required this.label,
+    required this.maxLength,
     required this.initial,
     required this.save,
   });
 
   final String title;
   final String button;
+  final String label;
+  final int maxLength;
   final String initial;
   final Future<WriteOutcome> Function(String name) save;
 
   @override
-  State<_ProjectNameSheet> createState() => _ProjectNameSheetState();
+  State<_NameSheet> createState() => _NameSheetState();
 }
 
-class _ProjectNameSheetState extends State<_ProjectNameSheet> {
+class _NameSheetState extends State<_NameSheet> {
   late final _name = TextEditingController(text: widget.initial);
   var _saving = false;
   var _failed = false;
@@ -100,12 +128,10 @@ class _ProjectNameSheetState extends State<_ProjectNameSheet> {
         PixelText(widget.title, step: TypeStep.title),
         PixelTextField(
           controller: _name,
-          label: words.projectName,
+          label: widget.label,
           autofocus: true,
           maxLines: 1,
-          inputFormatters: [
-            LengthLimitingTextInputFormatter(maxProjectNameLength),
-          ],
+          inputFormatters: [LengthLimitingTextInputFormatter(widget.maxLength)],
           onChanged: (_) => setState(() {}),
           onSubmitted: (_) => _save(),
         ),

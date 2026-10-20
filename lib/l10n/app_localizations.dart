@@ -1213,6 +1213,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to focus'**
   String get backToFocus;
+
+  /// Stats, the screen's title (approved on Tomo Stats Screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get statsTitle;
+
+  /// Stats, the first row's label (approved on Tomo Stats Screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get statLevel;
+
+  /// Stats, the row of every finished block's minutes (approved on Tomo Stats Screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Time focused'**
+  String get statTimeFocused;
+
+  /// Stats, the row counting finished blocks (approved on Tomo Stats Screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Blocks finished'**
+  String get statBlocks;
+
+  /// Stats, the row counting days with a finished block (approved on Tomo Stats Screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Days focused'**
+  String get statDays;
+
+  /// Settings, the label over Rename pet and Calm pet (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Pet'**
+  String get settingsPet;
+
+  /// Settings, the row that opens the Rename pet sheet, and the sheet's title (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Rename pet'**
+  String get renamePet;
+
+  /// Screen reader. The field on the Rename pet sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Pet\'s name'**
+  String get petNameField;
+
+  /// Settings, the switch that stills the pet between celebrations (spec §7.7, §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Calm pet'**
+  String get calmPet;
+
+  /// Plain voice. Settings, under Calm pet.
+  ///
+  /// In en, this message translates to:
+  /// **'Your pet stays still, apart from celebrations.'**
+  String get calmPetAbout;
+
+  /// Settings, the label over Auto-start (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get settingsFocus;
+
+  /// Settings, the switch that starts breaks, and the next block from Focus, by themselves (spec §4.8, §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-start'**
+  String get autoStart;
+
+  /// Plain voice. Settings, under Auto-start (spec §4.8).
+  ///
+  /// In en, this message translates to:
+  /// **'When a block ends, the break starts by itself.'**
+  String get autoStartAbout;
+
+  /// Settings, the label over the notification status (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// Plain voice. Settings, the phone lets Tomo post notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are on'**
+  String get notifStatusOn;
+
+  /// Plain voice. Settings, the phone hasn't asked about notifications yet (spec §11.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Not asked yet. Your phone will ask when you start your first block.'**
+  String get notifStatusNotAsked;
+
+  /// Settings, the row that opens the phone's notification settings for Tomo (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Open system settings'**
+  String get openSystemSettings;
+
+  /// Settings, the label over the theme control (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearance;
+
+  /// Settings, Appearance: follow the phone's light or dark setting (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Match phone'**
+  String get appearanceSystem;
+
+  /// Settings, Appearance (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get appearanceLight;
+
+  /// Settings, Appearance (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get appearanceDark;
+
+  /// Settings, the label over the version, licences and Share diagnostics (spec §8.10).
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsAbout;
+
+  /// Settings, About: the label beside the app's version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// Settings, About: the app's version and build number, as "1.0.0 (1)".
+  ///
+  /// In en, this message translates to:
+  /// **'{version} ({build})'**
+  String versionNumber(String version, String build);
+
+  /// Settings, About: the row that opens the licences of the code and the font Tomo uses, and that screen's title.
+  ///
+  /// In en, this message translates to:
+  /// **'Licences'**
+  String get licences;
+
+  /// Licences: under a package's name, how many licences it has.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 licence} other{{count} licences}}'**
+  String licenceCount(int count);
+
+  /// Settings, About: the button that hands the diagnostic log to the phone's share sheet (spec §13).
+  ///
+  /// In en, this message translates to:
+  /// **'Share diagnostics'**
+  String get shareDiagnostics;
+
+  /// Plain voice. Settings, About: how many entries the diagnostic log holds, beside Share diagnostics. The button is off at zero.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No errors recorded} =1{1 error recorded} other{{count} errors recorded}}'**
+  String diagEntries(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -2,10 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tomo/focus/live_focus.dart';
-import 'package:tomo/app/placeholder_screens.dart';
 import 'package:tomo/app/providers.dart';
 import 'package:tomo/focus/task_picker.dart';
 import 'package:tomo/home/home_screen.dart';
+import 'package:tomo/settings/settings_screen.dart';
+import 'package:tomo/stats/stats_screen.dart';
 import 'package:tomo/pet/pet_view.dart';
 import 'package:tomo/ui/buttons.dart';
 import 'package:tomo/ui/exp_bar.dart';
@@ -159,13 +160,13 @@ void main() {
 
     await tester.tap(levelChip());
     await tester.pumpAndSettle();
-    expect(find.byType(StatsPlaceholder), findsOneWidget);
-    await tester.tap(find.words('Back'));
+    expect(find.byType(StatsScreen), findsOneWidget);
+    await tester.tap(iconButton('Back'));
     await tester.pumpAndSettle();
 
     await tester.tap(iconButton('Settings'));
     await tester.pumpAndSettle();
-    expect(find.byType(SettingsPlaceholder), findsOneWidget);
+    expect(find.byType(SettingsScreen), findsOneWidget);
   });
 
   testTomo('Start focusing opens the picker, or Focus while a cycle is live', (
