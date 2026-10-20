@@ -25,16 +25,6 @@ class SettingsPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) => const _Pushed('Settings');
 }
 
-/// Stands in for Task detail, pushed from a task's row on Work.
-class TaskDetailPlaceholder extends StatelessWidget {
-  const TaskDetailPlaceholder({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) => _Pushed(title);
-}
-
 class _Pushed extends StatelessWidget {
   const _Pushed(this.title);
 

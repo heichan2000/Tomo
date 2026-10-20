@@ -931,8 +931,13 @@ the deletes). A row is `TaskListRow`; the sheets are in `work_sheets.dart`
 (`chooseProjectToMove` and `confirmDelete` are for Task detail too). The
 screens watch `WorkLists` (`work_lists.dart`), fed by
 `TaskService.watchProjectSummaries()` (each project with its open and done
-counts) and `watchTasksInProject()`. Task detail is still a stand-in
-(`openTaskDetail`). Its calls: C133–C143.
+counts) and `watchTasksInProject()`. Its calls: C133–C143.
+
+**Task detail is built** in [Task detail](https://github.com/heichan2000/Tomo/issues/100),
+in `lib/work/task_detail_screen.dart`: `TaskDetailScreen`, opened by
+`openTaskDetail` from a task's row. It watches its task through
+`workTaskProvider` and follows it to another project; the delete sheet and
+*Move to project* are the project screen's. Its calls: C144–C149.
 
 ### 8.9 Stats
 
@@ -1723,7 +1728,13 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C140 | Reads the Work screens needed, and widget tests | `TaskService.watchProjectSummaries()` / `projectSummaries()` and `tasksInProject()`. The screens watch them through `workListsProvider`, which whole-app widget tests replace; `petChanged` feeds the Work lists too (C72). |
 | C141 | Screens inside the shell saw the keyboard, though the shell had already made room for it (found here: a project with a few tasks scrolled away under the keyboard) | The shell takes the keyboard and the bottom padding off one copy of the screen's facts, so the screens see neither (`TomoShell`). |
 | C142 | A project just made, or deleted while its screen is open | Its screen goes back to Work once the project has been listed and then is gone; a project not listed yet is not taken for deleted. |
-| C143 | Where a task opens before Task detail exists | `openTaskDetail` pushes a stand-in, `TaskDetailPlaceholder`, for *Task detail* to replace. |
+| C143 | Where a task opens before Task detail exists | `openTaskDetail` pushes a stand-in, `TaskDetailPlaceholder`, for *Task detail* to replace. *(Replaced by `TaskDetailScreen`, [#100](https://github.com/heichan2000/Tomo/issues/100).)* |
+| C144 | Words for Task detail not in the script | *Add notes*, *Project*, *Status*, *Planned blocks*, *No plan*, *Focus so far*, *None yet*, `2 blocks · 50 min` and *Back to focus*, from Tomo Task Screens. The title and notes fields have no label on screen, so a screen reader calls them *Title* and *Notes* (`taskTitleField`, `notesField`). |
+| C145 | When Task detail's typed fields save | When you leave the field: a tap elsewhere, the keyboard's Done, or leaving the screen while still typing. The title takes no new line; Enter finishes it. Everything else saves at once. |
+| C146 | A title cleared away, then left | The old title comes back and nothing is written: a task always has a title (§5.3). |
+| C147 | *Start focusing* when the cycle is live but no block runs (a break, or after a block) | The task lock has lifted (C133), so the button works as usual: Focus opens on Ready on this task, and starting there replaces the cycle, as *StartBlock* does (§4.3). *Back to focus* only while this task's block runs; turned off only while another task's does. |
+| C148 | Where Task detail's refusals and failures show | Under the part used: the title, the notes, the project row, the status control, the stepper, *Delete task*. They go at the next touch or scroll (C134). A task deleted while its screen is open goes back to the project. |
+| C149 | Parts Task detail needed | `PixelTextField` gained `step:` (the title is in title text), `minLines:` (notes are three lines tall when empty) and `keyboardType:`; `PixelStepper` gained `mutedValue:` for *No plan*. `WorkLists.task(id)` / `workTaskProvider` watch the one task, which whole-app widget tests feed like the lists (C140). |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

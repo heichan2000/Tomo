@@ -23,6 +23,7 @@ class PixelStepper extends StatelessWidget {
     required this.moreLabel,
     required this.onLess,
     required this.onMore,
+    this.mutedValue = false,
   });
 
   final String label;
@@ -36,9 +37,13 @@ class PixelStepper extends StatelessWidget {
   /// Null at the upper limit.
   final VoidCallback? onMore;
 
+  /// The value is an absence, such as *No plan*, and is shown muted.
+  final bool mutedValue;
+
   @override
   Widget build(BuildContext context) {
     final u = UiPixel.of(context);
+    final colours = TomoTheme.of(context);
     return Semantics(
       container: true,
       label: label,
@@ -49,7 +54,11 @@ class PixelStepper extends StatelessWidget {
           SizedBox(width: u(4)),
           Expanded(
             child: ExcludeSemantics(
-              child: PixelText(value, textAlign: TextAlign.center),
+              child: PixelText(
+                value,
+                textAlign: TextAlign.center,
+                colour: mutedValue ? colours.muted : colours.ink,
+              ),
             ),
           ),
           SizedBox(width: u(4)),

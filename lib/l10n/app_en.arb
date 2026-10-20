@@ -1241,5 +1241,57 @@
   "cancel": "Cancel",
   "@cancel": {
     "description": "A Delete sheet's secondary button, above Delete (approved on Tomo Task Screens)."
+  },
+  "taskTitleField": "Title",
+  "@taskTitleField": {
+    "description": "Screen reader. Task detail's title field, which has no label on screen (spec §17 C144)."
+  },
+  "addNotes": "Add notes",
+  "@addNotes": {
+    "description": "Task detail, the empty notes field (approved on Tomo Task Screens)."
+  },
+  "notesField": "Notes",
+  "@notesField": {
+    "description": "Screen reader. Task detail's notes field, which has no label on screen (spec §17 C144)."
+  },
+  "detailProject": "Project",
+  "@detailProject": {
+    "description": "Task detail, the label over the project row (approved on Tomo Task Screens)."
+  },
+  "detailStatus": "Status",
+  "@detailStatus": {
+    "description": "Task detail, the label over the status control (approved on Tomo Task Screens)."
+  },
+  "plannedBlocks": "Planned blocks",
+  "@plannedBlocks": {
+    "description": "Task detail, the label over the stepper (approved on Tomo Task Screens)."
+  },
+  "noPlan": "No plan",
+  "@noPlan": {
+    "description": "Task detail, the stepper with no planned blocks (approved on Tomo Task Screens)."
+  },
+  "focusSoFar": "Focus so far",
+  "@focusSoFar": {
+    "description": "Task detail, the label over what focusing has done (approved on Tomo Task Screens)."
+  },
+  "focusSoFarNone": "None yet",
+  "@focusSoFarNone": {
+    "description": "Task detail, Focus so far with no finished block (approved on Tomo Task Screens)."
+  },
+  "focusSoFarDone": "{blocks, plural, =1{1 block} other{{blocks} blocks}} · {duration}",
+  "@focusSoFarDone": {
+    "description": "Task detail, Focus so far: the task's finished blocks and their time, written as Stats writes it (approved on Tomo Task Screens).",
+    "placeholders": {
+      "blocks": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "backToFocus": "Back to focus",
+  "@backToFocus": {
+    "description": "Task detail, in place of Start focusing while this task's block runs (approved on Tomo Task Screens)."
   }
 }

@@ -30,6 +30,9 @@ class PixelTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.maxLines,
+    this.minLines = 1,
+    this.keyboardType,
+    this.step = TypeStep.body,
     this.inputFormatters,
     this.restingIcon,
     this.staysOpen = false,
@@ -51,6 +54,17 @@ class PixelTextField extends StatefulWidget {
 
   /// Null lets the text wrap onto as many lines as it needs.
   final int? maxLines;
+
+  /// Lines of room the field keeps while it holds fewer: the notes field
+  /// is three lines tall when empty (Tomo Task Screens).
+  final int minLines;
+
+  /// The keyboard to ask for. Null asks for one line's keyboard when
+  /// [maxLines] is 1, and a many-line one otherwise.
+  final TextInputType? keyboardType;
+
+  /// The text's size: body, or title for a task's title on its own screen.
+  final TypeStep step;
 
   final List<TextInputFormatter>? inputFormatters;
 
@@ -133,9 +147,9 @@ class _PixelTextFieldState extends State<PixelTextField>
     final colours = TomoTheme.of(context);
     final u = UiPixel.of(context);
     final dpr = u.devicePixelRatio;
-    final n = SharpText.of(context).dotsFor(TypeStep.body.dots(dpr));
+    final n = SharpText.of(context).dotsFor(widget.step.dots(dpr));
     final typing = _focusNode.hasFocus;
-    final style = TypeStep.body
+    final style = widget.step
         .style(dpr, colours.ink)
         .copyWith(fontSize: 12.0 * n);
     final android = defaultTargetPlatform == TargetPlatform.android;
@@ -156,10 +170,12 @@ class _PixelTextFieldState extends State<PixelTextField>
         cursorOpacityAnimates: false,
         selectionColor: colours.pressed(colours.sunken),
         maxLines: widget.maxLines,
-        minLines: 1,
-        keyboardType: widget.maxLines == 1
-            ? TextInputType.text
-            : TextInputType.multiline,
+        minLines: widget.minLines,
+        keyboardType:
+            widget.keyboardType ??
+            (widget.maxLines == 1
+                ? TextInputType.text
+                : TextInputType.multiline),
         textInputAction: widget.textInputAction,
         textCapitalization: TextCapitalization.sentences,
         inputFormatters: widget.inputFormatters,
@@ -200,7 +216,11 @@ class _PixelTextFieldState extends State<PixelTextField>
                         SizedBox(width: u(4)),
                       ],
                       Expanded(
-                        child: PixelText(widget.hint!, colour: colours.muted),
+                        child: PixelText(
+                          widget.hint!,
+                          step: widget.step,
+                          colour: colours.muted,
+                        ),
                       ),
                     ],
                   ),
