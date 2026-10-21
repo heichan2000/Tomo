@@ -566,10 +566,10 @@ abstract class AppLocalizations {
   /// **'Use these'**
   String get customUse;
 
-  /// Plain voice. Length chip, while a custom pair is chosen.
+  /// Plain voice. Length chip, while a custom pair is chosen. Two lines, so the three chips stay one row.
   ///
   /// In en, this message translates to:
-  /// **'Custom · {minutes} min'**
+  /// **'Custom\n{minutes} min'**
   String customChip(int minutes);
 
   /// Plain voice. Focus time under an hour, as on Stats ("15 min").

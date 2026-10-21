@@ -643,7 +643,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String customChip(int minutes) {
-    return 'Custom · $minutes min';
+    return 'Custom\n$minutes min';
   }
 
   @override

@@ -44,8 +44,9 @@ final class BlockLengths {
   static const preset25 = BlockLengths(focusMinutes: 25, breakMinutes: 5);
   static const preset50 = BlockLengths(focusMinutes: 50, breakMinutes: 10);
 
-  /// What onboarding starts with. It shows as Custom.
-  static const firstEver = BlockLengths(focusMinutes: 15, breakMinutes: 5);
+  /// What a new user starts with: the 25-minute preset, so Custom shows no
+  /// length until one is chosen (the user's choice, §17 C166).
+  static const firstEver = preset25;
 
   /// A pair equal to a preset shows as that preset; anything else is Custom.
   LengthChoice get choice => switch (this) {

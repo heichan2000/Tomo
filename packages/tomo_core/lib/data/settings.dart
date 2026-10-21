@@ -22,7 +22,7 @@ final class Settings {
 
   final KeyValueStore _store;
 
-  static const defaultFocusMinutes = 15;
+  static const defaultFocusMinutes = 25;
   static const defaultBreakMinutes = 5;
 
   Future<Appearance> appearance() async {
@@ -40,7 +40,7 @@ final class Settings {
   Future<bool> calmPet() => _readBool('calmPet');
   Future<void> setCalmPet(bool value) => _store.write('calmPet', value);
 
-  /// The focus length last chosen on Ready: 10 to 120 minutes, at first 15.
+  /// The focus length last chosen on Ready: 10 to 120 minutes, at first 25.
   Future<int> lastFocusMinutes() => _readIntWithin(
     'lastFocusMinutes',
     min: 10,
