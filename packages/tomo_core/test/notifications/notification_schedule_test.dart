@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 import 'package:tomo_core/focus/live_cycle.dart';
 import 'package:tomo_core/notifications/haptics.dart';
 import 'package:tomo_core/notifications/notification_schedule.dart';
+import 'package:tomo_core/pet/beat.dart';
 import 'package:tomo_core/pet/species.dart';
 
 /// Which notifications should exist, and which haptic fires (spec §11).
@@ -384,6 +385,23 @@ void main() {
         hapticFor(isForeground: false, beatWillPlay: true),
         Haptic.rewardTap,
       );
+    });
+  });
+
+  group('the haptic each beat fires as it plays', () {
+    test('an evolution: the long evolution buzz (C167)', () {
+      expect(hapticForBeat(const Evolution(from: 1, to: 2)), Haptic.evolutionBuzz);
+    });
+
+    test('every other beat: the reward tap', () {
+      for (final beat in const <Beat>[
+        BlockCredited(minutes: 25, exp: 250),
+        LevelUp(level: 3),
+        TaskCompleted(bonusExp: 30),
+        Hatch(species: Species.geode),
+      ]) {
+        expect(hapticForBeat(beat), Haptic.rewardTap, reason: '$beat');
+      }
     });
   });
 }

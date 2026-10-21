@@ -511,10 +511,17 @@ See [ADR-0013](docs/adr/0013-no-audio-haptics-only.md) and issue #22 for the
 platform mapping, the deliberate silences and the rejected alternatives.
 
 **Reward tap** — the single light haptic that accompanies a *beat* as it plays.
-It is the same tap for all five beat kinds: the hatch feels like the level-up
-feels like an ordinary credited block, because the screen is what tells them
-apart. One tap per beat, so a *beat run* taps once per beat at the queue's own
-spacing, and a skipped run stops tapping.
+It is the same tap for four of the five beat kinds: the hatch feels like the
+level-up feels like an ordinary credited block, because the screen is what
+tells them apart. The evolution alone takes the *evolution buzz*. One haptic per
+beat, so a *beat run* taps once per beat at the queue's own spacing, and a
+skipped run stops tapping.
+
+**Evolution buzz** — the one long buzz (800 ms) the evolution beat fires in
+place of the reward tap, because a new stage is the rarest reward Tomo gives
+(#122). On Android it obeys the phone's notification vibration like the *timer
+buzz*; when silent mode or Do Not Disturb keeps it quiet, the evolution takes
+the reward tap instead.
 
 **Timer buzz** — the stronger haptic fired when a block or break reaches its end
 while Tomo is open and no beat is going to play: the user is on another tab, or
@@ -761,6 +768,6 @@ _Avoid_: streak, days in a row, active days
 - **"Age gate", "age check"** — as things Tomo has. Tomo never asks a user's
   age and has no minimum age of its own. The provider checks age when the user
   gets a key, and each *preset* shows that provider's rule (issue #28).
-- **"Vibration", "buzz", bare** — when what is meant is a *reward tap* or a
-  *timer buzz*. Two haptics, two jobs, two names, and only one of them is
-  allowed to fire per event.
+- **"Vibration", "buzz", bare** — when what is meant is a *reward tap*, the
+  *evolution buzz* or a *timer buzz*. Three haptics, each with its own job and
+  name, and only one of them is allowed to fire per event.

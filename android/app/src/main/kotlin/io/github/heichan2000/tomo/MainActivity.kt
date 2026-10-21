@@ -1,8 +1,10 @@
 package io.github.heichan2000.tomo
 
 import android.Manifest
+import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.os.Build
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
@@ -29,10 +31,7 @@ class MainActivity : FlutterActivity() {
                                 Manifest.permission.POST_NOTIFICATIONS,
                             ),
                     )
-                    "buzz" -> {
-                        buzz(call.argument<Int>("ms")!!.toLong())
-                        result.success(null)
-                    }
+                    "buzz" -> result.success(buzz(call.argument<Int>("ms")!!.toLong()))
                     else -> result.notImplemented()
                 }
             }
@@ -40,8 +39,19 @@ class MainActivity : FlutterActivity() {
 
     // One buzz that obeys the phone's notification vibration, as Tomo's own
     // notifications do: silent mode and Do Not Disturb stop it, and the
-    // notification vibration strength sets how strong it is (C157).
-    private fun buzz(ms: Long) {
+    // notification vibration strength sets how strong it is (C157). Says
+    // false when silent or Do Not Disturb keeps it quiet, so the evolution
+    // can play its tap instead (C167).
+    private fun buzz(ms: Long): Boolean {
+        val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val notifications =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (audio.ringerMode == AudioManager.RINGER_MODE_SILENT ||
+            notifications.currentInterruptionFilter >
+            NotificationManager.INTERRUPTION_FILTER_ALL
+        ) {
+            return false
+        }
         val vibrator = if (Build.VERSION.SDK_INT >= 31) {
             (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager)
                 .defaultVibrator
@@ -49,7 +59,7 @@ class MainActivity : FlutterActivity() {
             @Suppress("DEPRECATION")
             getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
-        if (!vibrator.hasVibrator()) return
+        if (!vibrator.hasVibrator()) return true
         val effect = VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE)
         if (Build.VERSION.SDK_INT >= 33) {
             vibrator.vibrate(
@@ -65,5 +75,6 @@ class MainActivity : FlutterActivity() {
                     .build(),
             )
         }
+        return true
     }
 }

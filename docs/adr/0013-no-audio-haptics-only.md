@@ -9,6 +9,12 @@
   (spec §17 C157). `vibrate()` there is the long-press feedback, which a
   Samsung plays as a short bump hard to tell from the reward tap. iPhone keeps
   `vibrate()`. The rest of this decision is unchanged.
+- **Amended in:** [#122 The finish](https://github.com/heichan2000/Tomo/issues/122)
+  (2026-10-20) — the **evolution** beat fires one long **800 ms buzz** in place
+  of the reward tap, chosen by the user by feel on the real phone; the other
+  four beat kinds keep the tap. It goes through the same `MainActivity` buzz,
+  so silent mode and Do Not Disturb keep it quiet, and then the evolution plays
+  the reward tap instead. iPhone plays `vibrate()` (spec §17 C167).
 
 ## Context
 
@@ -72,7 +78,8 @@ Three-way and exhaustive. Backgrounded is silent *by Tomo* precisely because it
 is not silent by the OS.
 
 **The reward tap is uniform across all five beat kinds** — `blockCredited`,
-`levelUp`, `evolution`, `taskCompleted`, `hatch`. The screen differentiates a
+`levelUp`, `evolution`, `taskCompleted`, `hatch` (since #122, all but
+`evolution`, which takes a long buzz: see the amendment above). The screen differentiates a
 hatch from an ordinary block; the hand does not. One tap per beat, so a beat run
 taps once per beat at the queue's own spacing.
 

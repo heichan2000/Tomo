@@ -1311,7 +1311,8 @@ the device-only file. **The permission buys convenience, never reward.**
 
 | Haptic | Fires | Primitive |
 |---|---|---|
-| Reward tap | each beat as it plays, the same for all five kinds | `HapticFeedback.lightImpact()` |
+| Reward tap | each beat as it plays, but the evolution | `HapticFeedback.lightImpact()` |
+| Evolution buzz | the evolution beat as it plays (C167) | Android: one 800 ms buzz through the same `MainActivity` buzz, so silent mode and Do Not Disturb keep it quiet, and then the reward tap plays instead. iPhone: `HapticFeedback.vibrate()` |
 | Timer buzz | a block or break ends while Tomo is open and no beat will play | Android: one 250 ms buzz that obeys the phone's notification vibration, from `MainActivity` (C157). iPhone: `HapticFeedback.vibrate()` |
 
 ```
@@ -1784,6 +1785,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C164 | The setup tiles' names and heights (the user's choice, #122) | Every egg's name is on two lines, its last word below (*Stone* over *egg*), so the three read alike; a screen reader still hears *Stone egg*. The three tiles are always one height, the tallest's, with their eggs and names in line. |
 | C165 | Ready's Length row, whichever is chosen (the user's choice, #122) | *Custom · 15 min* didn't fit beside the presets, so the row stacked when Custom was chosen. Now the chip reads *Custom* over *15 min*, and a segmented row's options share the tallest's height (`PixelSegmented`), so the row is always one row of three; a label on two lines is measured by its wider line. It still stacks where even that doesn't fit, as at 200% text. |
 | C166 | The first block's length (the user's choice, #122; ADR-0012 amended) | The 25/5 preset, not 15/5: `BlockLengths.firstEver` is `preset25` and `lastFocusMinutes` defaults to 25. A new user's Ready shows *25 min* chosen and a plain *Custom*; Custom shows a length only once the user picks one. |
+| C167 | The evolution beat's haptic (the user's choice by feel, #122; ADR-0013 amended) | One **800 ms** buzz in place of the reward tap, picked from 250, 500 and 800 ms played on the Galaxy. `hapticForBeat` in core picks it; `RunPlayer` plays each beat's own haptic. On Android `MainActivity`'s buzz answers whether it played: silent mode or Do Not Disturb keeps it quiet, and the evolution then plays the reward tap. iPhone plays `vibrate()`. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

@@ -48,8 +48,9 @@ C100).
 
 - [ ] At the phone's largest text setting (200% on Android), every screen
       scrolls rather than cuts text off, and it looks right.
-- [ ] The reward tap fires on each beat, and the timer buzz fires when a block
-      ends while you are on the Work tab.
+- [ ] The reward tap fires on each beat, the evolution plays one long buzz
+      instead (C167), and the timer buzz fires when a block ends while you are
+      on the Work tab.
 - [ ] On Android the timer buzz feels like a real buzz, not a bump like the
       reward tap, and with the phone on silent it does not come
       ([#107](https://github.com/heichan2000/Tomo/issues/107), C157).
@@ -72,9 +73,9 @@ C100).
 
 ## Pixels on a real screen (first release, then when the kit changes)
 
-A debug build opens on the **kit gallery** (spec §17 C51) until the app shell
-exists: every part of the kit in every state, in either theme, any accent and
-any text size. Its *Pixel check screen* button opens the **pixel check** (C48):
+In a debug build, **long-press the Home tab** to open the **kit gallery**
+(spec §17 C51): every part of the kit in every state, in either theme, any
+accent and any text size. Its *Pixel check screen* button opens the **pixel check** (C48):
 the type steps, every pet and egg at every spot, the dither and both haptics. A
 screenshot from the phone (`adb exec-out screencap -p`) is at the phone's own
 resolution, so its dots can be counted.
@@ -90,8 +91,10 @@ resolution, so its dots can be counted.
       spec §17 C55).
 - [ ] The pet's pixels are all the same size and sharp at every spot (Home,
       Focus, setup tiles, hatch).
-- [ ] Android haptics work without a manifest permission
-      ([Sound & haptics spec](https://github.com/heichan2000/Tomo/issues/22)).
+- [ ] Android haptics work, and the only permission they need is `VIBRATE`,
+      for the timer buzz; it is never asked of the user
+      ([Sound & haptics spec](https://github.com/heichan2000/Tomo/issues/22),
+      C157).
 
 ## App icon and splash ([App icon and splash screen](https://github.com/heichan2000/Tomo/issues/44))
 

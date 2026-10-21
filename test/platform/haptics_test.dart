@@ -61,6 +61,31 @@ void main() {
       );
     });
 
+    test('the evolution buzz is one 800 ms buzz, through MainActivity '
+        '(C167)', () async {
+      messenger.setMockMethodCallHandler(tomo, (call) async {
+        android.add(call);
+        return true;
+      });
+      await const SystemHaptics().play(Haptic.evolutionBuzz);
+
+      expect(flutter, isEmpty);
+      expect(android.single.method, 'buzz');
+      expect(android.single.arguments, {'ms': 800});
+    });
+
+    test('an evolution buzz the phone keeps quiet (silent, Do Not Disturb) '
+        'is the reward tap instead', () async {
+      messenger.setMockMethodCallHandler(tomo, (call) async {
+        android.add(call);
+        return false;
+      });
+      await const SystemHaptics().play(Haptic.evolutionBuzz);
+
+      expect(android.single.method, 'buzz');
+      expect(flutter.single.arguments, 'HapticFeedbackType.lightImpact');
+    });
+
     test('the reward tap is a light impact', () async {
       await const SystemHaptics().play(Haptic.rewardTap);
 
@@ -72,6 +97,14 @@ void main() {
 
   group('on iPhone', () {
     setUp(() => debugDefaultTargetPlatformOverride = TargetPlatform.iOS);
+
+    test("the evolution buzz is Flutter's vibrate", () async {
+      await const SystemHaptics().play(Haptic.evolutionBuzz);
+
+      expect(android, isEmpty);
+      expect(flutter.single.method, 'HapticFeedback.vibrate');
+      expect(flutter.single.arguments, isNull);
+    });
 
     test("the timer buzz is Flutter's vibrate", () async {
       await const SystemHaptics().play(Haptic.timerBuzz);

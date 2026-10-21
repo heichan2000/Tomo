@@ -53,6 +53,29 @@ void main() {
     p.dispose();
   });
 
+  testWidgets('an evolution beat fires the long buzz, not the tap (C167)', (
+    tester,
+  ) async {
+    final p = player(
+      RunScript(
+        const [
+          BlockCredited(minutes: 25, exp: 250),
+          LevelUp(level: 10),
+          Evolution(from: 1, to: 2),
+        ],
+        species: Species.geode,
+        expBefore: 600 * 10 - 250,
+        theme: ThemeName.light,
+        movement: Movement.full,
+      ),
+    )..start();
+    for (var i = 0; i < 100; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(taps, [Haptic.rewardTap, Haptic.rewardTap, Haptic.evolutionBuzz]);
+    p.dispose();
+  });
+
   testWidgets('says it finished when the run reaches its payload, once', (
     tester,
   ) async {
