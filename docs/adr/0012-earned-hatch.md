@@ -5,6 +5,7 @@
 - **Decided in:** [#18 Onboarding & hatch flow design](https://github.com/heichan2000/Tomo/issues/18)
 - **Amended by:** [ADR-0030](0030-each-pet-has-its-own-character.md) — the pick has no personality choice; each pet comes with its own character.
 - **Amended by:** [ADR-0031](0031-choose-the-pet-by-its-egg.md) — the pick is of an egg, and the species stays hidden until the hatch.
+- **Amended in:** [#122 The finish](https://github.com/heichan2000/Tomo/issues/122) (2026-10-20) — the first block defaults to the **25-minute preset**, not 15. The user chose it on the real phone, knowing it makes the first hatch further away: a first Ready showing *Custom* over *15 min* read as a setting already made, and the user wanted to start from the plain preset and pick a custom time only by choice.
 
 ## Context
 
@@ -41,9 +42,9 @@ Onboarding is two screens above the shell, once ever:
 The user then lands on Home holding **that species' egg**. The species is chosen
 and known from this point; only the name and the hatch are outstanding.
 
-**The first block's default length is 15 minutes**, not 25. Block length
-otherwise remembers last-used per #5; a brand-new user has no last-used, and this
-is the initial value.
+**The first block's default length is 25 minutes**, the 25/5 preset (15 until
+#122). Block length otherwise remembers last-used per #5; a brand-new user has
+no last-used, and this is the initial value.
 
 When that block settles, Focus plays its ordinary block Beat and then a
 **full-screen takeover** — the only moment in Tomo that clears the screen. The
@@ -59,8 +60,9 @@ sees the egg whole on a different screen.
 ## Consequences
 
 - **A user who never completes a block never meets a pet.** This is accepted, not
-  mitigated away. The 15-minute first block roughly halves the distance to it;
-  nothing else is offered, because every backstop considered turned "earned" back
+  mitigated away. A 15-minute first block once halved the distance to it; since
+  #122 the first block is the plain 25-minute preset, by the user's choice, and
+  a user who wants a quicker hatch can pick Custom. Nothing else is offered, because every backstop considered turned "earned" back
   into "delayed".
 - **The pet has a voice before it has a name.** #15's pre-hatch fallback assumed
   neither species nor name was known. Species is known, so the "Your egg" title

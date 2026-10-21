@@ -142,7 +142,7 @@ void main() {
     () async {
       await addPet();
       await start(BlockLengths.firstEver);
-      clock.advance(const Duration(minutes: 15));
+      clock.advance(const Duration(minutes: 25));
       ok(await focus.reconcile());
 
       final pet = (await reader.read())!;

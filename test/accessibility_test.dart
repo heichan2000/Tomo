@@ -334,7 +334,7 @@ void main() {
       await back(tester);
       await tap(tester, row('Write the intro'));
       await stop(tester, problems, 'Ready', header: 'Write the intro');
-      await tap(tester, find.words('Custom · 15 min'));
+      await tap(tester, find.words('Custom'));
       await stop(tester, problems, 'The Custom sheet', header: 'Custom length');
       await back(tester);
       await tap(tester, find.words('25 min'));

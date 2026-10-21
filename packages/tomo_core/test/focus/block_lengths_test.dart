@@ -41,8 +41,8 @@ void main() {
       expect(BlockLengths.preset50.breakMinutes, 10);
     });
 
-    test('the first block ever is 15 minutes with a 5-minute break', () {
-      expect(BlockLengths.firstEver.focusMinutes, 15);
+    test('the first block ever is the 25-minute preset', () {
+      expect(BlockLengths.firstEver.focusMinutes, 25);
       expect(BlockLengths.firstEver.breakMinutes, 5);
     });
   });
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('any other pair shows as Custom', () {
-      expect(BlockLengths.firstEver.choice, LengthChoice.custom);
+      expect(BlockLengths.firstEver.choice, LengthChoice.preset25);
       expect(
         const BlockLengths(focusMinutes: 25, breakMinutes: 10).choice,
         LengthChoice.custom,

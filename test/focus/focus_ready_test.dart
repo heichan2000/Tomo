@@ -290,23 +290,56 @@ void main() {
       semantics.dispose();
     });
 
-    testTomo('the first time, the length is Custom · 15 min', (tester) async {
-      await pumpTomo(tester, before: someTasks);
-      await openReady(tester, 'Read the paper');
+    testTomo(
+      'the first time, the length is 25 min, and Custom shows no length',
+      (tester) async {
+        await pumpTomo(tester, before: someTasks);
+        await openReady(tester, 'Read the paper');
 
-      expect(find.words('Length'), findsOneWidget);
-      expect(find.words('25 min'), findsOneWidget);
-      expect(find.words('50 min'), findsOneWidget);
-      expect(find.words('Custom · 15 min'), findsOneWidget);
-      expect(
-        tester
-            .widget<PixelSegmented<LengthChoice>>(
-              find.byType(PixelSegmented<LengthChoice>),
-            )
-            .selected,
-        LengthChoice.custom,
-      );
-    });
+        expect(find.words('Length'), findsOneWidget);
+        expect(find.words('25 min'), findsOneWidget);
+        expect(find.words('50 min'), findsOneWidget);
+        expect(find.words('Custom'), findsOneWidget);
+        expect(
+          tester
+              .widget<PixelSegmented<LengthChoice>>(
+                find.byType(PixelSegmented<LengthChoice>),
+              )
+              .selected,
+          LengthChoice.preset25,
+        );
+      },
+    );
+
+    // The Galaxy's 2.8125× is 384 points wide; the emulator's 2.625×, 411.
+    for (final (dpr, size) in [
+      (2.625, const Size(1080, 2400)),
+      (2.8125, const Size(1080, 2316)),
+    ]) {
+      testTomo('at $dpr× the length is one row of three, one height, '
+          'whichever is chosen', (tester) async {
+        await pumpTomo(tester, dpr: dpr, physicalSize: size, before: someTasks);
+        await openReady(tester, 'Read the paper');
+
+        Finder option(String label) => find
+            .ancestor(of: find.words(label), matching: find.byType(Pressable))
+            .first;
+        void inOneRow(List<String> labels) {
+          final first = tester.getRect(option(labels.first));
+          for (final label in labels) {
+            final box = tester.getRect(option(label));
+            expect(box.top, first.top, reason: label);
+            expect(box.height, first.height, reason: label);
+          }
+        }
+
+        inOneRow(['25 min', '50 min', 'Custom']);
+        await tap(tester, find.words('Custom'));
+        await tap(tester, find.bySemanticsLabel('More').first);
+        await tap(tester, find.words('Use these'));
+        inOneRow(['25 min', '50 min', 'Custom\n30 min']);
+      });
+    }
 
     testTomo('Custom: Focus 10–120 in fives, Break 1–30, then Use these', (
       tester,
@@ -314,13 +347,15 @@ void main() {
       await pumpTomo(tester, before: someTasks);
       await openReady(tester, 'Read the paper');
 
-      await tap(tester, find.words('Custom · 15 min'));
+      await tap(tester, find.words('Custom'));
       expect(find.words('Custom length'), findsOneWidget);
       final fewer = find.bySemanticsLabel('Fewer');
       final more = find.bySemanticsLabel('More');
 
-      // Focus: 15 → 10, and no lower.
-      await tap(tester, fewer.first);
+      // Focus: 25 → 10, and no lower.
+      for (var i = 0; i < 3; i++) {
+        await tap(tester, fewer.first);
+      }
       expect(find.words('10 min'), findsOneWidget);
       expect(
         tester
@@ -342,7 +377,7 @@ void main() {
 
       await tap(tester, find.words('Use these'));
       expect(find.byType(CustomLengthSheet), findsNothing);
-      expect(find.words('Custom · 20 min'), findsOneWidget);
+      expect(find.words('Custom\n20 min'), findsOneWidget);
     });
 
     testTomo('a custom pair equal to a preset shows as the preset', (
@@ -351,10 +386,10 @@ void main() {
       await pumpTomo(tester, before: someTasks);
       await openReady(tester, 'Read the paper');
 
-      await tap(tester, find.words('Custom · 15 min'));
-      final more = find.bySemanticsLabel('More');
-      await tap(tester, more.first);
-      await tap(tester, more.first);
+      await tap(tester, find.words('Custom'));
+      // 25 → 20 → 25: back where it began.
+      await tap(tester, find.bySemanticsLabel('Fewer').first);
+      await tap(tester, find.bySemanticsLabel('More').first);
       await tap(tester, find.words('Use these'));
 
       expect(find.words('Custom'), findsOneWidget);
@@ -497,7 +532,7 @@ void main() {
           'Length',
           '25 min',
           '50 min',
-          'Custom · 15 min',
+          'Custom',
           'Start focusing',
         ],
       );

@@ -382,7 +382,8 @@ class _TaskRow extends StatelessWidget {
 }
 
 /// "Length" over **25 min / 50 min / Custom**. While a custom pair is
-/// chosen the third reads *Custom · 15 min*.
+/// chosen the third reads *Custom* over *15 min*, so the row keeps its shape
+/// (§17 C165).
 class _LengthControl extends StatelessWidget {
   const _LengthControl({required this.lengths, required this.onChanged});
 

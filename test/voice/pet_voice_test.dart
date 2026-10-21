@@ -666,7 +666,7 @@ void main() {
         'A block is running on "Write the intro". Stop it or let it finish '
         'first.',
       );
-      expect(l.customChip(15), 'Custom · 15 min');
+      expect(l.customChip(15), 'Custom\n15 min');
     });
 
     test('the lock lines end the same way', () {

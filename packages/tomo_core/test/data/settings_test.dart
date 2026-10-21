@@ -17,7 +17,7 @@ void main() {
     expect(await settings.appearance(), Appearance.system);
     expect(await settings.autoStart(), isFalse);
     expect(await settings.calmPet(), isFalse);
-    expect(await settings.lastFocusMinutes(), 15);
+    expect(await settings.lastFocusMinutes(), 25);
     expect(await settings.lastBreakMinutes(), 5);
     expect(await settings.lastProjectId(), isNull);
   });
@@ -82,17 +82,17 @@ void main() {
       expect(await settings.appearance(), Appearance.system);
       expect(await settings.autoStart(), isFalse);
       expect(await settings.calmPet(), isFalse);
-      expect(await settings.lastFocusMinutes(), 15);
+      expect(await settings.lastFocusMinutes(), 25);
       expect(await settings.lastBreakMinutes(), 5);
       expect(await settings.lastProjectId(), isNull);
     });
 
     test('a focus length outside 10 to 120 minutes', () async {
       store.values['lastFocusMinutes'] = 9;
-      expect(await settings.lastFocusMinutes(), 15);
+      expect(await settings.lastFocusMinutes(), 25);
 
       store.values['lastFocusMinutes'] = 121;
-      expect(await settings.lastFocusMinutes(), 15);
+      expect(await settings.lastFocusMinutes(), 25);
 
       store.values['lastFocusMinutes'] = 120;
       expect(await settings.lastFocusMinutes(), 120);

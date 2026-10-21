@@ -7,8 +7,8 @@ import 'package:tomo_core/pet/run_script.dart';
 enum RunEnd { finished, skipped }
 
 /// Plays a beat run on screen (spec §7.4, §7.5): its [script] frame by
-/// frame, one beat at a time, never overlapping. Each beat fires one reward
-/// tap as it starts. [onEnd] is told once, when the run reaches its payload
+/// frame, one beat at a time, never overlapping. Each beat fires its haptic
+/// as it starts: the reward tap, or the evolution's long buzz (C167). [onEnd] is told once, when the run reaches its payload
 /// (the choices, or the naming) or is skipped; the last beat's effects then
 /// play out under the payload, and the player falls still.
 ///
@@ -71,8 +71,8 @@ class RunPlayer extends ChangeNotifier {
   void _show(Duration t) {
     _frame = script.at(t);
     while (_tapped <= _frame.beat) {
+      _haptics.play(hapticForBeat(script.run[_tapped]));
       _tapped++;
-      _haptics.play(Haptic.rewardTap);
     }
     if (_ended == null && t >= script.length) _end(RunEnd.finished);
     notifyListeners();

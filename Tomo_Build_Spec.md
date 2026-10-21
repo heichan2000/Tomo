@@ -218,12 +218,14 @@ dismiss the sheet and credit it.
   - **25 min** comes with a **5-minute** break; **50 min** with a **10-minute** break.
   - **Custom** opens a sheet with two −/+ steppers: **Focus** 10–120 minutes in
     steps of 5, and **Break** 1–30 minutes in steps of 1, then *Use these*.
-    While a custom pair is chosen, the third chip reads **Custom · 15 min**
-    (the focus length).
+    While a custom pair is chosen, the third chip reads **Custom** over
+    **20 min** (the focus length), on two lines; otherwise just **Custom**, and the row stays one row of
+    three, every chip one height (the user's choice, C165).
 - The chosen pair is remembered (`lastFocusMinutes`, `lastBreakMinutes`, §6.3).
   A pair equal to 25/5 or 50/10 shows as that preset.
-- **The first block ever defaults to 15 minutes**, break 5 (onboarding's
-  initial values; it shows as *Custom · 15 min*).
+- **The first block ever defaults to the 25-minute preset**, break 5, so a new
+  user's Ready shows *25 min* chosen and a plain *Custom* (the user's choice,
+  ADR-0012 as amended, C166).
 - Labels carry the real lengths: *Take a 5-min break*, *Another 25-min block*.
 - Length lives only on Ready. The only timer item in Settings is auto-start.
 
@@ -447,7 +449,7 @@ code. The clock is injected, and `start()` reports a failed open (C19).
 | `appearance` | `system`/`light`/`dark` | `system` |
 | `autoStart` | bool | `false` |
 | `calmPet` | bool | `false` |
-| `lastFocusMinutes` | int | **15** |
+| `lastFocusMinutes` | int | **25** |
 | `lastBreakMinutes` | int | 5 |
 | `lastProjectId` | int | absent → most recently active project |
 
@@ -1223,7 +1225,7 @@ New surfaces from §4.7 and §8.5, in plain voice:
 | Custom sheet, focus stepper `customFocus` | Focus |
 | Custom sheet, break stepper `customBreak` | Break |
 | Custom sheet, button `customUse` | Use these |
-| Length chip `customChip` | Custom · {minutes} min |
+| Length chip `customChip` | Custom / {minutes} min (two lines) |
 | Choice `startAnotherTask` | Start another task |
 
 The other labels in §8.5 already exist in the script and the approved screens.
@@ -1255,7 +1257,7 @@ level 8. Geode: Level eight. Another hour in me." Full set in #51.
 countdown, foreground service or Live Activity.
 
 - **Title** is the pet's name, or the egg's (**"Your stone egg"**) before the
-  hatch. The first block's body is plain and hints at the hatch: "15 minutes of
+  hatch. The first block's body is plain and hints at the hatch: "25 minutes of
   Write the intro, counted. Your stone egg is cracking!"; a break that ends
   before the hatch is seen says "Your break is over." (ADR-0031). **Bodies** are facts that stay true when read
   hours late: the task and minutes counted; never EXP, level, imperatives or
@@ -1309,7 +1311,8 @@ the device-only file. **The permission buys convenience, never reward.**
 
 | Haptic | Fires | Primitive |
 |---|---|---|
-| Reward tap | each beat as it plays, the same for all five kinds | `HapticFeedback.lightImpact()` |
+| Reward tap | each beat as it plays, but the evolution | `HapticFeedback.lightImpact()` |
+| Evolution buzz | the evolution beat as it plays (C167) | Android: one 800 ms buzz through the same `MainActivity` buzz, so silent mode and Do Not Disturb keep it quiet, and then the reward tap plays instead. iPhone: `HapticFeedback.vibrate()` |
 | Timer buzz | a block or break ends while Tomo is open and no beat will play | Android: one 250 ms buzz that obeys the phone's notification vibration, from `MainActivity` (C157). iPhone: `HapticFeedback.vibrate()` |
 
 ```
@@ -1779,6 +1782,10 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C161 | Onboarding 2's field, which has no label on screen | A screen reader calls it by the title over it, *What are you working on?* |
 | C162 | No state by colour alone (§12), state by state | Done: the glyph's check, muted, at the bottom. Doing: the half-filled ring and *Doing*. Running: the *Focus* chip. A chosen segment: a solid block on an empty track, held at 3:1 or more by the contrast test. A chosen row: a check. The tab: its filled icon. A switch: the knob's side. Turned off: sunken and muted, with the reason in words beside it. Errors and refusals: words in a sunken strip. Focus or break: the chip's word and the face. Nothing needed changing. |
 | C163 | Where 200% text is tested | Once, across every route (`test/accessibility_test.dart`), in place of each screen's own copy. Stats keeps its test of a wide number at 200% (C155), and the error block its own, since it is not a route. |
+| C164 | The setup tiles' names and heights (the user's choice, #122) | Every egg's name is on two lines, its last word below (*Stone* over *egg*), so the three read alike; a screen reader still hears *Stone egg*. The three tiles are always one height, the tallest's, with their eggs and names in line. |
+| C165 | Ready's Length row, whichever is chosen (the user's choice, #122) | *Custom · 15 min* didn't fit beside the presets, so the row stacked when Custom was chosen. Now the chip reads *Custom* over *15 min*, and a segmented row's options share the tallest's height (`PixelSegmented`), so the row is always one row of three; a label on two lines is measured by its wider line. It still stacks where even that doesn't fit, as at 200% text. |
+| C166 | The first block's length (the user's choice, #122; ADR-0012 amended) | The 25/5 preset, not 15/5: `BlockLengths.firstEver` is `preset25` and `lastFocusMinutes` defaults to 25. A new user's Ready shows *25 min* chosen and a plain *Custom*; Custom shows a length only once the user picks one. |
+| C167 | The evolution beat's haptic (the user's choice by feel, #122; ADR-0013 amended) | One **800 ms** buzz in place of the reward tap, picked from 250, 500 and 800 ms played on the Galaxy. `hapticForBeat` in core picks it; `RunPlayer` plays each beat's own haptic. On Android `MainActivity`'s buzz answers whether it played: silent mode or Do Not Disturb keeps it quiet, and the evolution then plays the reward tap. iPhone plays `vibrate()`. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

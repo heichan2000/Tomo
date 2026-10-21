@@ -620,9 +620,9 @@
   "@customUse": {
     "description": "Plain voice. Custom sheet, button."
   },
-  "customChip": "Custom · {minutes} min",
+  "customChip": "Custom\n{minutes} min",
   "@customChip": {
-    "description": "Plain voice. Length chip, while a custom pair is chosen.",
+    "description": "Plain voice. Length chip, while a custom pair is chosen. Two lines, so the three chips stay one row.",
     "placeholders": {
       "minutes": {
         "type": "int"

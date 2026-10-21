@@ -18,8 +18,11 @@ import '../ui/kit_harness.dart';
 /// and nothing is written until the end. The pet is a surprise until the
 /// hatch (ADR-0031), and there is no personality to choose (ADR-0030).
 void main() {
+  /// An egg's name as its tile shows it, the last word below (§17 C164).
+  String shown(String name) => name.replaceFirst(' ', '\n');
+
   Finder tile(String name) => find
-      .ancestor(of: find.words(name), matching: find.byType(Pressable))
+      .ancestor(of: find.words(shown(name)), matching: find.byType(Pressable))
       .first;
 
   Finder button(String label) => find
@@ -53,7 +56,7 @@ void main() {
 
     expect(find.words('Choose your egg'), findsOneWidget);
     for (final name in ['Stone egg', 'Paper egg', 'Spotted egg']) {
-      expect(find.words(name), findsOneWidget);
+      expect(find.words(shown(name)), findsOneWidget);
     }
     expect(
       tester.getSemantics(tile('Stone egg')),
@@ -149,6 +152,43 @@ void main() {
     );
     expect(corner.dx - box.left, lessThan(box.width / 4));
   });
+
+  // The Galaxy's 2.8125×, 384 points wide, wraps *Spotted egg* alone.
+  for (final (dpr, size) in [
+    (2.625, const Size(1080, 2400)),
+    (2.8125, const Size(1080, 2316)),
+  ]) {
+    for (final textScale in [1.0, 2.0]) {
+      testTomo('the three tiles are one size, their eggs and names in line, '
+          'at $dpr× and ${(textScale * 100).round()}% text', (tester) async {
+        await pumpTomo(
+          tester,
+          onboarded: false,
+          dpr: dpr,
+          physicalSize: size,
+          textScale: textScale,
+        );
+        const names = ['Stone egg', 'Paper egg', 'Spotted egg'];
+        final first = tester.getRect(tile(names.first));
+        final eggs = tester.widgetList(find.byType(PetView)).toList();
+        for (final (i, name) in names.indexed) {
+          final box = tester.getRect(tile(name));
+          expect(box.top, first.top, reason: name);
+          expect(box.height, first.height, reason: name);
+          expect(
+            tester.getTopLeft(find.byWidget(eggs[i])).dy,
+            tester.getTopLeft(find.byWidget(eggs.first)).dy,
+            reason: name,
+          );
+          expect(
+            tester.getTopLeft(find.words(shown(name))).dy,
+            tester.getTopLeft(find.words(shown(names.first))).dy,
+            reason: name,
+          );
+        }
+      });
+    }
+  }
 
   testTomo('only the chosen egg sways', (tester) async {
     await pumpTomo(tester, onboarded: false);

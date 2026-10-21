@@ -83,7 +83,7 @@ void main() {
     await finishABlock(BlockLengths.firstEver);
 
     expect(await beats.owedRun(), [
-      const BlockCredited(minutes: 15, exp: 150),
+      const BlockCredited(minutes: 25, exp: 250),
       const Hatch(species: Species.lily),
     ]);
   });
@@ -93,7 +93,7 @@ void main() {
     () async {
       await finishABlock(BlockLengths.firstEver);
       ok(await focus.markBeatRunSeen());
-      // 150 EXP so far; 50 more minutes reaches 650, level 2.
+      // 250 EXP so far; 50 more minutes reaches 750, level 2.
       await finishABlock(BlockLengths.preset50);
 
       expect(await beats.owedRun(), [

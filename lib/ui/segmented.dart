@@ -18,9 +18,11 @@ class Segment<T> {
 }
 
 /// A segmented control (spec §9.3): a sunken track with the chosen option in
-/// the accent. When every option fits on one row they share it equally;
-/// when one doesn't, the options stack one per row. It wraps rather than
-/// clips, and each option is at least 48 pt tall.
+/// the accent. When every option fits on one row they share it equally and
+/// stand one height, the tallest's, so a two-line label (*Custom* over
+/// *15 min*) keeps the row's shape; when one doesn't, the options stack one
+/// per row. It wraps rather than clips, and each option is at least 48 pt
+/// tall.
 class PixelSegmented<T> extends StatelessWidget {
   const PixelSegmented({
     super.key,
@@ -97,7 +99,10 @@ class PixelSegmented<T> extends StatelessWidget {
             final width = (constraints.maxWidth * dpr).floor();
             final oneRow = fitsOnOneRow(
               labels: [
-                for (final s in segments) lineWidthDots(s.label, n, direction),
+                // A label on two lines is as wide as its wider line.
+                for (final s in segments)
+                  for (final line in s.label.split('\n'))
+                    lineWidthDots(line, n, direction),
               ],
               width: width.toDouble(),
               uiPixel: u.dots,
@@ -115,18 +120,20 @@ class PixelSegmented<T> extends StatelessWidget {
             }
             final count = segments.length;
             final room = width - (count - 1) * u.dots;
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final (i, s) in segments.indexed) ...[
-                  if (i > 0) SizedBox(width: u(1)),
-                  SizedBox(
-                    // The dots left over go to the first shares.
-                    width: (room ~/ count + (i < room % count ? 1 : 0)) / dpr,
-                    child: option(s),
-                  ),
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final (i, s) in segments.indexed) ...[
+                    if (i > 0) SizedBox(width: u(1)),
+                    SizedBox(
+                      // The dots left over go to the first shares.
+                      width: (room ~/ count + (i < room % count ? 1 : 0)) / dpr,
+                      child: option(s),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             );
           },
         ),
