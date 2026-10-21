@@ -1085,7 +1085,7 @@ class _StopSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PixelText(words.stopTitle, step: TypeStep.title),
+        PixelText(words.stopTitle, step: TypeStep.title, header: true),
         SizedBox(height: u(5)),
         PixelText(words.stopBody),
         SizedBox(height: u(5)),

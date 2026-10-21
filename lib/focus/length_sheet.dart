@@ -72,7 +72,7 @@ class _CustomLengthSheetState extends State<CustomLengthSheet> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PixelText(words.customTitle, step: TypeStep.title),
+        PixelText(words.customTitle, step: TypeStep.title, header: true),
         SizedBox(height: u(5)),
         stepper(
           label: words.customFocus,

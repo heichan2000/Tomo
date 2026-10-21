@@ -138,7 +138,7 @@ class _TaskPickerSheetState extends ConsumerState<TaskPickerSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PixelText(words.pickerTitle, step: TypeStep.title),
+            PixelText(words.pickerTitle, step: TypeStep.title, header: true),
             if (choices != null) ...[
               SizedBox(height: u(5)),
               PixelTextField(
@@ -294,7 +294,7 @@ class _ProjectSheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PixelText(words.chooseProject, step: TypeStep.title),
+        PixelText(words.chooseProject, step: TypeStep.title, header: true),
         for (final project in projects) ...[
           SizedBox(height: u(3)),
           PixelRow(

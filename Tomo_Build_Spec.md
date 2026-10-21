@@ -1367,6 +1367,14 @@ ADR-0005. **Enumerated behaviours; Tomo claims conformance to nothing.**
 9. **A block stores its local date and UTC offset at settle**; travel and DST
    never move a day.
 
+**Checked across every route** in [The accessibility pass](https://github.com/heichan2000/Tomo/issues/121):
+`test/accessibility_test.dart` walks the app from onboarding through the
+hatch and every screen, sheet and Focus state, at 100% and 200% text, in both
+themes, on three screens. At each stop nothing overflows, every tappable part
+is at least 48 pt and labelled, the title is a header, nothing is a live
+region and nothing is read twice in a row. Walked by the user with TalkBack on
+the emulator. Its calls: C158–C163.
+
 ---
 
 ## 13. Diagnostics and privacy
@@ -1765,6 +1773,12 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C155 | A Stats number too wide to sit beside its label | It drops under the label, at the right (Tomo Stats Screen). Numbers stop growing at 130% text and never wrap. |
 | C156 | Parts Stats and Settings needed | `BackHeader` (back and an optional title, from Task detail's own); `askName` (the project name sheet, now for any name); `autoStartProvider`; `appVersionProvider` (`package_info_plus`). `placeholder_screens.dart` is gone. |
 | C157 | The timer buzz on Android | One **250 ms** buzz, chosen by the user by feel on the Galaxy S23 Ultra over two or three pulses and a 500 ms one ([#107](https://github.com/heichan2000/Tomo/issues/107)). `SystemHaptics` asks `MainActivity` for it on the `tomo/notifications` channel (`buzz`, with the length), and `MainActivity` vibrates as a **notification** (`USAGE_NOTIFICATION`): silent mode and Do Not Disturb stop it, and the phone's notification vibration strength sets how strong it is, like the notification it stands in for. Not as touch feedback (a setting could swallow it, as before) and not as an alarm (past a phone silenced on purpose). A phone that can't or won't vibrate is not an error. `VIBRATE` is now in Tomo's own manifest. iPhone keeps `vibrate()`, unchecked. |
+| C158 | Which words a screen reader hears as headers | Every screen's and sheet's title, the Focus header's task title included, and the group labels on Settings and Task detail (`PixelText(header:)`). Home has none: its pet is its first item. Approved by the user with TalkBack ([#121](https://github.com/heichan2000/Tomo/issues/121)). |
+| C159 | Task detail's captions to a screen reader | *Project*, *Status* and *Focus so far* are headers, as Settings' group labels are; *Planned blocks* is not read, because the stepper under it already says it. |
+| C160 | A stepper's new value | A press says the new value ("20 min"), as the user caused it; a value changed any other way is not said. The squares keep the words *Fewer* and *More*. |
+| C161 | Onboarding 2's field, which has no label on screen | A screen reader calls it by the title over it, *What are you working on?* |
+| C162 | No state by colour alone (§12), state by state | Done: the glyph's check, muted, at the bottom. Doing: the half-filled ring and *Doing*. Running: the *Focus* chip. A chosen segment: a solid block on an empty track, held at 3:1 or more by the contrast test. A chosen row: a check. The tab: its filled icon. A switch: the knob's side. Turned off: sunken and muted, with the reason in words beside it. Errors and refusals: words in a sunken strip. Focus or break: the chip's word and the face. Nothing needed changing. |
+| C163 | Where 200% text is tested | Once, across every route (`test/accessibility_test.dart`), in place of each screen's own copy. Stats keeps its test of a wide number at 200% (C155), and the error block its own, since it is not a route. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---

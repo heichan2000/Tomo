@@ -495,32 +495,4 @@ void main() {
     expect(find.byType(TaskDetailScreen), findsNothing);
     expect(find.byType(ProjectScreen).hitTestable(), findsOneWidget);
   });
-
-  group('at 200% text', () {
-    for (final theme in ThemeName.values) {
-      testTomo('nothing overflows, ${theme.name}', (tester) async {
-        await openTask(
-          tester,
-          'Email Łukasz about the second draft of chapter two',
-          textScale: 2,
-          theme: theme,
-          before: (db) async {
-            await startBlockOn(db);
-            await add(
-              db,
-              'Email Łukasz about the second draft of chapter two',
-              status: TaskStatus.doing,
-              blocks: 5,
-              planned: 4,
-              notes: 'Chapters 2 and 3. The library copy is on hold.',
-            );
-          },
-        );
-        expect(tester.takeException(), isNull);
-        await tester.ensureVisible(button('Delete task'));
-        await tester.pump();
-        expect(tester.takeException(), isNull);
-      });
-    }
-  });
 }

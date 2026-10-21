@@ -22,7 +22,7 @@ import '../ui/kit_harness.dart';
 
 /// Focus while a block or a break runs, Stop early, the countdown, and the
 /// banner (spec §8.1, §8.4, §8.6, §4.8, ADR-0003, ADR-0010, ADR-0011).
-/// Promises 6 (the countdown's half), 20 (the widget half), 31, 32 and 33
+/// Promises 6 (the countdown's half), 20 (the widget half), 32 and 33
 /// (the clock's half).
 void main() {
   // Every test starts at nine; a block started then runs to 9:25.
@@ -465,37 +465,6 @@ void main() {
 
       expect(find.words('Start now'), findsNothing);
     });
-  });
-
-  testTomo('at 200% text, every state scrolls rather than clips', (
-    tester,
-  ) async {
-    await open(
-      tester,
-      before: (db) => onBreak(db, autoStart: true),
-      minute: 26,
-      textScale: 2,
-      theme: ThemeName.dark,
-    );
-    expect(tester.takeException(), isNull);
-
-    await passTo(tester, 30);
-    expect(find.byType(LiveFocus), findsOneWidget);
-    expect(tester.takeException(), isNull);
-
-    await tap(tester, button('Start now'));
-    expect(tester.takeException(), isNull);
-
-    await tap(tester, button('Stop early'));
-    expect(find.words('Stop this block?'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-
-    await tap(tester, button('Keep going'));
-    await tap(tester, minimise());
-    expect(tester.takeException(), isNull);
-    await passTo(tester, 56);
-    expect(inBanner('Block done · 25 min counted'), findsOneWidget);
-    expect(tester.takeException(), isNull);
   });
 }
 

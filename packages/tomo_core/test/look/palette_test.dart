@@ -46,6 +46,8 @@ void main() {
           'switch knob off, on sunken': (p.muted, p.sunken),
           'switch knob on, on accent': (p.onAccent, p.accent),
           'lit EXP block next to an unlit one': (p.accent, p.sunken),
+          // Chosen is a solid block on an empty track, not a hue.
+          'chosen segment on its track': (p.accent, p.sunken),
         };
 
         text.forEach((name, pair) {

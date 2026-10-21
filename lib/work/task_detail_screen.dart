@@ -260,20 +260,26 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       if (line != null && line.at == at) SunkenLine(line.text),
     ];
 
-    Widget group(String label, List<Widget> parts) => Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: ScreenBody.spaced(context, [
-        Padding(
-          padding: EdgeInsets.only(left: u(1)),
-          child: PixelText(
-            label,
-            step: TypeStep.caption,
-            colour: colours.muted,
-          ),
+    // A group's label is a header, as on Settings, unless the part under it
+    // already says it to a screen reader.
+    Widget group(String label, List<Widget> parts, {bool spoken = true}) {
+      final caption = Padding(
+        padding: EdgeInsets.only(left: u(1)),
+        child: PixelText(
+          label,
+          step: TypeStep.caption,
+          colour: colours.muted,
+          header: spoken,
         ),
-        ...parts,
-      ], 3),
-    );
+      );
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: ScreenBody.spaced(context, [
+          spoken ? caption : ExcludeSemantics(child: caption),
+          ...parts,
+        ], 3),
+      );
+    }
 
     Widget field(Widget field, _At at) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -403,7 +409,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       : () => _plan((planned ?? 0) + 1),
                 ),
                 ...lineAt(_At.plan),
-              ]),
+              ], spoken: false),
               group(words.focusSoFar, [
                 Padding(
                   padding: EdgeInsets.only(left: u(1)),

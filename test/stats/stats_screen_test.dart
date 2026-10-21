@@ -64,12 +64,15 @@ void main() {
 
     expect(find.byType(StatsScreen), findsOneWidget);
     expect(find.words('Stats'), findsOneWidget);
-    expect([for (final row in rows(tester)) (row.label, row.value)], [
-      ('Level', '1,234'),
-      ('Time focused', '26 h 40 min'),
-      ('Blocks finished', '3'),
-      ('Days focused', '2'),
-    ]);
+    expect(
+      [for (final row in rows(tester)) (row.label, row.value)],
+      [
+        ('Level', '1,234'),
+        ('Time focused', '26 h 40 min'),
+        ('Blocks finished', '3'),
+        ('Days focused', '2'),
+      ],
+    );
   });
 
   testTomo('just hatched: the smallest Stats can be', (tester) async {
@@ -79,12 +82,10 @@ void main() {
     );
     await openStats(tester, db);
 
-    expect([for (final row in rows(tester)) row.value], [
-      '1',
-      '15 min',
-      '1',
-      '1',
-    ]);
+    expect(
+      [for (final row in rows(tester)) row.value],
+      ['1', '15 min', '1', '1'],
+    );
   });
 
   testTomo('at 200% text the rows still fit, and back returns Home', (

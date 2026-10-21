@@ -528,7 +528,7 @@ class _ProjectHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PixelText(name, step: TypeStep.title),
+                    PixelText(name, step: TypeStep.title, header: true),
                     PixelText(
                       counts,
                       step: TypeStep.caption,

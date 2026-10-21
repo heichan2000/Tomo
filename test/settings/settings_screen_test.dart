@@ -149,7 +149,9 @@ void main() {
 
     expect(container(tester).read(appearanceProvider), Appearance.dark);
     expect(
-      await tester.runAsync(container(tester).read(settingsProvider).appearance),
+      await tester.runAsync(
+        container(tester).read(settingsProvider).appearance,
+      ),
       Appearance.dark,
     );
     expect(
@@ -177,9 +179,9 @@ void main() {
         );
         if (asked) {
           await tester.runAsync(
-            () => ProviderScope.containerOf(tester.element(find.byType(
-              TomoTheme,
-            ).first)).read(deviceOnlyFileProvider).setNotificationPermissionAsked(),
+            () => ProviderScope.containerOf(
+              tester.element(find.byType(TomoTheme).first),
+            ).read(deviceOnlyFileProvider).setNotificationPermissionAsked(),
           );
         }
         await openSettings(tester, db);
@@ -253,20 +255,5 @@ void main() {
       ),
       findsOneWidget,
     );
-  });
-
-  testTomo('at 200% text in dark, everything still fits', (tester) async {
-    final db = await pumpTomo(
-      tester,
-      before: hatch,
-      textScale: 2,
-      theme: ThemeName.dark,
-    );
-    await openSettings(tester, db);
-
-    expect(tester.takeException(), isNull);
-    await tester.ensureVisible(find.words('Share diagnostics'));
-    await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
   });
 }

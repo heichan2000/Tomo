@@ -300,7 +300,11 @@ class FocusHeader extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PixelText(picked.task.title, step: TypeStep.title),
+                    PixelText(
+                      picked.task.title,
+                      step: TypeStep.title,
+                      header: true,
+                    ),
                     PixelText(
                       picked.project.name,
                       step: TypeStep.caption,

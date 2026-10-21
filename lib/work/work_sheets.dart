@@ -125,7 +125,7 @@ class _NameSheetState extends State<_NameSheet> {
     return _SheetColumn(
       gap: 5,
       children: [
-        PixelText(widget.title, step: TypeStep.title),
+        PixelText(widget.title, step: TypeStep.title, header: true),
         PixelTextField(
           controller: _name,
           label: widget.label,
@@ -219,7 +219,7 @@ class _RowMenuState extends State<_RowMenu> {
     return _SheetColumn(
       gap: 5,
       children: [
-        PixelText(widget.task.title, step: TypeStep.title),
+        PixelText(widget.task.title, step: TypeStep.title, header: true),
         _SheetColumn(
           gap: 3,
           children: [
@@ -292,7 +292,7 @@ class _ProjectMenuState extends State<_ProjectMenu> {
     return _SheetColumn(
       gap: 5,
       children: [
-        PixelText(widget.name, step: TypeStep.title),
+        PixelText(widget.name, step: TypeStep.title, header: true),
         _SheetColumn(
           gap: 3,
           children: [
@@ -335,6 +335,7 @@ Future<Project?> chooseProjectToMove(
       PixelText(
         AppLocalizations.of(context).moveToProject,
         step: TypeStep.title,
+        header: true,
       ),
       _SheetColumn(
         gap: 3,
@@ -372,7 +373,7 @@ Future<bool> confirmDelete(
       (context) => _SheetColumn(
         gap: 5,
         children: [
-          PixelText(title, step: TypeStep.title),
+          PixelText(title, step: TypeStep.title, header: true),
           PixelText(body),
           _SheetColumn(
             gap: 8,
