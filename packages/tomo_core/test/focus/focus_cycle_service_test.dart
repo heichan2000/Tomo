@@ -13,8 +13,9 @@ import 'package:tomo_core/tasks/task_status.dart';
 import 'package:tomo_core/testing.dart';
 
 /// The five commands and the settle, against the in-memory database
-/// (spec §4.3 to §4.9). Promises 1, 5, 9, 12 (starting sets doing; a done task
-/// can't be focused), 20 (the hatch block) and 39 (the cycle half).
+/// (spec §4.3 to §4.9). Promises 1, 5, 6 (time away credits one block), 7
+/// (auto-start earns the same), 9, 12 (starting sets doing; a done task can't
+/// be focused), 20 (the hatch block) and 39 (the cycle half).
 void main() {
   // 09:00 UTC on a phone eight hours ahead of UTC.
   final nine = DateTime.utc(2026, 10, 10, 9);
