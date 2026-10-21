@@ -191,7 +191,8 @@ class _TopRow extends StatelessWidget {
       children: [
         if (level != null)
           Pressable(
-            onPressed: () => pushInTab(context, (_) => const StatsScreen()),
+            onPressed: () =>
+                pushInTab(context, (_) => const StatsScreen()),
             semanticLabel: words.srLevelChip(level),
             builder: (context, pressed, ring) => ConstrainedBox(
               // The chip is small; its target is the full 48 pt.
@@ -228,7 +229,8 @@ class _TopRow extends StatelessWidget {
           child: PixelIconButton(
             icon: PixelIcon(IconName.gear, colour: colours.ink),
             semanticLabel: words.settings,
-            onPressed: () => pushInTab(context, (_) => const SettingsScreen()),
+            onPressed: () =>
+                pushInTab(context, (_) => const SettingsScreen()),
           ),
         ),
       ],

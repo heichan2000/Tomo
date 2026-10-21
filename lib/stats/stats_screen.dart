@@ -89,9 +89,9 @@ class StatRow extends StatelessWidget {
     final dpr = u.devicePixelRatio;
     final direction = Directionality.of(context);
     final labelDots = dotsAt(context, TypeStep.body);
-    final valueDots = SharpText.of(context)
-        .capped()
-        .dotsFor(TypeStep.body.dots(dpr));
+    final valueDots = SharpText.of(
+      context,
+    ).capped().dotsFor(TypeStep.body.dots(dpr));
     return MergeSemantics(
       child: PixelBox(
         fill: colours.surface,

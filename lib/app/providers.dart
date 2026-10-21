@@ -74,12 +74,12 @@ final shareSheetProvider = Provider<ShareSheet>(
 
 /// The app's version and build number, for Settings → About. A test sets
 /// them.
-final appVersionProvider = FutureProvider<({String version, String build})>((
-  ref,
-) async {
-  final package = await PackageInfo.fromPlatform();
-  return (version: package.version, build: package.buildNumber);
-});
+final appVersionProvider = FutureProvider<({String version, String build})>(
+  (ref) async {
+    final package = await PackageInfo.fromPlatform();
+    return (version: package.version, build: package.buildNumber);
+  },
+);
 
 /// The payload of each notification tapped while Tomo is running.
 final notificationTapsProvider = Provider<Stream<String?>>(
@@ -246,7 +246,9 @@ class ClockNotice extends Notifier<bool> {
 /// Settings → Auto-start (spec §4.8), as last read or changed. It is
 /// snapshotted into a cycle as its block starts, so changing it never
 /// touches a running cycle.
-final autoStartProvider = AsyncNotifierProvider<AutoStart, bool>(AutoStart.new);
+final autoStartProvider = AsyncNotifierProvider<AutoStart, bool>(
+  AutoStart.new,
+);
 
 class AutoStart extends AsyncNotifier<bool> {
   @override
