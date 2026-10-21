@@ -3,6 +3,12 @@
 - **Status:** Accepted
 - **Date:** 2026-09-22
 - **Decided in:** [#22 Sound & haptics spec](https://github.com/heichan2000/Tomo/issues/22)
+- **Amended by:** [#107 The timer buzz feels like a bump on Android](https://github.com/heichan2000/Tomo/issues/107)
+  — on Android the timer buzz is one real 250 ms buzz, run by `MainActivity`
+  through a platform channel and obeying the phone's notification vibration
+  (spec §17 C157). `vibrate()` there is the long-press feedback, which a
+  Samsung plays as a short bump hard to tell from the reward tap. iPhone keeps
+  `vibrate()`. The rest of this decision is unchanged.
 
 ## Context
 
@@ -50,7 +56,7 @@ the `_v2` migration it reserved against a custom sound is not needed.
 | | Fires | Primitive |
 |---|---|---|
 | **Reward tap** | each beat, as it plays | `HapticFeedback.lightImpact()` |
-| **Timer buzz** | a block or break ends while Tomo is open and no beat will play | `HapticFeedback.vibrate()` |
+| **Timer buzz** | a block or break ends while Tomo is open and no beat will play | `HapticFeedback.vibrate()` (on Android, a real buzz since #107) |
 
 **Never two for one event.** Which one fires is *derived*, in the same shape as
 #15's `syncNotifications` and #3's projection:
@@ -91,7 +97,9 @@ primitives — `vibrate`, `lightImpact`, `mediumImpact`, `heavyImpact`,
 `selectionClick` — and not Apple's success/warning/error family, which is the
 one designed for exactly "the thing you were waiting for finished". Accepted
 rather than worked around, because working around it means a package or a
-platform channel for one tap.
+platform channel for one tap. (On Android, #107 did add a platform channel, for
+the timer buzz: `vibrate()` felt like a bump there, so the one haptic meant to
+reach someone not looking failed at its job. The reward tap still needs none.)
 
 ## Alternatives rejected
 

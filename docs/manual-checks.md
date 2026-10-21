@@ -50,6 +50,9 @@ C100).
       scrolls rather than cuts text off, and it looks right.
 - [ ] The reward tap fires on each beat, and the timer buzz fires when a block
       ends while you are on the Work tab.
+- [ ] On Android the timer buzz feels like a real buzz, not a bump like the
+      reward tap, and with the phone on silent it does not come
+      ([#107](https://github.com/heichan2000/Tomo/issues/107), C157).
 - [ ] With reduce motion on, every celebration still shows its payload: EXP,
       the level plate, the new stage, still sparkles.
 - [ ] The beats feel like rewards.

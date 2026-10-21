@@ -1310,7 +1310,7 @@ the device-only file. **The permission buys convenience, never reward.**
 | Haptic | Fires | Primitive |
 |---|---|---|
 | Reward tap | each beat as it plays, the same for all five kinds | `HapticFeedback.lightImpact()` |
-| Timer buzz | a block or break ends while Tomo is open and no beat will play | `HapticFeedback.vibrate()` |
+| Timer buzz | a block or break ends while Tomo is open and no beat will play | Android: one 250 ms buzz that obeys the phone's notification vibration, from `MainActivity` (C157). iPhone: `HapticFeedback.vibrate()` |
 
 ```
 haptic(event, isForeground, beatWillPlay) =
@@ -1321,6 +1321,13 @@ A break ending on Focus takes the buzz. Silent on purpose: stop early, anything
 during a running block, ordinary UI, permission denial. No settings row; reduce
 motion and Calm pet don't affect haptics. **Nothing may rely on a haptic as its
 only channel.** No haptics package.
+
+On Android, `vibrate()` is the phone's long-press feedback, which a Samsung
+plays as a short bump much like the reward tap. So there the timer buzz is a
+real one, run by `MainActivity` through the `tomo/notifications` channel: it
+obeys the notification vibration setting, so silent mode and Do Not Disturb
+stop it, as they stop the notification it stands in for
+([#107](https://github.com/heichan2000/Tomo/issues/107), ADR-0013 amended).
 
 **Built** in [Notifications and haptics on the phone](https://github.com/heichan2000/Tomo/issues/72):
 `NotificationSync` in core (`notifications/notification_sync.dart`), run by
@@ -1487,7 +1494,8 @@ folders: ADR-0029.)*
 ### 15.5 Android
 
 - Permissions: `POST_NOTIFICATIONS`, `USE_EXACT_ALARM`, `SCHEDULE_EXACT_ALARM`
-  (`maxSdkVersion="32"`), `RECEIVE_BOOT_COMPLETED` with the notifications
+  (`maxSdkVersion="32"`), `VIBRATE` for the timer buzz (C157),
+  `RECEIVE_BOOT_COMPLETED` with the notifications
   package's boot and scheduled-notification receivers. **No `INTERNET`** in the
   release manifest (Flutter's debug/profile manifests keep theirs for tooling).
 - Backup per §6.4.
@@ -1648,7 +1656,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C46 | Laid out in points, text starts on a whole dot but its letters don't stay on whole dots: at 2.8125× the letters right of mid-screen land a quarter dot off, and the renderer adds its own slight smear | **All text is laid out in screen dots**: `PixelText` sets the font size to `12 × n` dots inside `InDots`, which lays out in dots and draws scaled back down from a whole dot. Measured exact at 2.8125× and 3.75×, light and dark, 100–200% text ([#60](https://github.com/heichan2000/Tomo/issues/60)). Flutter's newer renderer (Impeller) stays on; turning it off is deprecated. |
 | C47 | Text set smaller than the phone's default (below 100%) | Rounds to the nearest whole number of dots per font pixel, never below one, as at 100%. |
 | C48 | Where the real-phone pixel check lives | `lib/ui/pixel_check_screen.dart`, a builder's tool, so its words are not in the copy file. It is how *Pixels on a real screen* in `docs/manual-checks.md` is run. Since [#69](https://github.com/heichan2000/Tomo/issues/69) it opens from the kit gallery (C51). Neither is ever in release. |
-| C49 | `flutter_local_notifications` adds `VIBRATE` to the manifest | Accepted: an ordinary permission, never asked of the user. Checked anyway: with it removed, the timer buzz (`vibrate()`) and the reward tap (`lightImpact()`) are both felt ([#60](https://github.com/heichan2000/Tomo/issues/60)). |
+| C49 | `flutter_local_notifications` adds `VIBRATE` to the manifest | Accepted: an ordinary permission, never asked of the user. Checked anyway: with it removed, the timer buzz (`vibrate()`) and the reward tap (`lightImpact()`) are both felt ([#60](https://github.com/heichan2000/Tomo/issues/60)). Since the Android timer buzz became a real one, Tomo needs `VIBRATE` itself and declares it in its own manifest (C157). |
 | C50 | Where a pet stage's six parts and its eyes become one picture | `composeStage` in `packages/tomo_core/lib/art/compose.dart`, standing still, the same stacking as `tool/art/pose.mjs`. The pet-on-screen ticket adds the poses. |
 | C51 | Where the kit is shown | The **kit gallery** (`lib/ui/kit_gallery_screen.dart`) is the app's first screen in debug and profile builds until the app shell exists; release opens on the bare ground. Its switches (theme, accent, text size, motion) set `lookOverride`, which `TomoLook` applies above the navigator, so sheets and pushed screens follow them. A builder's tool: its words are not in the copy file. |
 | C52 | Pressing a primary button before the hatch, in dark: its fill is the ink, so "one shade toward ink" changes nothing | It moves one shade toward **muted** instead: slightly greyer. Chosen by the user ([#69](https://github.com/heichan2000/Tomo/issues/69)). The press share is 22%, as on the approved kit. |
@@ -1689,7 +1697,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C87 | Confetti colours and the face | Never the face's marks: `E` (eyes) and `F` (Geode's near-black mouth, Lily's nose), which read as specks of dirt. Chosen by the user ([#71](https://github.com/heichan2000/Tomo/issues/71)), as on Tomo Pixel Screens. |
 | C88 | The bar in a block or bonus that reaches a new level | It fills to the end; the level-up empties and refills it. A first block of an hour or more fills it too, then the takeover clears it (C25). |
 | C89 | Where the effects sit among the chrome | Drawn in front of the pet, over the header but under the bar, the pet line and the buttons below it; the dither covers the chrome only (`DitherOver`). The plate hangs centred 10 UI pixels below the bar and its caption; "+EXP" starts 3 pixels right of the picture and 2 down from its top, kept 8 UI pixels from the screen's edge. As on Tomo Pixel Screens. |
-| C90 | The phone's haptics | `SystemHaptics` (`lib/platform/haptics.dart`): Flutter's own `HapticFeedback`, light impact for the reward tap, vibrate for the timer buzz. Built here for the reward tap; *Notifications and haptics on the phone* uses it for the buzz. |
+| C90 | The phone's haptics | `SystemHaptics` (`lib/platform/haptics.dart`): Flutter's own `HapticFeedback`, light impact for the reward tap, vibrate for the timer buzz on iPhone; on Android the buzz is `MainActivity`'s (C157). Built here for the reward tap; *Notifications and haptics on the phone* uses it for the buzz. |
 | C91 | Who speaks a run's one line | Not the player: Focus composes it from `RunFacts` and announces it as it starts the run. |
 | C92 | The three words the effects show | `beatGain` ("+250 EXP"), `beatLevelPlate` ("Level 13"), `beatTaskPlate` ("Task done"), from Tomo Pixel Screens (C37). |
 | C93 | What the sync reads, and when | `NotificationSync` (core) reads the stored cycle, its task and the pet, and never settles: whoever opens Tomo next does that. A cycle whose start is after now (the clock moved back) announces nothing, because the next open discards it. Both services take an `afterWrite` hook, run unawaited after every write that commits; the app passes the sync. Syncs run one at a time, so the last reflects the last write. A phone that refuses is recorded as `notificationSyncFailed`. |
@@ -1700,7 +1708,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C98 | The channels' names in the copy file | `channelFocusBlock`, `channelFocusBlockAbout`, `channelBreak`, `channelBreakAbout`, with the spec's words. |
 | C99 | A tap while Tomo is running, and Focus already open | The tap brings the cycle up to now first, then opens Focus only if its cycle is still the live one and Focus isn't already in the stack (`FocusRouteObserver`). A tap that starts Tomo needs nothing: the cold start already opens Focus on a live cycle. |
 | C100 | Running the notification checks on a phone | Debug builds: kit gallery → *Notification check*. It shows the permission, whether alarms can be exact and what is pending, and starts blocks to leave running: 10 and 35 minutes through the service, and 1 minute written directly under the 10-minute floor (it credits the pet its minute). |
-| C101 | Who fires the timer buzz | `TimerBuzz`, around the whole app, not Focus: a block can run out while the Work tab is showing. While Tomo is open it waits for each moment `timerEnds` gives (the block's end, then under auto-start the break's) and plays `hapticFor`; a block that runs out with Focus open gets nothing from it, because Focus's beat run fires the reward tap. Checked on a Galaxy S23 Ultra: it fires on time on the Work tab, but `vibrate()` is Android's long-press feedback and feels like a short bump ([#107](https://github.com/heichan2000/Tomo/issues/107) asks whether to make it a real buzz). |
+| C101 | Who fires the timer buzz | `TimerBuzz`, around the whole app, not Focus: a block can run out while the Work tab is showing. While Tomo is open it waits for each moment `timerEnds` gives (the block's end, then under auto-start the break's) and plays `hapticFor`; a block that runs out with Focus open gets nothing from it, because Focus's beat run fires the reward tap. Checked on a Galaxy S23 Ultra: it fires on time on the Work tab, but `vibrate()` is Android's long-press feedback and feels like a short bump, so it became a real buzz (C157). |
 | C102 | Stats writes `26 h 40 min` and `15 min`, but not a whole number of hours | `2 h`, with no `0 min`. Hours group their digits as the phone's language does (`1,234 h 5 min`). `focusTime` writes it for Stats and both delete sheets. |
 | C103 | How the picker reads, given that watched queries can't run in whole-app widget tests (C72) | Once, as it opens: `TaskService.pickerTasks()` and `projects()`, the same lists `watchPickerTasks()` and `watchProjects()` give. It is a sheet over everything, so nothing else writes while it is open. |
 | C104 | What "last-used project" means for *New task* (§6.3) | `lastProjectId`, set when a block starts (to its task's project) and when *New task* adds a task; absent or deleted → the most recently active project (`newTaskProject`). *New task* sits at the top of the picker with that project as a chip under it; the chip opens **Choose a project**, every project as a row with the chosen one checked. The picker's title is **Choose a task**. Both words chosen by the user ([#95](https://github.com/heichan2000/Tomo/issues/95)). |
@@ -1756,6 +1764,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C154 | What Share diagnostics hands over, and when it is off | `tomo-diagnostics.txt`, the log's export, to the phone's share sheet. Under the button, how many errors the log holds, counted as Settings opens; at none the button is off. |
 | C155 | A Stats number too wide to sit beside its label | It drops under the label, at the right (Tomo Stats Screen). Numbers stop growing at 130% text and never wrap. |
 | C156 | Parts Stats and Settings needed | `BackHeader` (back and an optional title, from Task detail's own); `askName` (the project name sheet, now for any name); `autoStartProvider`; `appVersionProvider` (`package_info_plus`). `placeholder_screens.dart` is gone. |
+| C157 | The timer buzz on Android | One **250 ms** buzz, chosen by the user by feel on the Galaxy S23 Ultra over two or three pulses and a 500 ms one ([#107](https://github.com/heichan2000/Tomo/issues/107)). `SystemHaptics` asks `MainActivity` for it on the `tomo/notifications` channel (`buzz`, with the length), and `MainActivity` vibrates as a **notification** (`USAGE_NOTIFICATION`): silent mode and Do Not Disturb stop it, and the phone's notification vibration strength sets how strong it is, like the notification it stands in for. Not as touch feedback (a setting could swallow it, as before) and not as an alarm (past a phone silenced on purpose). A phone that can't or won't vibrate is not an error. `VIBRATE` is now in Tomo's own manifest. iPhone keeps `vibrate()`, unchecked. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
