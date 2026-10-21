@@ -55,20 +55,34 @@ class _PickPetScreenState extends State<PickPetScreen> {
     return ScreenBody(
       content: [
         _Heading(title: words.pickTitle, line: words.pickLine),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final species in Species.values) ...[
-              if (species != Species.values.first) SizedBox(width: u(4)),
-              Expanded(
-                child: _EggTile(
-                  species: species,
-                  chosen: species == _species,
-                  onPressed: () => setState(() => _species = species),
-                ),
+        // Every tile is as tall as the tallest, so a name that wraps where
+        // the others don't (*Spotted egg* at 384 points) grows all three.
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final gaps = u(4) * (Species.values.length - 1);
+            final eggRoom =
+                (constraints.maxWidth - gaps) / Species.values.length - u(4);
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final species in Species.values) ...[
+                    if (species != Species.values.first) SizedBox(width: u(4)),
+                    Expanded(
+                      child: _EggTile(
+                        species: species,
+                        chosen: species == _species,
+                        spot: eggRoom < PetSpot.setupTile
+                            ? eggRoom
+                            : PetSpot.setupTile,
+                        onPressed: () => setState(() => _species = species),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-            ],
-          ],
+            );
+          },
         ),
         PixelText(words.eggHint(_species.name), textAlign: TextAlign.center),
       ],
@@ -88,11 +102,15 @@ class _EggTile extends StatelessWidget {
   const _EggTile({
     required this.species,
     required this.chosen,
+    required this.spot,
     required this.onPressed,
   });
 
   final Species species;
   final bool chosen;
+
+  /// The egg's size: the setup tile's, or less where the tile is narrower.
+  final double spot;
   final VoidCallback onPressed;
 
   @override
@@ -102,6 +120,7 @@ class _EggTile extends StatelessWidget {
     final u = UiPixel.of(context);
     final ink = chosen ? colours.ink : colours.muted;
     final reduce = MediaQuery.disableAnimationsOf(context);
+    final name = words.eggName(species.name);
     return Pressable(
       onPressed: onPressed,
       selected: chosen,
@@ -117,33 +136,35 @@ class _EggTile extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(u(2), u(6), u(2), u(5)),
                 child: Column(
                   children: [
-                    LayoutBuilder(
-                      // The tile is the button, and its name says what it is.
-                      builder: (context, constraints) => ExcludeSemantics(
-                        child: IgnorePointer(
-                          child: PetView(
-                            look: EggLook(
-                              species: species,
-                              movement: reduce
-                                  ? Movement.reduced
-                                  : Movement.full,
-                              picture: 0,
-                              // The chosen egg is alive; the others wait, still.
-                              mayWobble: chosen,
-                            ),
-                            spot: constraints.maxWidth < PetSpot.setupTile
-                                ? constraints.maxWidth
-                                : PetSpot.setupTile,
-                            semanticLabel: '',
+                    // The tile is the button, and its name says what it is.
+                    ExcludeSemantics(
+                      child: IgnorePointer(
+                        child: PetView(
+                          look: EggLook(
+                            species: species,
+                            movement: reduce ? Movement.reduced : Movement.full,
+                            picture: 0,
+                            // The chosen egg is alive; the others wait, still.
+                            mayWobble: chosen,
                           ),
+                          spot: spot,
+                          semanticLabel: '',
                         ),
                       ),
                     ),
                     SizedBox(height: u(3)),
-                    PixelText(
-                      words.eggName(species.name),
-                      colour: ink,
-                      textAlign: TextAlign.center,
+                    // Every name on two lines, the last word below, so the
+                    // three read alike at any width (§17 C164). A screen
+                    // reader hears it as one line.
+                    Semantics(
+                      label: name,
+                      child: ExcludeSemantics(
+                        child: PixelText(
+                          _lastWordBelow(name),
+                          colour: ink,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -160,6 +181,14 @@ class _EggTile extends StatelessWidget {
       },
     );
   }
+}
+
+/// *Spotted egg* as *Spotted* over *egg*.
+String _lastWordBelow(String name) {
+  final space = name.lastIndexOf(' ');
+  return space < 0
+      ? name
+      : '${name.substring(0, space)}\n${name.substring(space + 1)}';
 }
 
 /// Onboarding 2, *What are you working on?*: one line that becomes both the
