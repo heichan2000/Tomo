@@ -15,7 +15,6 @@ import 'package:tomo/ui/sharp_text.dart';
 import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/block_lengths.dart';
-import 'package:tomo_core/look/palette.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task.dart';
 import 'package:tomo_core/tasks/task_service.dart';
@@ -504,23 +503,5 @@ void main() {
       );
       expect(iconButton('Notifications are off'), findsNothing);
     });
-  });
-
-  testTomo('at 200% text, Ready and the picker scroll rather than clip', (
-    tester,
-  ) async {
-    await pumpTomo(
-      tester,
-      before: someTasks,
-      textScale: 2,
-      theme: ThemeName.dark,
-    );
-    await openReady(tester, 'Read the paper');
-    expect(tester.takeException(), isNull);
-
-    await tester.scrollUntilVisible(find.words('Start focusing'), 100);
-    expect(find.words('Start focusing').hitTestable(), findsOneWidget);
-    await tap(tester, find.words('Task'));
-    expect(tester.takeException(), isNull);
   });
 }

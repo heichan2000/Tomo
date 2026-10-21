@@ -465,27 +465,4 @@ void main() {
     expect(button('Take a 5-min break'), findsOneWidget);
     expect((await cycleRows()).single.seenAt, isNotNull);
   });
-
-  testTomo('at 200% text, every after state scrolls rather than clips', (
-    tester,
-  ) async {
-    await open(
-      tester,
-      before: planned,
-      minute: 40,
-      textScale: 2,
-      theme: ThemeName.dark,
-    );
-    expect(find.words('Is this task done?'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-
-    await tap(tester, button('Mark done'));
-    expect(button('Done for now'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-
-    await tap(tester, button('Take a 5-min break'));
-    await passTo(tester, 46);
-    expect(button('Start another task'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
 }

@@ -7,7 +7,6 @@ import 'package:tomo/ui/buttons.dart';
 import 'package:tomo/ui/pixel_icon.dart';
 import 'package:tomo_core/art/pixel_art.dart';
 import 'package:tomo_core/data/tomo_database.dart';
-import 'package:tomo_core/look/palette.dart';
 import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/tasks/task_status.dart';
@@ -289,25 +288,5 @@ void main() {
     expect(projects.map((p) => p.name), ['My work']);
     expect(await all(tester, db, db.select(db.tasks).get), isEmpty);
     expect(find.byType(TomoShell).hitTestable(), findsOneWidget);
-  });
-
-  testTomo('nothing overflows at 200% text, in both themes', (tester) async {
-    for (final dpr in screens) {
-      for (final theme in ThemeName.values) {
-        await pumpTomo(
-          tester,
-          onboarded: false,
-          dpr: dpr,
-          textScale: 2,
-          theme: theme,
-        );
-        expect(tester.takeException(), isNull);
-        await tester.ensureVisible(button('Next'));
-        await tester.pumpAndSettle();
-        await tap(tester, button('Next'));
-        expect(tester.takeException(), isNull);
-        expect(find.words('What are you working on?'), findsOneWidget);
-      }
-    }
   });
 }

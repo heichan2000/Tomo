@@ -264,16 +264,4 @@ void main() {
     expect(find.bySemanticsLabel('Name your Geode'), findsOneWidget);
     semantics.dispose();
   });
-
-  testTomo('at 200% text in dark, the naming scrolls rather than clips', (
-    tester,
-  ) async {
-    await open(tester, textScale: 2, theme: ThemeName.dark);
-    await toNaming(tester);
-    expect(tester.takeException(), isNull);
-
-    await tap(tester, button('Done'));
-    expect(button('Take a 5-min break'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
 }

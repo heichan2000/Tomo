@@ -79,13 +79,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final appearance = ref.watch(appearanceProvider);
     final version = ref.watch(appVersionProvider).value;
 
-    final hatched =
-        pet?.lookAt(
-          ref.read(databaseProvider).clock(),
-          calmPet: calmPet,
-          reduceMotion: false,
-        )
-        is HatchedLook;
+    final hatched = pet?.lookAt(
+      ref.read(databaseProvider).clock(),
+      calmPet: calmPet,
+      reduceMotion: false,
+    ) is HatchedLook;
     final petName = pet == null
         ? ''
         : pet.name ?? words.speciesName(pet.species.name);
@@ -95,13 +93,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       children: ScreenBody.spaced(context, [
         Padding(
           padding: EdgeInsets.only(left: u(1)),
-          child: Semantics(
+          child: PixelText(
+            label,
+            step: TypeStep.caption,
+            colour: colours.muted,
             header: true,
-            child: PixelText(
-              label,
-              step: TypeStep.caption,
-              colour: colours.muted,
-            ),
           ),
         ),
         ...parts,

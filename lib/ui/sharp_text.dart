@@ -163,7 +163,8 @@ class SharpText extends StatelessWidget {
 /// Centred and end-aligned lines are each moved to start on a whole dot too,
 /// so text is never centred to a half dot (ADR-0017).
 ///
-/// [colour] defaults to the theme's ink.
+/// [colour] defaults to the theme's ink. A [header] is a screen's or a
+/// sheet's title, or a group's label, and a screen reader says so.
 class PixelText extends StatelessWidget {
   const PixelText(
     this.words, {
@@ -171,6 +172,7 @@ class PixelText extends StatelessWidget {
     this.step = TypeStep.body,
     this.colour,
     this.textAlign = TextAlign.start,
+    this.header = false,
   }) : _oneLine = step == TypeStep.petName,
        _cut = false;
 
@@ -183,6 +185,7 @@ class PixelText extends StatelessWidget {
     this.step = TypeStep.body,
     this.colour,
   }) : textAlign = TextAlign.start,
+       header = false,
        _oneLine = false,
        _cut = true;
 
@@ -195,18 +198,25 @@ class PixelText extends StatelessWidget {
     this.step = TypeStep.body,
     this.colour,
     this.textAlign = TextAlign.start,
-  }) : _oneLine = true,
+  }) : header = false,
+       _oneLine = true,
        _cut = false;
 
   final String words;
   final TypeStep step;
   final Color? colour;
   final TextAlign textAlign;
+  final bool header;
   final bool _oneLine;
   final bool _cut;
 
   @override
   Widget build(BuildContext context) {
+    final text = _text(context);
+    return header ? Semantics(header: true, child: text) : text;
+  }
+
+  Widget _text(BuildContext context) {
     final dpr = MediaQuery.devicePixelRatioOf(context);
     final scaler = SharpText.of(context);
     final n = (_oneLine ? scaler.capped() : scaler).dotsFor(step.dots(dpr));

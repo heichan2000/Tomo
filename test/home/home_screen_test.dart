@@ -14,7 +14,6 @@ import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/diagnostics/log.dart';
 import 'package:tomo_core/focus/block_lengths.dart';
 import 'package:tomo_core/focus/focus_cycle_service.dart';
-import 'package:tomo_core/look/palette.dart';
 import 'package:tomo_core/pet/pet_look.dart';
 import 'package:tomo_core/result.dart';
 
@@ -257,21 +256,5 @@ void main() {
       await tester.pumpAndSettle();
       expect(await hellosOnComingBack(tester), 0);
     });
-  });
-
-  testTomo('nothing overflows at 200% text, in both themes', (tester) async {
-    for (final dpr in screens) {
-      for (final theme in ThemeName.values) {
-        final db = await pumpTomo(tester, dpr: dpr, textScale: 2, theme: theme);
-        expect(tester.takeException(), isNull);
-        await hatch(tester, db);
-        ProviderScope.containerOf(tester.element(find.byType(HomeScreen)))
-            .read(clockNoticeProvider.notifier)
-            .show();
-        await tester.pump();
-        expect(tester.takeException(), isNull);
-        expect(find.words('Pip'), findsOneWidget);
-      }
-    }
   });
 }

@@ -142,7 +142,9 @@ class _RootHeader extends StatelessWidget {
         maxWidth: constraints.maxWidth + u(6),
         child: Row(
           children: [
-            Expanded(child: PixelText(title, step: TypeStep.title)),
+            Expanded(
+              child: PixelText(title, step: TypeStep.title, header: true),
+            ),
             SizedBox(width: u(4)),
             action,
           ],
@@ -179,7 +181,12 @@ class EmptyCard extends StatelessWidget {
         child: Column(
           children: ScreenBody.spaced(context, [
             PixelIcon(icon, colour: colours.muted, scale: 2),
-            PixelText(title, step: TypeStep.title, textAlign: TextAlign.center),
+            PixelText(
+              title,
+              step: TypeStep.title,
+              header: true,
+              textAlign: TextAlign.center,
+            ),
             PixelText(line, colour: colours.muted, textAlign: TextAlign.center),
             if (action != null) SizedBox(width: double.infinity, child: action),
           ], 6),

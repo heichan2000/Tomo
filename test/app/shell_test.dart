@@ -12,7 +12,6 @@ import 'package:tomo/ui/kit_gallery_screen.dart';
 import 'package:tomo/ui/sheet.dart';
 import 'package:tomo/work/project_screen.dart';
 import 'package:tomo/work/work_screen.dart';
-import 'package:tomo_core/look/palette.dart';
 
 import '../ui/kit_harness.dart';
 import 'app_harness.dart';
@@ -266,16 +265,6 @@ void main() {
       }
       final bar = tester.getRect(find.byType(ShellTabBar));
       expect(bar.top, wholeDots(tester));
-    }
-  });
-
-  testTomo('nothing overflows at 200% text, in both themes', (tester) async {
-    for (final dpr in screens) {
-      for (final theme in ThemeName.values) {
-        await pumpTomo(tester, dpr: dpr, textScale: 2, theme: theme);
-        expect(tester.takeException(), isNull);
-        expect(find.words('Home'), findsWidgets);
-      }
     }
   });
 

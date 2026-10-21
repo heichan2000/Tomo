@@ -240,6 +240,8 @@ class _FirstTaskScreenState extends ConsumerState<FirstTaskScreen> {
         _Heading(title: words.taskTitle, line: words.taskLine),
         PixelTextField(
           controller: _line,
+          // The title over it names it.
+          label: words.taskTitle,
           autofocus: true,
           inputFormatters: [
             LengthLimitingTextInputFormatter(maxProjectNameLength),
@@ -288,7 +290,7 @@ class _Heading extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PixelText(title, step: TypeStep.title),
+        PixelText(title, step: TypeStep.title, header: true),
         SizedBox(height: u(3)),
         PixelText(line, colour: TomoTheme.of(context).muted),
       ],

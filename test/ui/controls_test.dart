@@ -1,15 +1,18 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tomo/ui/buttons.dart';
 import 'package:tomo/ui/exp_bar.dart';
 import 'package:tomo/ui/pixel_box.dart';
 import 'package:tomo/ui/segmented.dart';
+import 'package:tomo/ui/stepper.dart';
 import 'package:tomo/ui/switch.dart';
 import 'package:tomo/ui/tomo_theme.dart';
 import 'package:tomo/ui/ui_pixel.dart';
 
 import 'kit_harness.dart';
 
-/// Segmented controls, switches and the EXP bar (spec §9.3).
+/// Segmented controls, switches, the stepper and the EXP bar (spec §9.3).
 void main() {
   group('a segmented control', () {
     Widget appearance(String selected, ValueChanged<String> onChanged) =>
@@ -226,6 +229,90 @@ void main() {
         ),
       );
       handle.dispose();
+    });
+  });
+
+  group('a stepper', () {
+    /// What the screen reader was asked to say.
+    List<String> listen(WidgetTester tester) {
+      final spoken = <String>[];
+      tester.binding.defaultBinaryMessenger
+          .setMockDecodedMessageHandler<Object?>(SystemChannels.accessibility, (
+            message,
+          ) async {
+            final event = message! as Map<Object?, Object?>;
+            if (event['type'] == 'announce') {
+              final data = event['data']! as Map<Object?, Object?>;
+              spoken.add(data['message']! as String);
+            }
+            return null;
+          });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(
+              SystemChannels.accessibility,
+              null,
+            ),
+      );
+      return spoken;
+    }
+
+    Future<void> pumpStepper(WidgetTester tester, ValueNotifier<int> value) =>
+        pumpKit(
+          tester,
+          SizedBox(
+            width: 300,
+            child: ValueListenableBuilder(
+              valueListenable: value,
+              builder: (context, minutes, _) => PixelStepper(
+                label: 'Focus',
+                value: '$minutes min',
+                lessLabel: 'Fewer',
+                moreLabel: 'More',
+                onLess: minutes == 10 ? null : () => value.value -= 5,
+                onMore: () => value.value += 5,
+              ),
+            ),
+          ),
+        );
+
+    Finder square(String label) => find.byWidgetPredicate(
+      (widget) => widget is Pressable && widget.semanticLabel == label,
+    );
+
+    testWidgets('is read as its label and value', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pumpStepper(tester, ValueNotifier(15));
+
+      expect(
+        tester.getSemantics(find.byType(PixelStepper)),
+        isSemantics(label: 'Focus', value: '15 min'),
+      );
+      handle.dispose();
+    });
+
+    testWidgets('a press says the new value', (tester) async {
+      final spoken = listen(tester);
+      final value = ValueNotifier(15);
+      await pumpStepper(tester, value);
+
+      await tester.tap(square('More'));
+      await tester.pump();
+      expect(spoken, ['20 min']);
+
+      await tester.tap(square('Fewer'));
+      await tester.pump();
+      expect(spoken, ['20 min', '15 min']);
+    });
+
+    testWidgets('a value changed by anything else is not said', (tester) async {
+      final spoken = listen(tester);
+      final value = ValueNotifier(15);
+      await pumpStepper(tester, value);
+
+      value.value = 30;
+      await tester.pump();
+      expect(spoken, isEmpty);
     });
   });
 

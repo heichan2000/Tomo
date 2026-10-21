@@ -39,10 +39,7 @@ class BackHeader extends StatelessWidget {
             if (title != null) ...[
               SizedBox(width: u(4)),
               Expanded(
-                child: Semantics(
-                  header: true,
-                  child: PixelText(title, step: TypeStep.title),
-                ),
+                child: PixelText(title, step: TypeStep.title, header: true),
               ),
               // The title keeps clear of the screen's right margin.
               SizedBox(width: u(6)),

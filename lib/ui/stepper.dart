@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tomo_core/art/pixel_art.dart';
 
@@ -13,8 +16,9 @@ import 'ui_pixel.dart';
 /// grey. Used for the Custom sheet's lengths and a task's planned blocks.
 ///
 /// To a screen reader it is [label] and [value], with its two squares as
-/// buttons of their own, [lessLabel] and [moreLabel].
-class PixelStepper extends StatelessWidget {
+/// buttons of their own, [lessLabel] and [moreLabel]. A press says the new
+/// value, as the user caused it.
+class PixelStepper extends StatefulWidget {
   const PixelStepper({
     super.key,
     required this.label,
@@ -41,28 +45,66 @@ class PixelStepper extends StatelessWidget {
   final bool mutedValue;
 
   @override
+  State<PixelStepper> createState() => _PixelStepperState();
+}
+
+class _PixelStepperState extends State<PixelStepper> {
+  /// A square was pressed, and its new value is still to come.
+  bool _pressed = false;
+
+  VoidCallback? _press(VoidCallback? onPressed) => onPressed == null
+      ? null
+      : () {
+          _pressed = true;
+          onPressed();
+        };
+
+  @override
+  void didUpdateWidget(PixelStepper old) {
+    super.didUpdateWidget(old);
+    if (_pressed && widget.value != old.value) {
+      _pressed = false;
+      unawaited(
+        SemanticsService.sendAnnouncement(
+          View.of(context),
+          widget.value,
+          Directionality.of(context),
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final u = UiPixel.of(context);
     final colours = TomoTheme.of(context);
     return Semantics(
       container: true,
-      label: label,
-      value: value,
+      label: widget.label,
+      value: widget.value,
       child: Row(
         children: [
-          _Square(icon: IconName.minus, label: lessLabel, onPressed: onLess),
+          _Square(
+            icon: IconName.minus,
+            label: widget.lessLabel,
+            onPressed: _press(widget.onLess),
+          ),
           SizedBox(width: u(4)),
           Expanded(
             child: ExcludeSemantics(
               child: PixelText(
-                value,
+                widget.value,
                 textAlign: TextAlign.center,
-                colour: mutedValue ? colours.muted : colours.ink,
+                colour: widget.mutedValue ? colours.muted : colours.ink,
               ),
             ),
           ),
           SizedBox(width: u(4)),
-          _Square(icon: IconName.plus, label: moreLabel, onPressed: onMore),
+          _Square(
+            icon: IconName.plus,
+            label: widget.moreLabel,
+            onPressed: _press(widget.onMore),
+          ),
         ],
       ),
     );

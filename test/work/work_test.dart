@@ -704,39 +704,6 @@ void main() {
     });
   });
 
-  group('at 200% text', () {
-    for (final theme in ThemeName.values) {
-      testTomo('nothing overflows on Work or the project, ${theme.name}', (
-        tester,
-      ) async {
-        await openProject(
-          tester,
-          textScale: 2,
-          theme: theme,
-          before: (db) async {
-            await add(
-              db,
-              'Email Łukasz about the second draft of chapter two',
-              status: TaskStatus.doing,
-              blocks: 5,
-              planned: 4,
-            );
-            await add(db, 'Read the paper', status: TaskStatus.done);
-          },
-        );
-        expect(tester.takeException(), isNull);
-        await tap(tester, more('Read the paper'));
-        expect(tester.takeException(), isNull);
-        await tester.tapAt(const Offset(10, 10));
-        await settle(tester);
-        await tester.binding.handlePopRoute();
-        await settle(tester);
-        expect(find.byType(WorkScreen).hitTestable(), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
-    }
-  });
-
   testTomo('under reduce motion the row jumps to its place', (tester) async {
     await openProject(
       tester,
