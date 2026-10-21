@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tomo_core/data/instants.dart';
 import 'package:tomo_core/data/tomo_database.dart';
 import 'package:tomo_core/focus/block_lengths.dart';
+import 'package:tomo_core/focus/commands.dart';
+import 'package:tomo_core/focus/cycle_ledger.dart';
 import 'package:tomo_core/result.dart';
 import 'package:tomo_core/tasks/task_status.dart';
 
@@ -88,14 +90,18 @@ class _NotificationCheckScreenState
   Future<void> _start(int minutes) async {
     final taskId = await _taskId();
     if (taskId == null) return;
-    await ref.read(focusCycleServiceProvider).leave();
-    final started = await ref
-        .read(focusCycleServiceProvider)
-        .startBlock(
-          taskId: taskId,
-          lengths: BlockLengths(focusMinutes: minutes, breakMinutes: 5),
-          autoStart: _autoStart,
-        );
+    final focus = ref.read(focusCycleServiceProvider);
+    // Only a cycle that may be left is: leaving none fails an assert in debug.
+    final standing = await focus.reconcile();
+    if (standing is Success<CycleStanding> &&
+        isLegal(standing.value.state, FocusCommand.leave)) {
+      await focus.leave();
+    }
+    final started = await focus.startBlock(
+      taskId: taskId,
+      lengths: BlockLengths(focusMinutes: minutes, breakMinutes: 5),
+      autoStart: _autoStart,
+    );
     if (started is Failure) setState(() => _status = 'Refused: $started');
     await _read();
   }
