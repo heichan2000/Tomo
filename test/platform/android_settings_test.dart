@@ -11,9 +11,10 @@ void main() {
   final gradle = File('android/app/build.gradle.kts').readAsStringSync();
 
   group('permissions', () {
-    test('exactly the four the spec names', () {
+    test('exactly the five the spec names', () {
       expect(_permissions(manifest), {
         'android.permission.POST_NOTIFICATIONS',
+        'android.permission.VIBRATE',
         'android.permission.USE_EXACT_ALARM',
         'android.permission.SCHEDULE_EXACT_ALARM',
         'android.permission.RECEIVE_BOOT_COMPLETED',

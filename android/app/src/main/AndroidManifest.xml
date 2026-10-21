@@ -13,6 +13,8 @@
         android:maxSdkVersion="32"/>
     <!-- So a restart mid-block does not lose the "block done" alarm. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- The timer buzz (spec §11.5, C157). Never asked of the user. -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <!-- The pet travels in the phone's own backup (ADR-0028). The two rules
          files include exactly the database and the settings file. -->

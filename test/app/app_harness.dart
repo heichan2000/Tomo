@@ -24,6 +24,7 @@ import 'package:tomo_core/tasks/task.dart';
 import 'package:tomo_core/tasks/task_service.dart';
 import 'package:tomo_core/testing.dart';
 
+import '../platform/fake_haptics.dart';
 import '../platform/fake_notifications.dart';
 import '../ui/kit_harness.dart';
 
@@ -100,6 +101,7 @@ Future<TomoDatabase> pumpTomo(
         ),
         notificationTapsProvider.overrideWithValue(notificationTaps),
         shareSheetProvider.overrideWithValue(shareSheet ?? SharedTexts()),
+        hapticPlayerProvider.overrideWithValue(FakeHaptics()),
         appVersionProvider.overrideWith(
           (ref) async => (version: '1.0.0', build: '1'),
         ),

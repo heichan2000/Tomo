@@ -13,6 +13,8 @@ import 'package:tomo_core/pet/pet_standing.dart';
 import 'package:tomo_core/pet/species.dart';
 import 'package:tomo_core/testing.dart';
 
+import '../platform/fake_haptics.dart';
+
 /// The timer buzz (spec §11.5): while Tomo is open, a block or a break
 /// running out is felt, unless Focus's beat run fires the reward tap
 /// instead. Promise 23.
@@ -42,14 +44,14 @@ void main() {
   );
 
   late TestClock clock;
-  late _Haptics haptics;
+  late FakeHaptics haptics;
   late StreamController<PetStanding?> changes;
   late FocusRouteObserver focusRoutes;
 
   /// Opens the buzz on [live] at [minute] past nine.
   Future<void> open(WidgetTester tester, LiveCycle? live, int minute) async {
     clock = TestClock(at(minute));
-    haptics = _Haptics();
+    haptics = FakeHaptics();
     changes = StreamController<PetStanding?>.broadcast();
     focusRoutes = FocusRouteObserver();
     final db = openTestDatabase(clock: clock.call);
@@ -160,11 +162,4 @@ void main() {
     await passTo(tester, 25);
     expect(haptics.played, [Haptic.timerBuzz]);
   });
-}
-
-final class _Haptics implements HapticPlayer {
-  final played = <Haptic>[];
-
-  @override
-  Future<void> play(Haptic haptic) async => played.add(haptic);
 }
