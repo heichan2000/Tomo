@@ -1415,6 +1415,18 @@ ADR-0028.
   installed, ~0.3 MB download (~3%).
 - **No size budget.** One release-checklist tripwire: **Android arm64 release APK
   under 25 MB, or find out why** (skeleton measured at 19.0 MB).
+- **Signed with the upload key** ([The release signing key](https://github.com/heichan2000/Tomo/issues/131)).
+  Play App Signing holds the app signing key; Tomo keeps only an **upload key**,
+  which Google can reset if it's lost. RSA 2048, alias `upload`, valid 10,000
+  days, PKCS12, one password for store and key.
+  - **On the PC:** `C:\Users\shado\.keys\tomo\upload-keystore.jks`, outside every
+    project. `android/key.properties` (git-ignored) names it and holds the alias
+    and the password, so release builds need no one at the keyboard.
+  - **Backups:** a copy of the keystore on the owner's phone. The password is on
+    paper and in a secure file on the phone, never in the repo or a chat.
+  - **No key, no release build.** A release build that can't find the key or its
+    settings stops with an error. It never falls back to the debug key, which
+    Play rejects. Debug builds and `tool/check` don't need the key.
 
 ---
 
@@ -1786,6 +1798,7 @@ full on a real iPhone and a real Android phone **before every store release**.
 | C165 | Ready's Length row, whichever is chosen (the user's choice, #122) | *Custom · 15 min* didn't fit beside the presets, so the row stacked when Custom was chosen. Now the chip reads *Custom* over *15 min*, and a segmented row's options share the tallest's height (`PixelSegmented`), so the row is always one row of three; a label on two lines is measured by its wider line. It still stacks where even that doesn't fit, as at 200% text. |
 | C166 | The first block's length (the user's choice, #122; ADR-0012 amended) | The 25/5 preset, not 15/5: `BlockLengths.firstEver` is `preset25` and `lastFocusMinutes` defaults to 25. A new user's Ready shows *25 min* chosen and a plain *Custom*; Custom shows a length only once the user picks one. |
 | C167 | The evolution beat's haptic (the user's choice by feel, #122; ADR-0013 amended) | One **800 ms** buzz in place of the reward tap, picked from 250, 500 and 800 ms played on the Galaxy. `hapticForBeat` in core picks it; `RunPlayer` plays each beat's own haptic. On Android `MainActivity`'s buzz answers whether it played: silent mode or Do Not Disturb keeps it quiet, and the evolution then plays the reward tap. iPhone plays `vibrate()`. |
+| C168 | What `android/key.properties` holds | `storeFile` (forward slashes; a backslash is an escape there), `keyAlias`, and one `password` for both store and key, since a PKCS12 keystore has only one. |
 | C17 | Marking the device-only file and the diagnostic log as left out of the **iPhone** backup needs native code; no package Tomo has can set that flag | Not written. Both files are now created (`DeviceFile`, `FileDiagnosticLogStorage`), but the flag is iPhone native code that only a Mac can build and check, so it goes with the rest of the iPhone work, outside this build ([#92](https://github.com/heichan2000/Tomo/issues/92)). |
 
 ---
