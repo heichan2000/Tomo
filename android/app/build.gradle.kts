@@ -1,7 +1,27 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// The Play upload key (spec §14): android/key.properties, git-ignored, names a
+// keystore kept outside the repo. Only release builds need it.
+val keyProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val keyProblem: String? = run {
+    val missing = listOf("storeFile", "keyAlias", "password")
+        .filter { keyProperties.getProperty(it).isNullOrBlank() }
+    when {
+        missing.isNotEmpty() ->
+            "android/key.properties is missing or lacks ${missing.joinToString()}"
+        !file(keyProperties.getProperty("storeFile")).exists() ->
+            "the keystore ${keyProperties.getProperty("storeFile")} is not there"
+        else -> null
+    }
 }
 
 android {
@@ -17,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        // A placeholder: the real id is store preparation (spec §17, C14).
+        // Final, and fixed for good at the first Play upload (spec §17, C14).
         applicationId = "io.github.heichan2000.tomo"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -33,6 +53,17 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (keyProblem == null) {
+            create("upload") {
+                storeFile = file(keyProperties.getProperty("storeFile"))
+                keyAlias = keyProperties.getProperty("keyAlias")
+                storePassword = keyProperties.getProperty("password")
+                keyPassword = keyProperties.getProperty("password")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             // Installs beside the real app as "Tomo Dev" (spec §15.5); the name
@@ -40,10 +71,19 @@ android {
             applicationIdSuffix = ".dev"
         }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Never the debug key: Play rejects it. Without the upload key a
+            // release build stops (below) rather than signing with anything else.
+            signingConfig = signingConfigs.findByName("upload")
         }
+    }
+}
+
+gradle.taskGraph.whenReady {
+    if (keyProblem != null && allTasks.any { it.name.contains("Release") }) {
+        throw GradleException(
+            "Release builds are signed with Tomo's upload key, but $keyProblem. " +
+                "See spec §14 for where the key lives.",
+        )
     }
 }
 
