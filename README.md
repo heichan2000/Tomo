@@ -14,6 +14,10 @@ backend. **Tomo never connects to the internet**
 
 > **Status:** a work in progress, not released and not available to install.
 
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="Home: the pet Geode at level 1, 275 of 600 EXP, with a Start focusing button" width="260">
+</p>
+
 ## What it does
 
 - **Projects and tasks.** Each task has a title, optional notes, a Pomodoro
