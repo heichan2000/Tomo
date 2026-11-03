@@ -12,8 +12,7 @@ Built with Flutter for iOS and Android. It is offline-first and has no
 backend. **Tomo never connects to the internet**
 ([ADR-0029](docs/adr/0029-mvp-ships-without-ai-and-never-goes-online.md)).
 
-> **Status:** in development and not released yet. There is no download and no
-> store listing. To try Tomo, build it from source (see below).
+> **Status:** a work in progress, not released and not available to install.
 
 ## What it does
 
@@ -37,43 +36,6 @@ backend. **Tomo never connects to the internet**
 - **No currency, no cosmetics, no telemetry, no account.** Your data stays on
   the phone, and the phone's own backup can bring the pet across to a new
   device ([ADR-0028](docs/adr/0028-pet-travels-in-the-phone-backup.md)).
-
-## Getting started
-
-### Requirements
-
-- **Flutter 3.47.6**, pinned in [`.fvmrc`](.fvmrc). [FVM](https://fvm.app)
-  picks up the pin, or you can install that version yourself. `tool/check`
-  fails if any other version is on your `PATH`.
-- Android: min SDK 26. iOS: 15.0 or later.
-
-### Run it
-
-```sh
-flutter pub get
-flutter run
-```
-
-The repo is a Dart workspace, so a single `pub get` at the root resolves the
-app and both packages.
-
-### Check your work
-
-```sh
-tool/check        # tool\check.cmd on Windows
-```
-
-This is the one "done" command. It passes only if all of these hold:
-
-1. Flutter is the pinned version.
-2. `pub get`, `build_runner` and `gen_l10n` don't change any file.
-3. `dart analyze --fatal-infos` is clean, including Tomo's own lint plugin.
-4. Every test passes in the app, `tomo_core` and `tomo_lints`.
-
-Some promises can't be covered by an automated test, such as notifications
-on a dozing phone, backup and restore, and screen readers. They are listed in
-[`docs/manual-checks.md`](docs/manual-checks.md) and get run on a real iPhone
-and a real Android phone before a store release.
 
 ## Project layout
 
