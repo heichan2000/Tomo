@@ -37,27 +37,6 @@ backend. **Tomo never connects to the internet**
   the phone, and the phone's own backup can bring the pet across to a new
   device ([ADR-0028](docs/adr/0028-pet-travels-in-the-phone-backup.md)).
 
-## Project layout
-
-```
-lib/                  The Flutter app: screens, painting, plugin wrappers,
-                      Riverpod wiring. One folder per feature (focus, pet,
-                      work, stats, settings, onboarding, ...).
-packages/tomo_core/   Plain Dart, no Flutter: the focus cycle, reward rules,
-                      pet look and beats, tasks, the Drift database and
-                      migrations, notification schedule, stats, pixel art.
-packages/tomo_lints/  Tomo's own analyzer rules (e.g. no print outside Log).
-test/                 App tests, including repo-shape and never-online guards.
-tool/                 tool/check, and the app-icon generator.
-docs/adr/             Architecture decision records.
-docs/research/        Dated research notes.
-```
-
-All the rules live in `tomo_core`, which can't import Flutter: its
-`pubspec.yaml` doesn't list it, so the import won't compile. That keeps the
-core logic testable with plain `dart test`
-([ADR-0027](docs/adr/0027-plain-dart-core-package.md)).
-
 ## Documentation
 
 | Document | What it's for |
