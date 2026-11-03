@@ -12,6 +12,9 @@ Built with Flutter for iOS and Android. It is offline-first and has no
 backend. **Tomo never connects to the internet**
 ([ADR-0029](docs/adr/0029-mvp-ships-without-ai-and-never-goes-online.md)).
 
+> **Status:** in development and not released yet. There is no download and no
+> store listing. To try Tomo, build it from source (see below).
+
 ## What it does
 
 - **Projects and tasks.** Each task has a title, optional notes, a Pomodoro
@@ -70,18 +73,7 @@ This is the one "done" command. It passes only if all of these hold:
 Some promises can't be covered by an automated test, such as notifications
 on a dozing phone, backup and restore, and screen readers. They are listed in
 [`docs/manual-checks.md`](docs/manual-checks.md) and get run on a real iPhone
-and a real Android phone before each store release.
-
-### Release builds (Android)
-
-Release builds are signed with the Play upload key. Put an
-`android/key.properties` file (git-ignored) in place with `storeFile`,
-`keyAlias` and `password`, and keep the keystore somewhere outside the repo.
-Then:
-
-```sh
-flutter build appbundle
-```
+and a real Android phone before a store release.
 
 ## Project layout
 
